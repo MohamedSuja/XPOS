@@ -5,7 +5,17 @@ module.exports = {
       'module-resolver',
       {
         root: ['./src'],
-        extensions: ['.js', '.json', '.ts', '.tsx', '.jsx'],
+        extensions: [
+          '.js',
+          '.json',
+          '.ts',
+          '.tsx',
+          '.jsx',
+          '.png',
+          '.jpg',
+          '.jpeg',
+          '.gif',
+        ],
         alias: {
           '@': './src',
         },

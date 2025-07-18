@@ -95,6 +95,7 @@ const ThemeContext = createContext<ThemeContextType>({
     notificationBorder: '#FFCFD1',
     closeBG: '#FFE6E7',
     checkBG: '#E9FFF0',
+    loadingBackground: 'rgba(0, 0, 0, 0.2)',
   },
   toggleTheme: () => {},
 });

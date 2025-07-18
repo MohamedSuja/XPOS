@@ -22,7 +22,6 @@ const App = () => {
           </GestureHandlerRootView>
         </Provider>
       </PersistGate>
-      <AppRoutes />
     </ThemeProvider>
   );
 };
