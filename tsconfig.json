@@ -1,0 +1,24 @@
+{
+  "extends": "@react-native/typescript-config",
+  "compilerOptions": {
+    "jsx": "react",
+    "strict": true,
+    "esModuleInterop": true,
+    "noImplicitThis": false,
+    "types": ["node", "jest"],
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "module": "commonjs"
+  },
+  "include": [
+    "./src/**/*",
+    "babel.config.js",
+    "**/*.ts",
+    "**/*.tsx",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts",
+    "index.js"
+  ],
+  "typeRoots": ["types"]
+}
