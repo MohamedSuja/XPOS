@@ -1,9 +1,23 @@
-import { View, Text, SafeAreaView, StatusBar, Image } from 'react-native';
+import {
+  View,
+  Text,
+  SafeAreaView,
+  StatusBar,
+  Image,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+} from 'react-native';
 import React from 'react';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyles } from './styles';
 import { globalStyles } from '@/utils/globalStyles';
+import CustomTextInput from '@/components/Inputs/CustomTextInput';
+import PasswordTextInput from '@/components/Inputs/PasswordTextInput';
+import PrimaryButton from '@/components/Buttons/PrimaryButton';
 
 const LoginScreen = () => {
   const { colors }: ThemeContextType = useTheme();
@@ -12,20 +26,46 @@ const LoginScreen = () => {
   const insets = useSafeAreaInsets();
 
   return (
-    <View style={[styles.root, { paddingBottom: insets.bottom }]}>
-      <Image
-        style={styles.statusBar}
-        source={require('@/assets/images/StatusBar.png')}
-      />
-      <StatusBar backgroundColor={colors.primary} />
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
+        <View style={[styles.root, { paddingBottom: insets.bottom }]}>
+          <Image
+            style={styles.statusBar}
+            source={require('@/assets/images/StatusBar.png')}
+          />
+          <StatusBar backgroundColor={colors.primary} />
 
-      <Text style={[globalStyles.h1, styles.welcome]}>Welcome Back</Text>
-      <Text style={[globalStyles.h10, styles.description]}>
-        Please login to continue your order with us
-      </Text>
+          <Text style={[globalStyles.h1, styles.welcome]}>Welcome Back</Text>
+          <Text style={[globalStyles.h10, styles.description]}>
+            Please login to continue your order with us
+          </Text>
 
-      <View></View>
-    </View>
+          <View style={styles.formContainer}>
+            <Text style={[globalStyles.h10, styles.label]}>User Name</Text>
+            <CustomTextInput
+              style={styles.input}
+              placeholder="Enter your user name"
+            />
+            <Text style={[globalStyles.h10, styles.label]}>Password</Text>
+            <PasswordTextInput
+              style={styles.input}
+              placeholder="Enter your password"
+            />
+
+            <PrimaryButton title="Login" style={styles.button} />
+
+            <Text style={[globalStyles.h9, styles.centerText]}>
+              Don't have an account?{' '}
+              <TouchableWithoutFeedback>
+                <Text style={[globalStyles.h9, styles.linkText]}>Sign Up</Text>
+              </TouchableWithoutFeedback>
+            </Text>
+          </View>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 

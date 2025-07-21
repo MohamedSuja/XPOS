@@ -25,7 +25,7 @@ const AppRoutes = () => {
   };
 
   return (
-    <NavigationContainer linking={linking}>
+    <NavigationContainer>
       <AuthStack />
     </NavigationContainer>
   );
