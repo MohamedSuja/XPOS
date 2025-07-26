@@ -12,28 +12,33 @@ export const createStyles = (colors: ColorsType) =>
       height: hp('100%'),
       backgroundColor: colors.background,
     },
+    imageContainer: {
+      height: hp('60%'),
+    },
     statusBar: {
       resizeMode: 'stretch',
       width: '100%',
-      height: Platform.OS === 'ios' ? hp('25%') : hp('20%'),
+      height: '100%',
+      position: 'absolute',
     },
 
     welcome: {
-      color: colors.inputTxt,
-      marginTop: hp('5%'),
+      color: colors.background,
+      marginTop: '70%',
       marginHorizontal: wp('5%'),
     },
     description: {
-      color: colors.inputTxt,
+      color: colors.background,
       marginHorizontal: wp('5%'),
       marginTop: hp('1%'),
     },
     formContainer: {
-      marginTop: hp('5%'),
+      marginTop: -hp('18%'),
+      backgroundColor: colors.background,
       paddingHorizontal: wp('5%'),
       paddingVertical: hp('3%'),
       borderWidth: 1,
-      borderBottomWidth:0,
+      borderBottomWidth: 0,
       borderTopLeftRadius: 30,
       borderTopRightRadius: 30,
       borderColor: colors.border,
@@ -50,7 +55,7 @@ export const createStyles = (colors: ColorsType) =>
     },
 
     centerText: {
-      marginTop: hp('10%'),
+      marginTop: hp('15%'),
       textAlign: 'center',
       color: colors.inputTxt,
     },

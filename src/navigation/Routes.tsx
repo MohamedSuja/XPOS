@@ -1,6 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
 import AuthStack from './Stacks/AuthStack';
+import BottomTab from './BottomTab';
 
 const AppRoutes = () => {
   const config = {
@@ -26,7 +27,7 @@ const AppRoutes = () => {
 
   return (
     <NavigationContainer>
-      <AuthStack />
+      <BottomTab />
     </NavigationContainer>
   );
 };

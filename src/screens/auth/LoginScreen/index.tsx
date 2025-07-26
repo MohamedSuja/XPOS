@@ -31,16 +31,18 @@ const LoginScreen = () => {
     >
       <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
         <View style={[styles.root, { paddingBottom: insets.bottom }]}>
-          <Image
-            style={styles.statusBar}
-            source={require('@/assets/images/StatusBar.png')}
-          />
-          <StatusBar backgroundColor={colors.primary} />
+          <View style={[styles.imageContainer]}>
+            <Image
+              style={styles.statusBar}
+              source={require('@/assets/images/LoginImage.png')}
+            />
+            <StatusBar backgroundColor={colors.primary} />
 
-          <Text style={[globalStyles.h1, styles.welcome]}>Welcome Back</Text>
-          <Text style={[globalStyles.h10, styles.description]}>
-            Please login to continue your order with us
-          </Text>
+            <Text style={[globalStyles.h1, styles.welcome]}>Welcome Back</Text>
+            <Text style={[globalStyles.h10, styles.description]}>
+              Please login to continue your order with us
+            </Text>
+          </View>
 
           <View style={styles.formContainer}>
             <Text style={[globalStyles.h10, styles.label]}>User Name</Text>
@@ -56,10 +58,12 @@ const LoginScreen = () => {
 
             <PrimaryButton title="Login" style={styles.button} />
 
-            <Text style={[globalStyles.h9, styles.centerText]}>
-              Don't have an account?{' '}
+            <Text style={[globalStyles.h11, styles.centerText]}>
+              Do you need help & support?{' '}
               <TouchableWithoutFeedback>
-                <Text style={[globalStyles.h9, styles.linkText]}>Sign Up</Text>
+                <Text style={[globalStyles.h11, styles.linkText]}>
+                  Contact Us
+                </Text>
               </TouchableWithoutFeedback>
             </Text>
           </View>
