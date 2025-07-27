@@ -64,6 +64,12 @@ export type ColorsType = {
   divider2: string;
   tab: string;
   dateText: string;
+  searchInput: string;
+  itemCard: string;
+  itemCardBorder: string;
+  itemCardTxt: string;
+  itemCardInactive: string;
+  itemCardInactiveBorder: string;
 };
 export type ThemeContextType = {
   isDark: boolean;
@@ -134,6 +140,12 @@ const ThemeContext = createContext<ThemeContextType>({
     divider2: '#C8C8C8',
     tab: '#D5D5D5',
     dateText: '#898989',
+    searchInput: '#F9F9F9',
+    itemCard: '#FFFBFB',
+    itemCardBorder: '#FEE1E2',
+    itemCardTxt: '#7D7D7D',
+    itemCardInactive: '#F3F3F3',
+    itemCardInactiveBorder: '#DFDFDF',
   },
   toggleTheme: () => {},
 });
@@ -201,6 +213,12 @@ const lightColors = {
   divider2: '#C8C8C8',
   tab: '#D5D5D5',
   dateText: '#898989',
+  searchInput: '#F9F9F9',
+  itemCard: '#FFFBFB',
+  itemCardBorder: '#FEE1E2',
+  itemCardTxt: '#7D7D7D',
+  itemCardInactive: '#F3F3F3',
+  itemCardInactiveBorder: '#DFDFDF',
 };
 
 const darkColors = {
@@ -264,6 +282,12 @@ const darkColors = {
   divider2: '#C8C8C8',
   tab: '#D5D5D5',
   dateText: '#898989',
+  searchInput: '#F9F9F9',
+  itemCard: '#FFFBFB',
+  itemCardBorder: '#FEE1E2',
+  itemCardTxt: '#7D7D7D',
+  itemCardInactive: '#F3F3F3',
+  itemCardInactiveBorder: '#DFDFDF',
 };
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({

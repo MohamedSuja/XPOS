@@ -3,7 +3,7 @@ import React from 'react';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import OrderRequestCard from '@/components/Cards/OrderRequestCard';
 
-const ReportScreen = () => {
+const RequestScreen = () => {
   const { colors }: ThemeContextType = useTheme();
   return (
     <View
@@ -49,4 +49,4 @@ const ReportScreen = () => {
   );
 };
 
-export default ReportScreen;
+export default RequestScreen;

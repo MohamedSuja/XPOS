@@ -13,9 +13,11 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
-import Orders from '@/screens/app/Orders';
 import { globalStyles } from '@/utils/globalStyles';
 import TopTabNavigator from '../TopTab';
+import MenuStack from '../Stacks/MenuStack';
+import HomeStack from '../Stacks/HomeStack';
+import ReportStack from '../Stacks/ReportStack';
 
 const Tab = createBottomTabNavigator();
 const BottomTab = () => {
@@ -50,8 +52,8 @@ const BottomTab = () => {
       })}
     >
       <Tab.Screen
-        name="HomeScreen"
-        component={Orders}
+        name="Home"
+        component={HomeStack}
         options={() => ({
           tabBarButton: props => (
             <Pressable
@@ -174,8 +176,8 @@ const BottomTab = () => {
         })}
       />
       <Tab.Screen
-        name="MenuScreen"
-        component={Orders}
+        name="Menu"
+        component={MenuStack}
         options={() => ({
           tabBarButton: props => (
             <Pressable
@@ -236,8 +238,8 @@ const BottomTab = () => {
         })}
       />
       <Tab.Screen
-        name="ReportScreen"
-        component={Orders}
+        name="Report"
+        component={ReportStack}
         options={() => ({
           tabBarButton: props => (
             <Pressable
