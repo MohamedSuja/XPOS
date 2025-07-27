@@ -42,7 +42,7 @@ const ProfileScreen = ({
           <Text style={[globalStyles.h4, styles.headerTxt]}>Profile</Text>
         </View>
       </View>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.profileContainer}>
           <View style={styles.profileHeader}>
             <View style={styles.profileImageContainer}>
