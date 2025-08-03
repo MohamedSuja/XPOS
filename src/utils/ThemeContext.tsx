@@ -45,6 +45,32 @@ export type ColorsType = {
   closeBG: string;
   checkBG: string;
   loadingBackground: string;
+  preparingBorder: string;
+  preparingBG: string;
+  packingTxt: string;
+  packingBorder: string;
+  packingBG: string;
+  cancelledTxt: string;
+  cancelledBorder: string;
+  cancelledBG: string;
+  readyTxt: string;
+  readyBorder: string;
+  readyBG: string;
+  acceptedTxt: string;
+  acceptedBorder: string;
+  acceptedBG: string;
+  cardBG: string;
+  cardBorder: string;
+  divider2: string;
+  tab: string;
+  dateText: string;
+  searchInput: string;
+  itemCard: string;
+  itemCardBorder: string;
+  itemCardTxt: string;
+  itemCardInactive: string;
+  itemCardInactiveBorder: string;
+  profileSeparator: string;
 };
 export type ThemeContextType = {
   isDark: boolean;
@@ -95,6 +121,33 @@ const ThemeContext = createContext<ThemeContextType>({
     notificationBorder: '#FFCFD1',
     closeBG: '#FFE6E7',
     checkBG: '#E9FFF0',
+    loadingBackground: 'rgba(0, 0, 0, 0.2)',
+    preparingBorder: '#FDDECB',
+    preparingBG: '#FFF5EE',
+    packingTxt: '#0066B7',
+    packingBorder: '#BCE0FD',
+    packingBG: '#EDF7FF',
+    cancelledTxt: '#4D4D4D',
+    cancelledBorder: '#D2D2D2',
+    cancelledBG: '#EAEAEA',
+    readyTxt: '#006C20',
+    readyBorder: '#AFEBC1',
+    readyBG: '#E3FFEB',
+    acceptedTxt: '#EB2229',
+    acceptedBorder: '#FFD8D9',
+    acceptedBG: '#FFF4F4',
+    cardBG: '#FFF5F5',
+    cardBorder: '#FFD7D7',
+    divider2: '#C8C8C8',
+    tab: '#D5D5D5',
+    dateText: '#898989',
+    searchInput: '#F9F9F9',
+    itemCard: '#FFFBFB',
+    itemCardBorder: '#FEE1E2',
+    itemCardTxt: '#7D7D7D',
+    itemCardInactive: '#F3F3F3',
+    itemCardInactiveBorder: '#DFDFDF',
+    profileSeparator: '#EFEFEF',
   },
   toggleTheme: () => {},
 });
@@ -143,6 +196,32 @@ const lightColors = {
   closeBG: '#FFE6E7',
   checkBG: '#E9FFF0',
   loadingBackground: 'rgba(0, 0, 0, 0.2)',
+  preparingBorder: '#FDDECB',
+  preparingBG: '#FFF5EE',
+  packingTxt: '#0066B7',
+  packingBorder: '#BCE0FD',
+  packingBG: '#EDF7FF',
+  cancelledTxt: '#4D4D4D',
+  cancelledBorder: '#D2D2D2',
+  cancelledBG: '#EAEAEA',
+  readyTxt: '#006C20',
+  readyBorder: '#AFEBC1',
+  readyBG: '#E3FFEB',
+  acceptedTxt: '#EB2229',
+  acceptedBorder: '#FFD8D9',
+  acceptedBG: '#FFF4F4',
+  cardBG: '#FFF5F5',
+  cardBorder: '#FFD7D7',
+  divider2: '#C8C8C8',
+  tab: '#D5D5D5',
+  dateText: '#898989',
+  searchInput: '#F9F9F9',
+  itemCard: '#FFFBFB',
+  itemCardBorder: '#FEE1E2',
+  itemCardTxt: '#7D7D7D',
+  itemCardInactive: '#F3F3F3',
+  itemCardInactiveBorder: '#DFDFDF',
+  profileSeparator: '#EFEFEF',
 };
 
 const darkColors = {
@@ -187,6 +266,32 @@ const darkColors = {
   closeBG: '#FFE6E7',
   checkBG: '#E9FFF0',
   loadingBackground: 'rgba(0, 0, 0, 0.2)',
+  preparingBorder: '#FDDECB',
+  preparingBG: '#FFF5EE',
+  packingTxt: '#0066B7',
+  packingBorder: '#BCE0FD',
+  packingBG: '#EDF7FF',
+  cancelledTxt: '#4D4D4D',
+  cancelledBorder: '#D2D2D2',
+  cancelledBG: '#EAEAEA',
+  readyTxt: '#006C20',
+  readyBorder: '#AFEBC1',
+  readyBG: '#E3FFEB',
+  acceptedTxt: '#EB2229',
+  acceptedBorder: '#FFD8D9',
+  acceptedBG: '#FFF4F4',
+  cardBG: '#FFF5F5',
+  cardBorder: '#FFD7D7',
+  divider2: '#C8C8C8',
+  tab: '#D5D5D5',
+  dateText: '#898989',
+  searchInput: '#F9F9F9',
+  itemCard: '#FFFBFB',
+  itemCardBorder: '#FEE1E2',
+  itemCardTxt: '#7D7D7D',
+  itemCardInactive: '#F3F3F3',
+  itemCardInactiveBorder: '#DFDFDF',
+  profileSeparator: '#EFEFEF',
 };
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({

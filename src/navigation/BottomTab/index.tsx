@@ -1,61 +1,302 @@
-import { hp, wp } from '@/utils/Scaling';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import {
+  View,
+  Text,
+  Platform,
+  Image,
+  TouchableWithoutFeedback,
+  Pressable,
+} from 'react-native';
 import React from 'react';
-import { Platform, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
+import { globalStyles } from '@/utils/globalStyles';
+import TopTabNavigator from '../TopTab';
+import MenuStack from '../Stacks/MenuStack';
+import HomeStack from '../Stacks/HomeStack';
+import ReportStack from '../Stacks/ReportStack';
 
-import { AppStackScreenProps } from '../NavigationModels/AppStack';
-import Colors from '@/utils/Colors';
-
-const Tab = createBottomTabNavigator<any>();
-
-const BottomTab: React.FC<AppStackScreenProps<'BottomTab'>> = () => {
-  const insets = useSafeAreaInsets();
-
+const Tab = createBottomTabNavigator();
+const BottomTab = () => {
+  const { colors }: ThemeContextType = useTheme();
   return (
     <Tab.Navigator
-      screenOptions={{
+      screenOptions={() => ({
         headerShown: false,
-        tabBarActiveTintColor: Colors.brand['white'],
         tabBarStyle: {
-          height: Platform.OS === 'ios' ? wp(26) : wp(23) + insets.bottom,
-          borderColor: Colors.grey['100'],
-          borderTopWidth: 1,
-          backgroundColor: Colors.brand['white'],
+          backgroundColor: 'transparent',
+          paddingTop: 30,
+          height: hp('12%'),
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexDirection: 'row',
+          paddingHorizontal: wp('6%'),
+          ...Platform.select({
+            ios: {
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 3 },
+              shadowOpacity: 0.2,
+              shadowRadius: 4,
+            },
+            android: {
+              elevation: 5,
+            },
+          }),
         },
-        tabBarItemStyle: {
-          marginTop: hp(2),
-        },
-
         tabBarShowLabel: false,
-      }}
+      })}
     >
       <Tab.Screen
-        name="HomeScreen"
-        component={<View />}
-        options={({ navigation, route }) => ({
-          tabBarIcon: ({ focused }) => <View></View>,
+        name="Home"
+        component={HomeStack}
+        options={() => ({
+          tabBarButton: props => (
+            <Pressable
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              onPress={props.onPress}
+            >
+              {props.children}
+            </Pressable>
+          ),
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                width: wp('14%'),
+                height: wp('14%'),
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: focused ? colors.tabBG : 'transparent',
+                borderRadius: 100,
+              }}
+            >
+              {focused ? (
+                <View>
+                  <Image
+                    source={require('@/assets/icons/ICHomeFocus.png')}
+                    style={{
+                      width: wp('6%'),
+                      height: wp('6%'),
+                      resizeMode: 'contain',
+                    }}
+                  />
+                </View>
+              ) : (
+                <View style={{ alignItems: 'center' }}>
+                  <Image
+                    source={require('@/assets/icons/ICHome.png')}
+                    style={{
+                      width: wp('6%'),
+                      height: wp('6%'),
+                      resizeMode: 'contain',
+                    }}
+                  />
+                  <Text
+                    style={[
+                      globalStyles.h11,
+                      { color: colors.dropDownIcon, textAlign: 'center' },
+                    ]}
+                  >
+                    Home
+                  </Text>
+                </View>
+              )}
+            </View>
+          ),
         })}
       />
       <Tab.Screen
-        name="MainMenuScreen"
-        component={<View />}
+        name="TopTab"
+        component={TopTabNavigator}
         options={() => ({
-          tabBarIcon: ({ focused }) => <View></View>,
+          tabBarButton: props => (
+            <Pressable
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              onPress={props.onPress}
+            >
+              {props.children}
+            </Pressable>
+          ),
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                width: wp('14%'),
+                height: wp('14%'),
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: focused ? colors.tabBG : 'transparent',
+                borderRadius: 100,
+              }}
+            >
+              {focused ? (
+                <View>
+                  <Image
+                    source={require('@/assets/icons/OrderFocus.png')}
+                    style={{
+                      width: wp('6%'),
+                      height: wp('6%'),
+                      resizeMode: 'contain',
+                    }}
+                  />
+                </View>
+              ) : (
+                <View style={{ alignItems: 'center' }}>
+                  <Image
+                    source={require('@/assets/icons/Order.png')}
+                    style={{
+                      width: wp('6%'),
+                      height: wp('6%'),
+                      resizeMode: 'contain',
+                    }}
+                  />
+                  <Text
+                    style={[
+                      globalStyles.h11,
+                      { color: colors.dropDownIcon, textAlign: 'center' },
+                    ]}
+                  >
+                    Order
+                  </Text>
+                </View>
+              )}
+            </View>
+          ),
         })}
       />
       <Tab.Screen
-        name="BreakScreen"
-        component={<View />}
+        name="Menu"
+        component={MenuStack}
         options={() => ({
-          tabBarIcon: ({ focused }) => <View></View>,
+          tabBarButton: props => (
+            <Pressable
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              onPress={props.onPress}
+            >
+              {props.children}
+            </Pressable>
+          ),
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                width: wp('14%'),
+                height: wp('14%'),
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: focused ? colors.tabBG : 'transparent',
+                borderRadius: 100,
+              }}
+            >
+              {focused ? (
+                <View>
+                  <Image
+                    source={require('@/assets/icons/MenuFocus.png')}
+                    style={{
+                      width: wp('6%'),
+                      height: wp('6%'),
+                      resizeMode: 'contain',
+                    }}
+                  />
+                </View>
+              ) : (
+                <View style={{ alignItems: 'center' }}>
+                  <Image
+                    source={require('@/assets/icons/Menu.png')}
+                    style={{
+                      width: wp('6%'),
+                      height: wp('6%'),
+                      resizeMode: 'contain',
+                    }}
+                  />
+                  <Text
+                    style={[
+                      globalStyles.h11,
+                      { color: colors.dropDownIcon, textAlign: 'center' },
+                    ]}
+                  >
+                    Menu
+                  </Text>
+                </View>
+              )}
+            </View>
+          ),
         })}
       />
       <Tab.Screen
-        name="SettingsHomeScreen"
-        component={<View />}
+        name="Report"
+        component={ReportStack}
         options={() => ({
-          tabBarIcon: ({ focused }) => <View></View>,
+          tabBarButton: props => (
+            <Pressable
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              onPress={props.onPress}
+            >
+              {props.children}
+            </Pressable>
+          ),
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                width: wp('14%'),
+                height: wp('14%'),
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: focused ? colors.tabBG : 'transparent',
+                borderRadius: 100,
+              }}
+            >
+              {focused ? (
+                <View>
+                  <Image
+                    source={require('@/assets/icons/ReportsFocus.png')}
+                    style={{
+                      width: wp('6%'),
+                      height: wp('6%'),
+                      resizeMode: 'contain',
+                    }}
+                  />
+                </View>
+              ) : (
+                <View style={{ alignItems: 'center' }}>
+                  <Image
+                    source={require('@/assets/icons/Reports.png')}
+                    style={{
+                      width: wp('6%'),
+                      height: wp('6%'),
+                      resizeMode: 'contain',
+                    }}
+                  />
+                  <Text
+                    style={[
+                      globalStyles.h11,
+                      { color: colors.dropDownIcon, textAlign: 'center' },
+                    ]}
+                  >
+                    Report
+                  </Text>
+                </View>
+              )}
+            </View>
+          ),
         })}
       />
     </Tab.Navigator>

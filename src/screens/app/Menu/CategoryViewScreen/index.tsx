@@ -1,0 +1,254 @@
+import { View, Text, FlatList, ScrollView } from 'react-native';
+import React, { useRef, useEffect } from 'react';
+import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
+import { createStyles } from './styles';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import SearchInput from '@/components/Inputs/SearchInput';
+import CategoryItem from '@/components/Cards/CategoryItem';
+import { AppStackScreenProps } from '@/navigation/NavigationModels/MenuStack';
+import BackButton from '@/components/Buttons/BackButton';
+import { globalStyles } from '@/utils/globalStyles';
+import { hp } from '@/utils/Scaling';
+import CategoryButton from '@/components/Buttons/CategoryButton';
+import ItemCard from '@/components/Cards/ItemCard';
+
+const CategoryViewScreen = ({
+  navigation,
+  route,
+}: AppStackScreenProps<'CategoryViewScreen'>) => {
+  const { colors }: ThemeContextType = useTheme();
+  const styles = createStyles(colors);
+  const flatListRef = useRef<FlatList>(null);
+  const insets = useSafeAreaInsets();
+
+  // Auto scroll to selected category
+  useEffect(() => {
+    if (route.params?.item?.id) {
+      const selectedIndex = categoryData.findIndex(
+        item => item.id === route.params?.item?.id,
+      );
+      if (selectedIndex !== -1) {
+        setTimeout(() => {
+          flatListRef.current?.scrollToIndex({
+            index: selectedIndex,
+            animated: true,
+            viewPosition: 0.5, // Center the item
+          });
+        }, 100); // Small delay to ensure FlatList is rendered
+      }
+    }
+  }, [route.params?.item?.id]);
+
+  return (
+    <View style={[styles.root]}>
+      <View style={[styles.headerContainer, { paddingTop: insets.top }]}>
+        <View style={styles.headerContent}>
+          <BackButton style={[styles.backBtn]} />
+          <Text style={[globalStyles.h4, styles.headerTxt]}>
+            {route.params?.item?.name ?? ''}
+          </Text>
+        </View>
+
+        <ScrollView>
+          <FlatList
+            ref={flatListRef}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.categoryList}
+            data={categoryData}
+            keyExtractor={item => item.id.toString()}
+            renderItem={({ item }) => (
+              <CategoryButton
+                title={item.name}
+                active={item.id === route.params?.item?.id}
+              />
+            )}
+            onScrollToIndexFailed={() => {
+              // Handle scroll failure gracefully
+              console.log('Scroll to index failed');
+            }}
+          />
+        </ScrollView>
+      </View>
+
+      <SearchInput placeholder="Search Item" style={styles.searchInput} />
+      <FlatList
+        contentContainerStyle={styles.itemList}
+        data={itemData}
+        keyExtractor={item => item.id.toString()}
+        showsVerticalScrollIndicator={false}
+        renderItem={({ item }) => <ItemCard {...item} />}
+      />
+    </View>
+  );
+};
+
+export default CategoryViewScreen;
+const categoryData = [
+  {
+    id: 1,
+    name: 'Pizza',
+    image:
+      'https://www.shutterstock.com/image-photo/fried-salmon-steak-cooked-green-600nw-2489026949.jpg',
+  },
+  {
+    id: 2,
+    name: 'Burger',
+    image:
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5k7T60odhyrtndKnNo0Ef-GmdAQTIdl22jg&s',
+  },
+  {
+    id: 3,
+    name: 'Salad',
+    image:
+      'https://img.freepik.com/free-photo/top-view-fast-food-mix-mozzarella-sticks-club-sandwich-hamburger-mushroom-pizza-caesar-shrimp-salad-french-fries-ketchup-mayo-cheese-sauces-table_141793-3998.jpg?semt=ais_hybrid&w=740',
+  },
+  {
+    id: 4,
+    name: 'Dessert',
+    image:
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8_kCgEQn9yIXh1QSwPJcN6QYJVceekyMXxQ&s',
+  },
+  {
+    id: 5,
+    name: 'Drink',
+    image:
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRoJ0RCxNrOLvYxHj8NSYEOBKgNLef73dF9A&s',
+  },
+  {
+    id: 6,
+    name: 'Soup',
+    image:
+      'https://bakewithshivesh.com/wp-content/uploads/2018/05/RASPBERRY-APPLE-CRISP.jpg',
+  },
+  {
+    id: 7,
+    name: 'Pasta',
+    image:
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjrvUCM4F6qU2P-gskxXTMQjn9jPhRPT5BZQ&s',
+  },
+  {
+    id: 8,
+    name: 'Fish',
+    image:
+      'https://i0.wp.com/digital-photography-school.com/wp-content/uploads/2019/10/MG_3869.jpg?fit=1500%2C1011&ssl=1',
+  },
+  {
+    id: 9,
+    name: 'Chicken',
+    image:
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3WF7SFm5a1kterAAcz-4ZxNDw6oglgIJHKA&s',
+  },
+  {
+    id: 10,
+    name: 'Beef',
+    image:
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjRHIfneW-xeaNFH91s9iLCN0w5fww9NPfEQ&s',
+  },
+  {
+    id: 11,
+    name: 'Vegetarian',
+    image:
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7Ovgxx5xzyfkobvR99fY1YWgoqso0zr_hdg&s',
+  },
+  {
+    id: 12,
+    name: 'Vegan',
+    image:
+      'https://clicklovegrow.com/wp-content/uploads/2020/03/Naomi-Sherman-Advanced-Graduate4.jpg',
+  },
+];
+
+const itemData = [
+  {
+    id: 1,
+    title: 'Chicken Rice & Curry',
+    image:
+      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
+    available: true,
+  },
+  {
+    id: 2,
+    title: 'Chicken Rice & Curry',
+    image:
+      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
+    available: true,
+  },
+  {
+    id: 3,
+    title: 'Chicken Rice & Curry',
+    image:
+      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
+    available: false,
+  },
+  {
+    id: 4,
+    title: 'Chicken Rice & Curry',
+    image:
+      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
+    available: true,
+  },
+  {
+    id: 5,
+    title: 'Chicken Rice & Curry',
+    image:
+      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
+    available: false,
+  },
+  {
+    id: 6,
+    title: 'Chicken Rice & Curry',
+    image:
+      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
+    available: false,
+  },
+  {
+    id: 7,
+    title: 'Chicken Rice & Curry',
+    image:
+      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
+    available: false,
+  },
+  {
+    id: 8,
+    title: 'Chicken Rice & Curry',
+    image:
+      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
+    available: true,
+  },
+  {
+    id: 9,
+    title: 'Chicken Rice & Curry',
+    image:
+      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
+    available: false,
+  },
+  {
+    id: 10,
+    title: 'Chicken Rice & Curry',
+    image:
+      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
+    available: true,
+  },
+  {
+    id: 11,
+    title: 'Chicken Rice & Curry',
+    image:
+      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
+    available: true,
+  },
+  {
+    id: 12,
+    title: 'Chicken Rice & Curry',
+    image:
+      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
+    available: false,
+  },
+  {
+    id: 13,
+    title: 'Chicken Rice & Curry',
+    image:
+      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
+    available: false,
+  },
+];

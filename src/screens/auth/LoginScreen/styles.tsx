@@ -1,63 +1,64 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import { ColorsType } from '@/utils/ThemeContext';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
 import { RFValue } from 'react-native-responsive-fontsize';
+import { hp, wp } from '@/utils/Scaling';
 
 export const createStyles = (colors: ColorsType) =>
   StyleSheet.create({
-    container: {
-      flex: 1,
+    root: {
+      height: hp('100%'),
       backgroundColor: colors.background,
+    },
+    imageContainer: {
+      height: hp('60%'),
+    },
+    statusBar: {
+      resizeMode: 'stretch',
       width: '100%',
       height: '100%',
+      position: 'absolute',
     },
-    header: {
-      paddingHorizontal: wp('4%'),
-      borderBottomWidth: 1,
+
+    welcome: {
+      color: colors.background,
+      marginTop: '70%',
+      marginHorizontal: wp('5%'),
+    },
+    description: {
+      color: colors.background,
+      marginHorizontal: wp('5%'),
+      marginTop: hp('1%'),
+    },
+    formContainer: {
+      marginTop: -hp('18%'),
+      backgroundColor: colors.background,
+      paddingHorizontal: wp('5%'),
+      paddingVertical: hp('3%'),
+      borderWidth: 1,
+      borderBottomWidth: 0,
+      borderTopLeftRadius: 30,
+      borderTopRightRadius: 30,
       borderColor: colors.border,
-      alignItems: 'center',
-      paddingVertical: hp('2%'),
-      flexDirection: 'row',
-      justifyContent: 'space-between',
     },
-    headerTxt: {
-      fontSize: RFValue(16),
-      color: colors.headerTxt,
+    label: {},
+    input: {
+      marginTop: hp('1%'),
+      marginBottom: hp('2%'),
+      fontSize: RFValue(14),
+      fontFamily: 'Manrope-Regular',
+    },
+    button: {
+      marginTop: hp('3%'),
+    },
+
+    centerText: {
+      marginTop: hp('15%'),
       textAlign: 'center',
+      color: colors.inputTxt,
     },
-    backBtn: {
-      padding: wp('1%'),
-      borderRadius: 100,
-      borderColor: colors.border,
-      borderWidth: 1,
-    },
-    img: {
-      width: wp('65%'),
-      height: wp('65%'),
-      resizeMode: 'contain',
-    },
-    box: {
-      borderWidth: 1,
-      borderColor: colors.border,
-      borderRadius: 12,
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginHorizontal: wp('4%'),
-      width: wp('92%'),
-      paddingHorizontal: wp('4%'),
-      justifyContent: 'space-between',
-      height: hp('9%'),
-      marginTop: hp('2%'),
-    },
-    iconBG: {
-      backgroundColor: colors.tabBG,
-      width: wp('10%'),
-      height: wp('10%'),
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderRadius: 100,
+    linkText: {
+      color: colors.primary,
+      textDecorationLine: 'underline',
+      height: 100,
     },
   });

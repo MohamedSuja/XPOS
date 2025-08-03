@@ -16,6 +16,13 @@
     "babel.config.js",
     "**/*.ts",
     "**/*.tsx",
+    "**/*.svg",
+    "**/*.png",
+    "**/*.jpg",
+    "**/*.jpeg",
+    "**/*.gif",
+    "**/*.webp",
+    "**/*.json",
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "index.js"
