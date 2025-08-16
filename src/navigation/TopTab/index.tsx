@@ -12,6 +12,7 @@ import CancelledScreen from '@/screens/app/Order/CancelledScreen';
 import { View } from 'react-native';
 import TabButton from './Tab';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { hp } from '@/utils/Scaling';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -28,7 +29,7 @@ const TopTabNavigator: React.FC<TopTabNavigatorProps> = () => {
     <View
       style={{
         flex: 1,
-        paddingTop: insets.top,
+        paddingTop: hp(2.5),
         backgroundColor: colors.background,
       }}
     >

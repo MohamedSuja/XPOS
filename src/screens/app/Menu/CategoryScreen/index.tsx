@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import SearchInput from '@/components/Inputs/SearchInput';
 import CategoryItem from '@/components/Cards/CategoryItem';
 import { AppStackScreenProps } from '@/navigation/NavigationModels/MenuStack';
+import { hp } from '@/utils/Scaling';
 
 const CategoryScreen = ({
   navigation,
@@ -16,7 +17,7 @@ const CategoryScreen = ({
   const insets = useSafeAreaInsets();
   return (
     <View style={[styles.root]}>
-      <View style={[styles.headerContainer, { paddingTop: insets.top }]}>
+      <View style={[styles.headerContainer, { paddingTop: hp(2.5) }]}>
         <SearchInput
           placeholder="Search main category"
           style={styles.searchInput}
