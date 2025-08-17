@@ -41,7 +41,7 @@ const CategoryViewScreen = ({
 
   return (
     <View style={[styles.root]}>
-      <View style={[styles.headerContainer, { paddingTop: insets.top }]}>
+      <View style={[styles.headerContainer, { paddingTop: hp(2.5) }]}>
         <View style={styles.headerContent}>
           <BackButton style={[styles.backBtn]} />
           <Text style={[globalStyles.h4, styles.headerTxt]}>
