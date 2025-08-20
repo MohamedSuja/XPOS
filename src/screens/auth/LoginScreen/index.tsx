@@ -10,7 +10,7 @@ import {
   ScrollView,
   Platform,
 } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyles } from './styles';
@@ -18,13 +18,127 @@ import { globalStyles } from '@/utils/globalStyles';
 import CustomTextInput from '@/components/Inputs/CustomTextInput';
 import PasswordTextInput from '@/components/Inputs/PasswordTextInput';
 import PrimaryButton from '@/components/Buttons/PrimaryButton';
+import { useAppDispatch, useAppSelector } from '@/feature/stateHooks';
+import { requestAuthenticateLoginData } from '@/feature/thunks/auth_thunks';
+import {
+  selectAuthenticationLoginDataStatus,
+  setUserCredentials,
+} from '@/feature/slices/auth_slice';
+import Config from 'react-native-config';
+
+const BASE_URL = Config.BASE_URL;
 
 const LoginScreen = () => {
   const { colors }: ThemeContextType = useTheme();
   const styles = createStyles(colors);
+  const [userName, setUserName] = useState('');
+  const [password, setPassword] = useState('');
+
+  // Validation state
+  const [errors, setErrors] = useState({
+    userName: '',
+    password: '',
+  });
+  const [touched, setTouched] = useState({
+    userName: false,
+    password: false,
+  });
 
   const insets = useSafeAreaInsets();
 
+  const dispatch = useAppDispatch();
+
+  const AuthenticationLoginDataStatus = useAppSelector(
+    selectAuthenticationLoginDataStatus,
+  );
+
+  // Validation functions
+  const validateUserName = (value: string) => {
+    if (!value.trim()) {
+      return 'User name is required';
+    }
+    // if (value.trim().length < 3) {
+    //   return 'User name must be at least 3 characters';
+    // }
+    return '';
+  };
+
+  const validatePassword = (value: string) => {
+    if (!value) {
+      return 'Password is required';
+    }
+    // if (value.length < 6) {
+    //   return 'Password must be at least 6 characters';
+    // }
+    return '';
+  };
+
+  const validateForm = () => {
+    const userNameError = validateUserName(userName);
+    const passwordError = validatePassword(password);
+
+    setErrors({
+      userName: userNameError,
+      password: passwordError,
+    });
+
+    return !userNameError && !passwordError;
+  };
+
+  // Check if form is valid for real-time feedback
+  const isFormValid = () => {
+    return !validateUserName(userName) && !validatePassword(password);
+  };
+
+  const handleUserNameChange = (text: string) => {
+    setUserName(text);
+    // Clear error when user starts typing
+    if (errors.userName) {
+      setErrors(prev => ({ ...prev, userName: '' }));
+    }
+    // Validate in real-time if field has been touched
+    if (touched.userName) {
+      setErrors(prev => ({ ...prev, userName: validateUserName(text) }));
+    }
+  };
+
+  const handlePasswordChange = (text: string) => {
+    setPassword(text);
+    // Clear error when user starts typing
+    if (errors.password) {
+      setErrors(prev => ({ ...prev, password: '' }));
+    }
+    // Validate in real-time if field has been touched
+    if (touched.password) {
+      setErrors(prev => ({ ...prev, password: validatePassword(text) }));
+    }
+  };
+
+  const handleUserNameBlur = () => {
+    setTouched(prev => ({ ...prev, userName: true }));
+    setErrors(prev => ({ ...prev, userName: validateUserName(userName) }));
+  };
+
+  const handlePasswordBlur = () => {
+    setTouched(prev => ({ ...prev, password: true }));
+    setErrors(prev => ({ ...prev, password: validatePassword(password) }));
+  };
+
+  const handleLogin = () => {
+    if (validateForm()) {
+      dispatch(
+        requestAuthenticateLoginData({
+          user_name: userName,
+          password: password,
+        }),
+      );
+      dispatch(setUserCredentials({ username: userName, password: password }));
+
+      // Reset validation errors after successful submission
+      setErrors({ userName: '', password: '' });
+      setTouched({ userName: false, password: false });
+    }
+  };
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -47,16 +161,30 @@ const LoginScreen = () => {
           <View style={styles.formContainer}>
             <Text style={[globalStyles.h10, styles.label]}>User Name</Text>
             <CustomTextInput
-              style={styles.input}
+              style={[styles.input]}
               placeholder="Enter your user name"
-            />
-            <Text style={[globalStyles.h10, styles.label]}>Password</Text>
-            <PasswordTextInput
-              style={styles.input}
-              placeholder="Enter your password"
+              value={userName}
+              onChangeText={handleUserNameChange}
+              onBlur={handleUserNameBlur}
+              error={errors.userName}
             />
 
-            <PrimaryButton title="Login" style={styles.button} />
+            <Text style={[globalStyles.h10, styles.label]}>Password</Text>
+            <PasswordTextInput
+              style={[styles.input]}
+              placeholder="Enter your password"
+              value={password}
+              onChangeText={handlePasswordChange}
+              onBlur={handlePasswordBlur}
+              error={errors.password}
+            />
+
+            <PrimaryButton
+              title="Login"
+              style={styles.button}
+              onPress={handleLogin}
+              disabled={!isFormValid()}
+            />
 
             <Text style={[globalStyles.h11, styles.centerText]}>
               Do you need help & support?{' '}

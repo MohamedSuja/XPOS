@@ -26,7 +26,7 @@ interface TextInputProps {
   onBlur?: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void;
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters' | undefined;
   editable?: boolean;
-  ref?: React.Ref<TextInput> | undefined
+  ref?: React.Ref<TextInput> | undefined;
 }
 
 const CustomTextInput = (props: TextInputProps) => {
@@ -42,7 +42,7 @@ const CustomTextInput = (props: TextInputProps) => {
     onBlur,
     autoCapitalize,
     editable,
-    ref
+    ref,
   } = props;
   const [focus, setFocus] = useState(false);
   const { colors }: ThemeContextType = useTheme();
@@ -51,7 +51,7 @@ const CustomTextInput = (props: TextInputProps) => {
   return (
     <View style={[styles.container, style]}>
       <TextInput
-      ref={ref}
+        ref={ref}
         onFocus={() => setFocus(true)}
         onBlur={e => {
           setFocus(false);
@@ -61,7 +61,7 @@ const CustomTextInput = (props: TextInputProps) => {
         style={[
           styles.inputContainer,
           focus && styles.activeInputContainer,
-          error !== '' && error !== undefined && styles.errorInputContainer,
+          error !== '' && styles.errorInputContainer,
           inputStyle,
           value
             ? [styles.activeInput, valueStyle] // Applied when user types
@@ -73,7 +73,7 @@ const CustomTextInput = (props: TextInputProps) => {
         value={value}
         keyboardType={keyboardType}
         autoCapitalize={autoCapitalize}
-        testID="custom-text-input"     
+        testID="custom-text-input"
       />
 
       {error && (

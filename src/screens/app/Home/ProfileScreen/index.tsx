@@ -24,12 +24,41 @@ import DriverIcon from '@/assets/icons/Driver.svg';
 import SupportIcon from '@/assets/icons/Support.svg';
 import PrivacyIcon from '@/assets/icons/Privacy.svg';
 import Right from '@/assets/icons/Right.svg';
+import { useAppDispatch, useAppSelector } from '@/feature/stateHooks';
+import {
+  resetAuth,
+  selectAuthenticationLogoutDataStatus,
+  selectPassword,
+  selectUsername,
+} from '@/feature/slices/auth_slice';
+import { useUpdateEffect } from '@/utils/useUpdateEffect';
+import { STATUS } from '@/feature/services/status_constants';
+import { requestAuthenticateLogoutData } from '@/feature/thunks/auth_thunks';
 
-const ProfileScreen = ({
-  navigation,
-}: AppStackScreenProps<'CategoryViewScreen'>) => {
+const ProfileScreen = () => {
   const { colors }: ThemeContextType = useTheme();
   const styles = createStyles(colors);
+
+  const dispatch = useAppDispatch();
+  const logoutStatus = useAppSelector(selectAuthenticationLogoutDataStatus);
+
+  const username = useAppSelector(selectUsername);
+  const password = useAppSelector(selectPassword);
+
+  useUpdateEffect(() => {
+    if (logoutStatus == STATUS.SUCCEEDED) {
+      dispatch(resetAuth());
+    }
+  }, [logoutStatus]);
+
+  const handleLogout = () => {
+    dispatch(
+      requestAuthenticateLogoutData({
+        user_name: username,
+        password: password,
+      }),
+    );
+  };
 
   const insets = useSafeAreaInsets();
   const [profileImage, setProfileImage] = useState('');
@@ -137,7 +166,7 @@ const ProfileScreen = ({
         <PrimaryButton
           style={styles.logoutButton}
           title="Log Out"
-          onPress={() => {}}
+          onPress={handleLogout}
         />
       </ScrollView>
     </View>

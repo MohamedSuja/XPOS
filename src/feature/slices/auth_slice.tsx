@@ -1,12 +1,19 @@
 import IAuthState from '../redux_models/auth_model';
-import { requestAuthenticateLoginData } from '../thunks/auth_thunks';
+import {
+  requestAuthenticateLoginData,
+  requestAuthenticateLogoutData,
+} from '../thunks/auth_thunks';
 import { STATUS } from '../services/status_constants';
-import { setAccessToken } from '../services/api';
+import { removeAccessToken, setAccessToken } from '../services/api';
 import { RootState } from '../rootReducer';
 import { createSlice } from '@reduxjs/toolkit';
 
 const DEFAULT_STATE: IAuthState = {
   authSliceStatus: undefined,
+
+  // User credentials
+  username: undefined,
+  password: undefined,
 
   // Error
   authenticationError: undefined,
@@ -14,6 +21,9 @@ const DEFAULT_STATE: IAuthState = {
   // Auth Login Data
   authenticationLoginData: undefined,
   authenticationLoginStatus: undefined,
+
+  authenticationLogoutData: undefined,
+  authenticationLogoutStatus: undefined,
 };
 
 const INITIAL_STATE: IAuthState = {
@@ -26,6 +36,17 @@ const auth_slice = createSlice({
   reducers: {
     resetAuth: () => {
       return DEFAULT_STATE;
+    },
+    setUserCredentials: (
+      state,
+      action: { payload: { username: string; password: string } },
+    ) => {
+      state.username = action.payload.username;
+      state.password = action.payload.password;
+    },
+    clearUserCredentials: state => {
+      state.username = undefined;
+      state.password = undefined;
     },
   },
   extraReducers: (builder: any) => {
@@ -40,7 +61,7 @@ const auth_slice = createSlice({
     builder.addCase(
       requestAuthenticateLoginData.fulfilled,
       (state: IAuthState, action: any) => {
-        setAccessToken(action.payload.accessToken);
+        setAccessToken(action.payload.data.token);
         state.authenticationLoginData = action.payload;
         state.authSliceStatus = STATUS.SUCCEEDED;
         state.authenticationLoginStatus = STATUS.SUCCEEDED;
@@ -62,21 +83,66 @@ const auth_slice = createSlice({
       },
     );
     // End Authenticate Login ---
+
+    // Start Authenticate Logout ---
+    builder.addCase(
+      requestAuthenticateLogoutData.pending,
+      (state: IAuthState) => {
+        state.authSliceStatus = STATUS.LOADING;
+        state.authenticationLogoutStatus = STATUS.LOADING;
+      },
+    );
+    builder.addCase(
+      requestAuthenticateLogoutData.fulfilled,
+      (state: IAuthState, action: any) => {
+        removeAccessToken();
+        state.authenticationLogoutData = undefined;
+        state.authSliceStatus = STATUS.SUCCEEDED;
+        state.authenticationLogoutStatus = STATUS.SUCCEEDED;
+      },
+    );
+    builder.addCase(
+      requestAuthenticateLogoutData.rejected,
+      (state: IAuthState, action: any) => {
+        if (action?.payload?.status === 500) {
+          // ErrorFlash(action?.payload?.error);
+        } else if (action?.payload?.status === 400) {
+          // ErrorFlash(action?.payload?.errors[0]);
+        } else if (action?.error) {
+          // ErrorFlash(action?.payload?.error);
+        }
+        state.authenticationError = action.payload;
+        state.authSliceStatus = STATUS.FAILED;
+        state.authenticationLogoutStatus = STATUS.FAILED;
+      },
+    );
+    // End Authenticate Logout ---
   },
 });
 // Reset Auth
-export const { resetAuth } = auth_slice.actions;
+export const { resetAuth, setUserCredentials, clearUserCredentials } =
+  auth_slice.actions;
 
 export const selectAuthSliceStatus = (state: RootState) =>
   state.auth.authSliceStatus;
+
+// User credentials selectors
+export const selectUsername = (state: RootState) => state.auth.username;
+export const selectPassword = (state: RootState) => state.auth.password;
+
+export const selectAuthenticationError = (state: RootState) =>
+  state.auth.authenticationError;
 
 // Auth Login Data Selectors ---
 export const selectAuthenticationLoginData = (state: RootState) =>
   state.auth.authenticationLoginData;
 export const selectAuthenticationLoginDataStatus = (state: RootState) =>
   state.auth.authenticationLoginStatus;
-export const selectAuthenticationLoginError = (state: RootState) =>
-  state.auth.authenticationError;
 // End Auth Login Data Selectors ---
+
+export const selectAuthenticationLogoutData = (state: RootState) =>
+  state.auth.authenticationLogoutData;
+export const selectAuthenticationLogoutDataStatus = (state: RootState) =>
+  state.auth.authenticationLogoutStatus;
 
 export default auth_slice;
