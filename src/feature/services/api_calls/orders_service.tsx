@@ -19,7 +19,7 @@ export function requestOrdersListService(
   queryParams.append('page', params?.page.toString());
 
   // Optional parameters
-  if (params.search) {
+  if (params.search && params.search !== '') {
     queryParams.append('search', params.search);
   }
   if (params.start_date) {
