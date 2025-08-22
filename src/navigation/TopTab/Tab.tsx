@@ -10,6 +10,14 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import { createStyles } from './styles';
 import { useUpdateEffect } from '@/utils/useUpdateEffect';
+import {
+  selectOrdersCanceledListData,
+  selectOrdersCompletedListData,
+  selectOrdersOngoingListData,
+  selectOrdersRequestListData,
+  selectOrdersScheduledListData,
+} from '@/feature/slices/orders_slice';
+import { useAppSelector } from '@/feature/stateHooks';
 
 interface TabButtonProps {
   state: {
@@ -45,6 +53,42 @@ const TabButton = ({
   const styles = createStyles(colors);
   const [input, setInput] = useState<number>(0);
   const scrollViewRef = useRef<ScrollView>(null);
+
+  const ordersRequestListData = useAppSelector(selectOrdersRequestListData);
+  const ordersOngoingListData = useAppSelector(selectOrdersOngoingListData);
+  const ordersScheduledListData = useAppSelector(selectOrdersScheduledListData);
+  const ordersCompletedListData = useAppSelector(selectOrdersCompletedListData);
+  const ordersCanceledListData = useAppSelector(selectOrdersCanceledListData);
+
+  const dataCount = (index: number) => {
+    switch (index) {
+      case 0:
+        return (
+          ordersRequestListData?.data?.pagination_by_status?.request?.total || 0
+        );
+      case 1:
+        return (
+          ordersOngoingListData?.data?.pagination_by_status?.request?.total || 0
+        );
+      case 2:
+        return (
+          ordersScheduledListData?.data?.pagination_by_status?.request?.total ||
+          0
+        );
+      case 3:
+        return (
+          ordersCompletedListData?.data?.pagination_by_status?.request?.total ||
+          0
+        );
+      case 4:
+        return (
+          ordersCanceledListData?.data?.pagination_by_status?.request?.total ||
+          0
+        );
+      default:
+        return 0;
+    }
+  };
 
   // Scroll to last tab when index is 2
   useUpdateEffect(() => {
@@ -109,7 +153,7 @@ const TabButton = ({
               >
                 {label}
               </Text>
-              {index === 1 && (
+              {(index === 0 || index === 1 || index === 2) && (
                 <View
                   style={[
                     styles.badgeContainer,
@@ -128,7 +172,7 @@ const TabButton = ({
                       },
                     ]}
                   >
-                    {index === 1 ? 4 : 0}
+                    {dataCount(index)}
                   </Text>
                 </View>
               )}
