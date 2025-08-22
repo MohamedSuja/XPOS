@@ -100,9 +100,6 @@ const RequestScreen = () => {
           items={orderItems}
           onAccept={() => handleAccept(order.id)}
           onDecline={() => handleDecline(order.id)}
-          type="accepted"
-          date={dateStr}
-          time={timeStr}
         />
       );
     },

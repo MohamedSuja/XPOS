@@ -123,8 +123,7 @@ const OngoingScreen = () => {
           orderNumber={order.unique_id}
           items={orderItems}
           type={orderType}
-          date={dateStr}
-          time={timeStr}
+          title={order.customer.name}
           style={{
             backgroundColor: colors.cardBG,
           }}
