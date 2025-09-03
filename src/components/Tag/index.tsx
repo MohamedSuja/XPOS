@@ -67,7 +67,7 @@ const Tag = (props: TextButtonProps) => {
           type === 'picked' && { color: colors.packingTxt },
           type === 'preparing' && { color: colors.foodDelivery },
           type === 'scheduled' && { color: colors.acceptedTxt },
-          globalStyles.h9,
+          globalStyles.h8,
         ]}
       >
         {type === 'preparing' && 'Preparing'}

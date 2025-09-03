@@ -25,19 +25,19 @@ const ReportScreen = () => {
       <View style={styles.dateCard}>
         <View style={styles.dateContainer}>
           <CalendarIcon height={25} width={25} />
-          <Text style={[styles.date, globalStyles.h9]}>27/ 07/ 2025</Text>
+          <Text style={[styles.date, globalStyles.h8]}>27/ 07/ 2025</Text>
           <Text style={[styles.dateText, globalStyles.h12]}>(Today)</Text>
         </View>
 
         <View style={styles.container1}>
           <View style={styles.completeContainer}>
-            <Text style={[styles.completeText, globalStyles.h8]}>10</Text>
+            <Text style={[styles.completeText, globalStyles.h4]}>10</Text>
             <Text style={[styles.completeText, globalStyles.h12]}>
               Complete Orders
             </Text>
           </View>
           <View style={styles.totalContainer}>
-            <Text style={[styles.totalText, globalStyles.h8]}>Rs. 10,000</Text>
+            <Text style={[styles.totalText, globalStyles.h4]}>Rs. 10,000</Text>
             <Text style={[styles.totalText, globalStyles.h12]}>
               Total Earning
             </Text>
@@ -47,12 +47,12 @@ const ReportScreen = () => {
         <View style={styles.actionContainer}>
           <TouchableOpacity style={styles.invoiceButton}>
             <Invoice height={25} width={25} />
-            <Text style={[styles.invoiceText, globalStyles.h9]}>Invoice</Text>
+            <Text style={[styles.invoiceText, globalStyles.h8]}>Invoice</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.shareButton}>
             <Share height={25} width={25} />
-            <Text style={[styles.shareText, globalStyles.h9]}>Share</Text>
+            <Text style={[styles.shareText, globalStyles.h8]}>Share</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -81,7 +81,7 @@ const ReportScreen = () => {
                   Qty: {item.quantity} X Rs.{item.price}
                 </Text>
               </View>
-              <Text style={[styles.itemPrice, globalStyles.h8]}>
+              <Text style={[styles.itemPrice, globalStyles.h5]}>
                 Rs. {item.quantity * item.price}
               </Text>
             </View>
@@ -91,7 +91,7 @@ const ReportScreen = () => {
       </View>
 
       <View style={styles.totalAmountContainer}>
-        <Text style={[styles.totalAmountText, globalStyles.h2]}>
+        <Text style={[styles.totalAmountText, globalStyles.h5]}>
           Total Amount
         </Text>
         <Text style={[styles.totalAmount, globalStyles.h5]}>Rs. 10,000</Text>

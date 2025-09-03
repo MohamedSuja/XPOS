@@ -84,12 +84,12 @@ const ProfileScreen = () => {
               </TouchableOpacity>
             </View>
 
-            <Text style={[globalStyles.h4, styles.profileName]}>
+            <Text style={[globalStyles.h5, styles.profileName]}>
               The Valampuri
             </Text>
             <View style={styles.locationContainer}>
               <MapMarkerIcon width={hp(2)} height={hp(2)} />
-              <Text style={[globalStyles.h8, styles.locationText]}>
+              <Text style={[globalStyles.h12, styles.locationText]}>
                 No. 123, KKS Road, Kopay, Jaffna
               </Text>
             </View>
@@ -106,7 +106,7 @@ const ProfileScreen = () => {
             <TouchableOpacity style={styles.profileButton}>
               <View style={styles.profileButtonContent}>
                 <EditProfileIcon width={hp(3)} height={hp(3)} />
-                <Text style={[globalStyles.h7, styles.profileButtonText]}>
+                <Text style={[globalStyles.h8, styles.profileButtonText]}>
                   Edit Profile
                 </Text>
               </View>
@@ -118,7 +118,7 @@ const ProfileScreen = () => {
             <TouchableOpacity style={styles.profileButton}>
               <View style={styles.profileButtonContent}>
                 <ChangePasswordIcon width={hp(3)} height={hp(3)} />
-                <Text style={[globalStyles.h7, styles.profileButtonText]}>
+                <Text style={[globalStyles.h8, styles.profileButtonText]}>
                   Change Password
                 </Text>
               </View>
@@ -130,7 +130,7 @@ const ProfileScreen = () => {
             <TouchableOpacity style={styles.profileButton}>
               <View style={styles.profileButtonContent}>
                 <DriverIcon width={hp(3)} height={hp(3)} />
-                <Text style={[globalStyles.h7, styles.profileButtonText]}>
+                <Text style={[globalStyles.h8, styles.profileButtonText]}>
                   Driver Request
                 </Text>
               </View>
@@ -142,7 +142,7 @@ const ProfileScreen = () => {
             <TouchableOpacity style={styles.profileButton}>
               <View style={styles.profileButtonContent}>
                 <SupportIcon width={hp(3)} height={hp(3)} />
-                <Text style={[globalStyles.h7, styles.profileButtonText]}>
+                <Text style={[globalStyles.h8, styles.profileButtonText]}>
                   Support Center
                 </Text>
               </View>
@@ -154,7 +154,7 @@ const ProfileScreen = () => {
             <TouchableOpacity style={styles.profileButton}>
               <View style={styles.profileButtonContent}>
                 <PrivacyIcon width={hp(3)} height={hp(3)} />
-                <Text style={[globalStyles.h7, styles.profileButtonText]}>
+                <Text style={[globalStyles.h8, styles.profileButtonText]}>
                   Privacy Policy
                 </Text>
               </View>
