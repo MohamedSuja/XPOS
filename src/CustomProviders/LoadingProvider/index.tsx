@@ -26,6 +26,10 @@ const LoadingProvider: React.FC<LoadingProviderProps> = ({ children }) => {
       setTimeout(() => {
         setLoading(false);
       }, 1500);
+    } else if (AuthSliceStatus === STATUS.FAILED) {
+      setTimeout(() => {
+        setLoading(false);
+      }, 1500);
     }
   }, [AuthSliceStatus]);
 

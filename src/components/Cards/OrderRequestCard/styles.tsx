@@ -18,6 +18,9 @@ export const createButtonStyles = (colors: ColorsType) =>
       justifyContent: 'space-between',
       alignItems: 'center',
     },
+    titleText: {
+      color: colors.inputTxt,
+    },
     dateContainer: {
       flexDirection: 'row',
       alignItems: 'center',

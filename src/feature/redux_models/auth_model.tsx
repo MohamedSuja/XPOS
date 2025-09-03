@@ -2,12 +2,20 @@
 export default interface IAuthState {
   authSliceStatus: string | undefined;
 
+  // User credentials
+  username: string | undefined;
+  password: string | undefined;
+
   // Auth Error
   authenticationError: IAuthError | undefined;
 
   // Login data
   authenticationLoginData: IAuthenticationLoginDataResponseBody | undefined;
   authenticationLoginStatus: string | undefined;
+
+  // Logout data
+  authenticationLogoutData: IAuthenticationLogoutDataResponseBody | undefined;
+  authenticationLogoutStatus: string | undefined;
 }
 
 // Auth Data Error
@@ -20,19 +28,25 @@ export interface IAuthError {
 
 // Auth Login Data Request Body ---
 export interface IAuthenticationLoginDataRequestBody {
-  email: string | undefined;
+  user_name: string | undefined;
   password: string | undefined;
-  rememberMe: boolean;
-  grantType: string | undefined;
-  mobileToken: string | undefined;
 }
 
 // Auth Login Data Response Body ---
 export interface IAuthenticationLoginDataResponseBody {
-  status: boolean | undefined;
+  success: boolean | undefined;
   message: string | undefined;
-  errors: string;
-  accessToken?: string;
-  refreshToken?: string;
+  errors: any[];
+  data: any;
 }
+
+// Auth Logout Data Response Body ---
+export interface IAuthenticationLogoutDataResponseBody {
+  success: boolean | undefined;
+  message: string | undefined;
+  errors: any[];
+  data: any;
+}
+// End Auth Logout Data Body ---
+
 // End Auth Login Data Body ---

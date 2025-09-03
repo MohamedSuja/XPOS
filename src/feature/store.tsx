@@ -10,16 +10,17 @@ let middleware: any = [];
 
 middleware = [logger];
 
-const persistConfig = {
-  key: 'root',
-  version: 1,
+// Persist only auth slice
+const authPersistConfig = {
+  key: 'auth',
   storage: AsyncStorage,
+  whitelist: [], // Only persist auth slice
 };
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+const persistedRootReducer = persistReducer(authPersistConfig, rootReducer);
 
 const store = configureStore({
-  reducer: persistedReducer,
+  reducer: persistedRootReducer,
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: false,

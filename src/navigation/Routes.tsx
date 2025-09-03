@@ -2,8 +2,14 @@ import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
 import AuthStack from './Stacks/AuthStack';
 import BottomTab from './BottomTab';
+import { useAppSelector } from '@/feature/stateHooks';
+import { selectAuthenticationLoginDataStatus } from '@/feature/slices/auth_slice';
+import { STATUS } from '@/feature/services/status_constants';
 
 const AppRoutes = () => {
+  const AuthenticationLoginDataStatus = useAppSelector(
+    selectAuthenticationLoginDataStatus,
+  );
   const config = {
     screens: {
       // LoginScreen: {
@@ -27,7 +33,11 @@ const AppRoutes = () => {
 
   return (
     <NavigationContainer>
-      <BottomTab />
+      {AuthenticationLoginDataStatus === STATUS.SUCCEEDED ? (
+        <BottomTab />
+      ) : (
+        <AuthStack />
+      )}
     </NavigationContainer>
   );
 };

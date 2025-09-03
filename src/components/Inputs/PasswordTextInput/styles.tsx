@@ -16,22 +16,14 @@ export const createInputStyles = (colors: ColorsType) =>
       backfaceVisibility: 'hidden',
     },
     activeInputContainer: {
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.23,
-      shadowRadius: 2.62,
-
-      elevation: 4,
+      borderWidth: 1,
+      borderColor: colors.cancelledBorder,
     },
     activeInput: {
       color: colors.inputTxt,
-      fontWeight: '700',
-      fontSize: Platform.OS == 'android' ? RFValue(13) : RFValue(12),
+      fontSize: Platform.OS == 'android' ? RFValue(14) : RFValue(12),
     },
-    errorInputContainer: { borderColor: colors.errorText },
+    errorInputContainer: { borderColor: colors.errorText, borderWidth: 1 },
     textInput: {
       flex: 1,
       height: '100%',

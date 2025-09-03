@@ -24,7 +24,7 @@ interface PasswordTextInputProps {
   onBlur?: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void;
   value?: string;
   editable?: boolean;
-  ref?: React.Ref<TextInput> | undefined
+  ref?: React.Ref<TextInput> | undefined;
 }
 
 const PasswordTextInput = (props: PasswordTextInputProps) => {
@@ -38,7 +38,7 @@ const PasswordTextInput = (props: PasswordTextInputProps) => {
     onBlur,
     value,
     editable,
-    ref
+    ref,
   } = props;
   const [showPassword, setShowPassword] = useState(false);
   const [focus, setFocus] = useState(false);
@@ -52,7 +52,7 @@ const PasswordTextInput = (props: PasswordTextInputProps) => {
           styles.inputContainer,
           focus && styles.activeInputContainer,
           focus && activeInput,
-          error !== '' && error !== undefined && styles.errorInputContainer,
+          error !== '' && styles.errorInputContainer,
           inputStyle,
         ]}
         testID="password-input-container"
