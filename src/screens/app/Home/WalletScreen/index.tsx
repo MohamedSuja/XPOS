@@ -1,89 +1,179 @@
-import { View, Text, FlatList, ScrollView } from 'react-native';
-import React, { useRef, useEffect } from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
+import React, { useRef, useEffect, useState } from 'react';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import { createStyles } from './styles';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import SearchInput from '@/components/Inputs/SearchInput';
-import CategoryItem from '@/components/Cards/CategoryItem';
 import { AppStackScreenProps } from '@/navigation/NavigationModels/MenuStack';
 import BackButton from '@/components/Buttons/BackButton';
 import { globalStyles } from '@/utils/globalStyles';
 import { hp } from '@/utils/Scaling';
-import CategoryButton from '@/components/Buttons/CategoryButton';
-import ItemCard from '@/components/Cards/ItemCard';
+import EditIcon from '@/assets/icons/fe_edit.svg';
+import MapMarkerIcon from '@/assets/icons/MapMarker.svg';
+import ToggleButton from '@/components/Buttons/ToggleButton';
+import PrimaryButton from '@/components/Buttons/PrimaryButton';
+import EditProfileIcon from '@/assets/icons/EditProfile.svg';
+import ChangePasswordIcon from '@/assets/icons/ChangePassword.svg';
+import DriverIcon from '@/assets/icons/Driver.svg';
+import SupportIcon from '@/assets/icons/Support.svg';
+import PrivacyIcon from '@/assets/icons/Privacy.svg';
+import Right from '@/assets/icons/Right.svg';
+import { useAppDispatch, useAppSelector } from '@/feature/stateHooks';
+import {
+  resetAuth,
+  selectAuthenticationLogoutDataStatus,
+  selectPassword,
+  selectUsername,
+} from '@/feature/slices/auth_slice';
+import { useUpdateEffect } from '@/utils/useUpdateEffect';
+import { STATUS } from '@/feature/services/status_constants';
+import { requestAuthenticateLogoutData } from '@/feature/thunks/auth_thunks';
 
-const CategoryViewScreen = ({
-  navigation,
-  route,
-}: AppStackScreenProps<'CategoryViewScreen'>) => {
+const WalletScreen = () => {
   const { colors }: ThemeContextType = useTheme();
   const styles = createStyles(colors);
-  const flatListRef = useRef<FlatList>(null);
-  const insets = useSafeAreaInsets();
 
-  // Auto scroll to selected category
-  useEffect(() => {
-    if (route.params?.item?.id) {
-      const selectedIndex = categoryData.findIndex(
-        item => item.id === route.params?.item?.id,
-      );
-      if (selectedIndex !== -1) {
-        setTimeout(() => {
-          flatListRef.current?.scrollToIndex({
-            index: selectedIndex,
-            animated: true,
-            viewPosition: 0.5, // Center the item
-          });
-        }, 100); // Small delay to ensure FlatList is rendered
-      }
+  const dispatch = useAppDispatch();
+  const logoutStatus = useAppSelector(selectAuthenticationLogoutDataStatus);
+
+  const username = useAppSelector(selectUsername);
+  const password = useAppSelector(selectPassword);
+
+  useUpdateEffect(() => {
+    if (logoutStatus == STATUS.SUCCEEDED) {
+      dispatch(resetAuth());
     }
-  }, [route.params?.item?.id]);
+  }, [logoutStatus]);
+
+  const handleLogout = () => {
+    dispatch(
+      requestAuthenticateLogoutData({
+        user_name: username,
+        password: password,
+      }),
+    );
+  };
+
+  const insets = useSafeAreaInsets();
+  const [profileImage, setProfileImage] = useState('');
 
   return (
     <View style={[styles.root]}>
       <View style={[styles.headerContainer, { paddingTop: hp(2.5) }]}>
         <View style={styles.headerContent}>
           <BackButton style={[styles.backBtn]} />
-          <Text style={[globalStyles.h2, styles.headerTxt]}>
-            {route.params?.item?.name ?? ''}
-          </Text>
+          <Text style={[globalStyles.h4, styles.headerTxt]}>Profile</Text>
+        </View>
+      </View>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.profileContainer}>
+          <View style={styles.profileHeader}>
+            <View style={styles.profileImageContainer}>
+              <Image
+                source={{ uri: profileImage }}
+                style={styles.profileImage}
+              />
+              <TouchableOpacity style={styles.editIcon}>
+                <EditIcon width={hp(2)} height={hp(2)} />
+              </TouchableOpacity>
+            </View>
+
+            <Text style={[globalStyles.h4, styles.profileName]}>
+              The Valampuri
+            </Text>
+            <View style={styles.locationContainer}>
+              <MapMarkerIcon width={hp(2)} height={hp(2)} />
+              <Text style={[globalStyles.h8, styles.locationText]}>
+                No. 123, KKS Road, Kopay, Jaffna
+              </Text>
+            </View>
+            <ToggleButton
+              leftLabel="Closed"
+              rightLabel="Open"
+              onToggle={() => {}}
+              initialValue={true}
+              isLoading={false}
+            />
+          </View>
+
+          <View style={styles.profileButtonContainer}>
+            <TouchableOpacity style={styles.profileButton}>
+              <View style={styles.profileButtonContent}>
+                <EditProfileIcon width={hp(3)} height={hp(3)} />
+                <Text style={[globalStyles.h7, styles.profileButtonText]}>
+                  Edit Profile
+                </Text>
+              </View>
+              <Right width={hp(2)} height={hp(2)} />
+            </TouchableOpacity>
+
+            <View style={styles.profileButtonSeparator} />
+
+            <TouchableOpacity style={styles.profileButton}>
+              <View style={styles.profileButtonContent}>
+                <ChangePasswordIcon width={hp(3)} height={hp(3)} />
+                <Text style={[globalStyles.h7, styles.profileButtonText]}>
+                  Change Password
+                </Text>
+              </View>
+              <Right width={hp(2)} height={hp(2)} />
+            </TouchableOpacity>
+
+            <View style={styles.profileButtonSeparator} />
+
+            <TouchableOpacity style={styles.profileButton}>
+              <View style={styles.profileButtonContent}>
+                <DriverIcon width={hp(3)} height={hp(3)} />
+                <Text style={[globalStyles.h7, styles.profileButtonText]}>
+                  Driver Request
+                </Text>
+              </View>
+              <Right width={hp(2)} height={hp(2)} />
+            </TouchableOpacity>
+
+            <View style={styles.profileButtonSeparator} />
+
+            <TouchableOpacity style={styles.profileButton}>
+              <View style={styles.profileButtonContent}>
+                <SupportIcon width={hp(3)} height={hp(3)} />
+                <Text style={[globalStyles.h7, styles.profileButtonText]}>
+                  Support Center
+                </Text>
+              </View>
+              <Right width={hp(2)} height={hp(2)} />
+            </TouchableOpacity>
+
+            <View style={styles.profileButtonSeparator} />
+
+            <TouchableOpacity style={styles.profileButton}>
+              <View style={styles.profileButtonContent}>
+                <PrivacyIcon width={hp(3)} height={hp(3)} />
+                <Text style={[globalStyles.h7, styles.profileButtonText]}>
+                  Privacy Policy
+                </Text>
+              </View>
+              <Right width={hp(2)} height={hp(2)} />
+            </TouchableOpacity>
+          </View>
         </View>
 
-        <ScrollView>
-          <FlatList
-            ref={flatListRef}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.categoryList}
-            data={categoryData}
-            keyExtractor={item => item.id.toString()}
-            renderItem={({ item }) => (
-              <CategoryButton
-                title={item.name}
-                active={item.id === route.params?.item?.id}
-              />
-            )}
-            onScrollToIndexFailed={() => {
-              // Handle scroll failure gracefully
-              console.log('Scroll to index failed');
-            }}
-          />
-        </ScrollView>
-      </View>
-
-      <SearchInput placeholder="Search Item" style={styles.searchInput} />
-      <FlatList
-        contentContainerStyle={styles.itemList}
-        data={itemData}
-        keyExtractor={item => item.id.toString()}
-        showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => <ItemCard {...item} />}
-      />
+        <PrimaryButton
+          style={styles.logoutButton}
+          title="Log Out"
+          onPress={handleLogout}
+        />
+      </ScrollView>
     </View>
   );
 };
 
-export default CategoryViewScreen;
+export default WalletScreen;
 const categoryData = [
   {
     id: 1,

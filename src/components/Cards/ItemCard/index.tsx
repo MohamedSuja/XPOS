@@ -48,7 +48,7 @@ const ItemCard = (props: ItemCardProps) => {
         }}
       />
       <View style={styles.infoContainer}>
-        <Text style={[globalStyles.h4, styles.title]}>{title}</Text>
+        <Text style={[globalStyles.h8, styles.title]}>{title}</Text>
         <Text
           style={[
             globalStyles.h9,

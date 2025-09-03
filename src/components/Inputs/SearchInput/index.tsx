@@ -14,6 +14,7 @@ import { createInputStyles } from './styles';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import SearchIcon from '@/assets/icons/Search.svg';
+import { globalStyles } from '@/utils/globalStyles';
 
 interface TextInputProps {
   style?: StyleProp<ViewStyle>;
@@ -62,6 +63,7 @@ const SearchInput = (props: TextInputProps) => {
         editable={editable}
         style={[
           styles.inputContainer,
+          globalStyles.h10,
           error !== '' && error !== undefined && styles.errorInputContainer,
           inputStyle,
           value
