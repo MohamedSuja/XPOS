@@ -108,8 +108,11 @@ export const createStyles = (colors: ColorsType) =>
     },
     callBG: {
       backgroundColor: colors.tabBG,
-      borderRadius: 100,
-      padding: wp('3%'),
+      borderRadius: 200,
+      width: wp('10%'),
+      height: wp('10%'),
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     sendRequestBox: {
       borderWidth: 1,

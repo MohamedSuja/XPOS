@@ -24,9 +24,6 @@ import {
   selectAuthenticationLoginDataStatus,
   setUserCredentials,
 } from '@/feature/slices/auth_slice';
-import Config from 'react-native-config';
-
-const BASE_URL = Config.BASE_URL;
 
 const LoginScreen = () => {
   const { colors }: ThemeContextType = useTheme();
@@ -143,6 +140,11 @@ const LoginScreen = () => {
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
+      {/* <StatusBar
+        barStyle="light-content"
+        translucent={true}
+        backgroundColor="transparent"
+      /> */}
       <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
         <View style={[styles.root, { paddingBottom: insets.bottom }]}>
           <View style={[styles.imageContainer]}>

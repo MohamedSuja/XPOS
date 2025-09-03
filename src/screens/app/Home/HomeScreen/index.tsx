@@ -24,8 +24,9 @@ import OrderRequestCard from '@/components/Cards/OrderRequestCard';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import PrimaryButton from '@/components/Buttons/PrimaryButton';
+import { AppStackScreenProps } from '@/navigation/NavigationModels/HomeStack';
 
-const HomeScreen = (navigation: any) => {
+const HomeScreen = ({ navigation }: AppStackScreenProps<'HomeScreen'>) => {
   const { colors }: ThemeContextType = useTheme();
   const styles = createStyles(colors);
 
@@ -51,10 +52,16 @@ const HomeScreen = (navigation: any) => {
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.logoContainer}>
-          <Image
-            source={require('../../../../assets/images/SampleLogo.png')}
-            style={styles.logo}
-          />
+          <Pressable
+            onPress={() => {
+              navigation.navigate('ProfileScreen');
+            }}
+          >
+            <Image
+              source={require('../../../../assets/images/SampleLogo.png')}
+              style={styles.logo}
+            />
+          </Pressable>
           <View>
             <Text style={[globalStyles.h4, { color: colors.inputTxt }]}>
               The Valampuri
@@ -165,7 +172,7 @@ const HomeScreen = (navigation: any) => {
               gap: wp('1%'),
             }}
             onPress={() => {
-              navigation.navigate('TopTab');
+              // navigation.navigate('TopTab');
             }}
           >
             <Text style={[globalStyles.h8, { color: colors.primary }]}>
