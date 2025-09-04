@@ -74,6 +74,7 @@ export type ColorsType = {
   divider3: string;
   border1: string;
   warning: string;
+  earningBG: string;
 };
 export type ThemeContextType = {
   isDark: boolean;
@@ -154,6 +155,7 @@ const ThemeContext = createContext<ThemeContextType>({
     divider3: '#CDCDCD',
     border1: '#E0E0E0',
     warning: '#A80006',
+    earningBG: '#790004',
   },
   toggleTheme: () => {},
 });
@@ -214,7 +216,7 @@ const lightColors = {
   readyBorder: '#AFEBC1',
   readyBG: '#E3FFEB',
   acceptedTxt: '#EB2229',
-  acceptedBorder: '#FFD8D9',
+  acceptedBorder: '#FDD7D8',
   acceptedBG: '#FFF4F4',
   cardBG: '#FFF5F5',
   cardBorder: '#FFD7D7',
@@ -231,6 +233,7 @@ const lightColors = {
   divider3: '#CDCDCD',
   border1: '#E0E0E0',
   warning: '#A80006',
+  earningBG: '#790004',
 };
 
 const darkColors = {
@@ -304,6 +307,7 @@ const darkColors = {
   divider3: '#CDCDCD',
   border1: '#E0E0E0',
   warning: '#A80006',
+  earningBG: '#790004',
 };
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({

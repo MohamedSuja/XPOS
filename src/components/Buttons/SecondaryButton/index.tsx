@@ -31,7 +31,7 @@ const SecondaryButton = (props: SecondaryButtonProps) => {
       activeOpacity={0.5}
       disabled={disabled}
     >
-      <Text style={[styles.title, globalStyles.h4, textStyle]}>{title}</Text>
+      <Text style={[globalStyles.h4, styles.title, textStyle]}>{title}</Text>
     </TouchableOpacity>
   );
 };

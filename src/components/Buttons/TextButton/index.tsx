@@ -5,11 +5,12 @@ import {
   StyleProp,
   ViewStyle,
   TextStyle,
-} from "react-native";
-import React from "react";
-import { createButtonStyles } from "./styles";
-import { useTheme } from "@/utils/ThemeContext";
-import { ThemeContextType } from "@/utils/ThemeContext";
+} from 'react-native';
+import React from 'react';
+import { createButtonStyles } from './styles';
+import { useTheme } from '@/utils/ThemeContext';
+import { ThemeContextType } from '@/utils/ThemeContext';
+import { globalStyles } from '@/utils/globalStyles';
 
 interface TextButtonProps {
   title: string;
@@ -31,7 +32,7 @@ const TextButton = (props: TextButtonProps) => {
       disabled={disabled}
       activeOpacity={0.5}
     >
-      <Text style={[styles.title, titleStyle]}>{title}</Text>
+      <Text style={[globalStyles.h4, styles.title, titleStyle]}>{title}</Text>
     </TouchableOpacity>
   );
 };

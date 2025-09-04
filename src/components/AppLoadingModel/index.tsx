@@ -5,7 +5,7 @@ import {
   Modal,
   ActivityIndicator,
 } from 'react-native';
-import Colors from '@/utils/Colors';
+
 import { createStyles } from './styles';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 
@@ -30,7 +30,7 @@ const AppLoadingModel = (props: {
         <View style={styles.indicatorContainer}>
           <ActivityIndicator
             size="large"
-            color={Colors.brand['primary']}
+            color={colors.primary}
             style={styles.indicator}
           />
         </View>

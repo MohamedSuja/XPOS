@@ -16,6 +16,8 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		92567D2B3BD618C02EC8436C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
 		954A4C3C54724BA18C0A368A /* Manrope-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C876CEFFB0E94486AD9615BF /* Manrope-Regular.ttf */; };
+		4FABE5130B4C4DA4B613237D /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 673C51998BC845E8BD765353 /* BootSplash.storyboard */; };
+		5A2547D8221647F685758A27 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9F8C53795D724B0C8B8F3DBC /* Colors.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +35,8 @@
 		C876CEFFB0E94486AD9615BF /* Manrope-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Manrope-Regular.ttf"; path = "../src/assets/fonts/Manrope-Regular.ttf"; sourceTree = "<group>"; };
 		D0826C678ECD4B3CAE9F0EC4 /* Manrope-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Manrope-SemiBold.ttf"; path = "../src/assets/fonts/Manrope-SemiBold.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		673C51998BC845E8BD765353 /* BootSplash.storyboard */ = {isa = PBXFileReference; name = "BootSplash.storyboard"; path = "XPOS/BootSplash.storyboard"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		9F8C53795D724B0C8B8F3DBC /* Colors.xcassets */ = {isa = PBXFileReference; name = "Colors.xcassets"; path = "XPOS/Colors.xcassets"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = folder.assetcatalog; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +59,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
+				673C51998BC845E8BD765353 /* BootSplash.storyboard */,
+				9F8C53795D724B0C8B8F3DBC /* Colors.xcassets */,
 			);
 			name = XPOS;
 			sourceTree = "<group>";
@@ -186,6 +192,8 @@
 				54D5088FBBAB4A5DA256353A /* Manrope-Medium.ttf in Resources */,
 				954A4C3C54724BA18C0A368A /* Manrope-Regular.ttf in Resources */,
 				54B731808536474B9320F004 /* Manrope-SemiBold.ttf in Resources */,
+				4FABE5130B4C4DA4B613237D /* BootSplash.storyboard in Resources */,
+				5A2547D8221647F685758A27 /* Colors.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

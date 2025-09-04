@@ -7,6 +7,7 @@ export const createStyles = (colors: ColorsType) =>
   StyleSheet.create({
     root: {
       flex: 1,
+      backgroundColor: '#F9F9F9',
     },
     headerContainer: {
       backgroundColor: colors.background,
