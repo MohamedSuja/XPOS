@@ -1,205 +1,245 @@
 import {
   View,
   Text,
-  SafeAreaView,
-  StatusBar,
-  Image,
+  Keyboard,
+  TextInput,
+  ActivityIndicator,
   TouchableOpacity,
-  TouchableWithoutFeedback,
-  KeyboardAvoidingView,
-  ScrollView,
+  StatusBar,
+  ImageBackground,
+  Pressable,
   Platform,
+  Linking,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createStyles } from './styles';
-import { globalStyles } from '@/utils/globalStyles';
-import CustomTextInput from '@/components/Inputs/CustomTextInput';
-import PasswordTextInput from '@/components/Inputs/PasswordTextInput';
-import PrimaryButton from '@/components/Buttons/PrimaryButton';
+import * as yup from 'yup';
+import { Formik } from 'formik';
+import { globalStyles } from '../../../utils/globalStyles';
+import { RFValue } from 'react-native-responsive-fontsize';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAppDispatch, useAppSelector } from '@/feature/stateHooks';
-import { requestAuthenticateLoginData } from '@/feature/thunks/auth_thunks';
 import {
   selectAuthenticationLoginDataStatus,
   setUserCredentials,
 } from '@/feature/slices/auth_slice';
+import { requestAuthenticateLoginData } from '@/feature/thunks/auth_thunks';
+import CustomInput from '@/components/Inputs/customInput';
+import PrimaryButton from '@/components/Buttons/PrimaryButton';
 
 const LoginScreen = () => {
   const { colors }: ThemeContextType = useTheme();
   const styles = createStyles(colors);
-  const [userName, setUserName] = useState('');
-  const [password, setPassword] = useState('');
-
-  // Validation state
-  const [errors, setErrors] = useState({
-    userName: '',
-    password: '',
-  });
-  const [touched, setTouched] = useState({
-    userName: false,
-    password: false,
-  });
-
   const insets = useSafeAreaInsets();
 
   const dispatch = useAppDispatch();
+
+  const [showPassword, setShowPassword] = useState(true);
+  const [keyboardStatus, setKeyboardStatus] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const validationSchema = yup.object({
+    userName: yup.string().required('User name is required'),
+    password: yup.string().required('Password is required'),
+  });
+
+  const inputRefs: any = [useRef<TextInput>(null), useRef<TextInput>(null)];
+
+  const focusNextField = (index: number) => {
+    if (index < inputRefs.length - 1 && inputRefs[index + 1].current) {
+      inputRefs[index + 1].current.focus();
+    }
+  };
 
   const AuthenticationLoginDataStatus = useAppSelector(
     selectAuthenticationLoginDataStatus,
   );
 
-  // Validation functions
-  const validateUserName = (value: string) => {
-    if (!value.trim()) {
-      return 'User name is required';
-    }
-    // if (value.trim().length < 3) {
-    //   return 'User name must be at least 3 characters';
-    // }
-    return '';
-  };
-
-  const validatePassword = (value: string) => {
-    if (!value) {
-      return 'Password is required';
-    }
-    // if (value.length < 6) {
-    //   return 'Password must be at least 6 characters';
-    // }
-    return '';
-  };
-
-  const validateForm = () => {
-    const userNameError = validateUserName(userName);
-    const passwordError = validatePassword(password);
-
-    setErrors({
-      userName: userNameError,
-      password: passwordError,
-    });
-
-    return !userNameError && !passwordError;
-  };
-
-  // Check if form is valid for real-time feedback
-  const isFormValid = () => {
-    return !validateUserName(userName) && !validatePassword(password);
-  };
-
-  const handleUserNameChange = (text: string) => {
-    setUserName(text);
-    // Clear error when user starts typing
-    if (errors.userName) {
-      setErrors(prev => ({ ...prev, userName: '' }));
-    }
-    // Validate in real-time if field has been touched
-    if (touched.userName) {
-      setErrors(prev => ({ ...prev, userName: validateUserName(text) }));
-    }
-  };
-
-  const handlePasswordChange = (text: string) => {
-    setPassword(text);
-    // Clear error when user starts typing
-    if (errors.password) {
-      setErrors(prev => ({ ...prev, password: '' }));
-    }
-    // Validate in real-time if field has been touched
-    if (touched.password) {
-      setErrors(prev => ({ ...prev, password: validatePassword(text) }));
-    }
-  };
-
-  const handleUserNameBlur = () => {
-    setTouched(prev => ({ ...prev, userName: true }));
-    setErrors(prev => ({ ...prev, userName: validateUserName(userName) }));
-  };
-
-  const handlePasswordBlur = () => {
-    setTouched(prev => ({ ...prev, password: true }));
-    setErrors(prev => ({ ...prev, password: validatePassword(password) }));
-  };
-
-  const handleLogin = () => {
-    if (validateForm()) {
+  const handleSubmit = (values: any) => {
+    try {
       dispatch(
         requestAuthenticateLoginData({
-          user_name: userName,
-          password: password,
+          user_name: values?.userName,
+          password: values?.password,
         }),
       );
-      dispatch(setUserCredentials({ username: userName, password: password }));
-
-      // Reset validation errors after successful submission
-      setErrors({ userName: '', password: '' });
-      setTouched({ userName: false, password: false });
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
     }
   };
+
+  // handle admin call
+  const handleAdminCall = () => {
+    try {
+      Linking.openURL(`tel:+94242221484`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardStatus(true);
+    });
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardStatus(false);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
-      {/* <StatusBar
+    <View style={[styles.container, { paddingBottom: insets.bottom }]}>
+      <StatusBar
         barStyle="light-content"
         translucent={true}
         backgroundColor="transparent"
-      /> */}
-      <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
-        <View style={[styles.root, { paddingBottom: insets.bottom }]}>
-          <View style={[styles.imageContainer]}>
-            <Image
-              style={styles.statusBar}
-              source={require('@/assets/images/LoginImage.png')}
-            />
-            <StatusBar backgroundColor={colors.primary} />
-
-            <Text style={[globalStyles.h1, styles.welcome]}>Welcome Back</Text>
-            <Text style={[globalStyles.h10, styles.description]}>
-              Please login to continue your order with us
+      />
+      {!keyboardStatus && (
+        <ImageBackground
+          source={require('@/assets/images/LoginImage.png')}
+          style={styles.img}
+        >
+          <View
+            style={{ paddingBottom: hp('7%'), paddingHorizontal: wp('4%') }}
+          >
+            <Text style={[globalStyles.h1, { color: colors.background }]}>
+              Welcome Back
+            </Text>
+            <Text style={[globalStyles.h9, { color: colors.background }]}>
+              Please login to continue your ride with us
             </Text>
           </View>
+        </ImageBackground>
+      )}
 
-          <View style={styles.formContainer}>
-            <Text style={[globalStyles.h10, styles.label]}>User Name</Text>
-            <CustomTextInput
-              style={[styles.input]}
-              placeholder="Enter your user name"
-              value={userName}
-              onChangeText={handleUserNameChange}
-              onBlur={handleUserNameBlur}
-              error={errors.userName}
-            />
+      <View
+        style={[
+          styles.bottomContainer,
+          { marginTop: keyboardStatus ? insets.top : -hp('5%') },
+        ]}
+      >
+        <Formik
+          initialValues={{
+            userName: '',
+            password: '',
+          }}
+          validationSchema={validationSchema}
+          onSubmit={values => {
+            handleSubmit(values);
+          }}
+        >
+          {({
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            values,
+            errors,
+            touched,
+            setFieldValue,
+          }) => {
+            return (
+              <View style={styles.formContainer}>
+                <View>
+                  <Text style={[globalStyles.h8, { color: colors.headerTxt }]}>
+                    User Name
+                  </Text>
 
-            <Text style={[globalStyles.h10, styles.label]}>Password</Text>
-            <PasswordTextInput
-              style={[styles.input]}
-              placeholder="Enter your password"
-              value={password}
-              onChangeText={handlePasswordChange}
-              onBlur={handlePasswordBlur}
-              error={errors.password}
-            />
+                  <CustomInput
+                    value={values.userName}
+                    placeHolder="Enter your user name"
+                    onChangeText={handleChange('userName')}
+                    onBlur={handleBlur('userName')}
+                    returnKeyType="next"
+                    onSubmitEditing={() => focusNextField(0)}
+                    ref={inputRefs[0]}
+                    errorText={errors.userName}
+                    errorTextState={touched.userName}
+                  />
 
-            <PrimaryButton
-              title="Login"
-              style={styles.button}
-              onPress={handleLogin}
-              disabled={!isFormValid()}
-            />
+                  <Text style={[globalStyles.h8, { color: colors.headerTxt }]}>
+                    Password
+                  </Text>
+                  {/* Password */}
+                  <CustomInput
+                    value={values.password}
+                    placeHolder="Enter your password"
+                    onChangeText={handleChange('password')}
+                    onBlur={handleBlur('password')}
+                    returnKeyType="done"
+                    onSubmitEditing={() => focusNextField(1)}
+                    ref={inputRefs[1]}
+                    errorText={errors.password}
+                    errorTextState={touched.password}
+                    secureTextEntry={showPassword}
+                    endAdornment={
+                      <TouchableOpacity
+                        onPress={() => setShowPassword(!showPassword)}
+                      >
+                        <Ionicons
+                          name={showPassword ? 'eye' : 'eye-off'}
+                          size={RFValue(20)}
+                          color={colors.pwdIcon}
+                        />
+                      </TouchableOpacity>
+                    }
+                  />
 
-            <Text style={[globalStyles.h11, styles.centerText]}>
-              Do you need help & support?{' '}
-              <TouchableWithoutFeedback>
-                <Text style={[globalStyles.h11, styles.linkText]}>
-                  Contact Us
-                </Text>
-              </TouchableWithoutFeedback>
-            </Text>
-          </View>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+                  <View style={{ marginTop: hp('2%') }}>
+                    <PrimaryButton title="Login" onPress={handleSubmit} />
+                  </View>
+                </View>
+                <View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                      alignItems: 'baseline',
+                      gap: wp('2%'),
+                      marginTop: hp('1%'),
+                    }}
+                  >
+                    <Text
+                      style={[globalStyles.h12, { color: colors.headerTxt }]}
+                    >
+                      Do you need help & support?
+                    </Text>
+                    <Pressable
+                      onPress={() => {
+                        handleAdminCall();
+                      }}
+                    >
+                      <Text
+                        style={[
+                          globalStyles.h8,
+                          {
+                            color: colors.primary,
+                            textDecorationLine: 'underline',
+                          },
+                        ]}
+                      >
+                        Contact Us
+                      </Text>
+                    </Pressable>
+                  </View>
+                </View>
+              </View>
+            );
+          }}
+        </Formik>
+      </View>
+    </View>
   );
 };
 

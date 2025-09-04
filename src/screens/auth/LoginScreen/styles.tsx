@@ -1,64 +1,42 @@
-import { Platform, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { ColorsType } from '@/utils/ThemeContext';
-import { RFValue } from 'react-native-responsive-fontsize';
-import { hp, wp } from '@/utils/Scaling';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
 export const createStyles = (colors: ColorsType) =>
   StyleSheet.create({
-    root: {
-      height: hp('100%'),
+    container: {
+      flex: 1,
       backgroundColor: colors.background,
-    },
-    imageContainer: {
-      height: hp('60%'),
-    },
-    statusBar: {
-      resizeMode: 'stretch',
       width: '100%',
       height: '100%',
-      position: 'absolute',
     },
-
-    welcome: {
-      color: colors.background,
-      marginTop: '70%',
-      marginHorizontal: wp('5%'),
+    img: {
+      width: '100%',
+      height: hp('48%'),
+      justifyContent: 'flex-end',
     },
-    description: {
-      color: colors.background,
-      marginHorizontal: wp('5%'),
-      marginTop: hp('1%'),
+    bottomContainer: {
+      borderTopLeftRadius: 40,
+      borderTopRightRadius: 40,
+      backgroundColor: colors.background,
+      paddingHorizontal: wp('4%'),
+      paddingTop: hp('3%'),
+      marginBottom: hp('4%'),
+      flex: 1,
     },
     formContainer: {
-      marginTop: -hp('18%'),
-      backgroundColor: colors.background,
-      paddingHorizontal: wp('5%'),
-      paddingVertical: hp('3%'),
-      borderWidth: 1,
-      borderBottomWidth: 0,
-      borderTopLeftRadius: 30,
-      borderTopRightRadius: 30,
-      borderColor: colors.border,
+      justifyContent: 'space-between',
+      height: '100%',
     },
-    label: {},
-    input: {
-      marginTop: hp('1%'),
-      marginBottom: hp('2%'),
-      fontSize: RFValue(14),
-      fontFamily: 'Manrope-Regular',
-    },
-    button: {
-      marginTop: hp('3%'),
-    },
-
-    centerText: {
-      marginTop: hp('15%'),
-      textAlign: 'center',
-      color: colors.inputTxt,
-    },
-    linkText: {
-      color: colors.primary,
-      textDecorationLine: 'underline',
-      height: 100,
+    countryWrapper: {
+      borderRightWidth: 1,
+      borderColor: colors.darkGray,
+      height: '70%',
+      justifyContent: 'center',
+      marginRight: wp('2%'),
+      width: wp('28%'),
     },
   });

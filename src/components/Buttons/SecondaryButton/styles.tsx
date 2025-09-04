@@ -14,11 +14,12 @@ export const createButtonStyles = (colors: ColorsType) =>
       borderColor: colors.primary,
     },
     disabled: {
-      opacity: 0.7,
+      borderColor: colors.disableBtnBG,
     },
     title: {
       color: colors.primary,
-      fontSize: Platform.OS === 'ios' ? RFValue(12) : RFValue(15),
-      fontWeight: Platform.OS === 'ios' ? '600' : '700',
+    },
+    disabledTitle: {
+      color: colors.disableBtnTxt,
     },
   });

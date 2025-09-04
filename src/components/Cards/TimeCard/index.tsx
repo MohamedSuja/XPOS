@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import { useTheme, ThemeContextType } from '@/utils/ThemeContext';
 import { globalStyles } from '@/utils/globalStyles';
-import Colors from '@/utils/Colors';
 import { createButtonStyles } from './styles';
 import SecondaryButton from '@/components/Buttons/SecondaryButton';
 import PrimaryButton from '@/components/Buttons/PrimaryButton';

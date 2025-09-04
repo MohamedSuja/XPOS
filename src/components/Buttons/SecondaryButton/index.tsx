@@ -9,6 +9,7 @@ import {
 import { createButtonStyles } from './styles';
 import { useTheme } from '@/utils/ThemeContext';
 import { ThemeContextType } from '@/utils/ThemeContext';
+import { globalStyles } from '@/utils/globalStyles';
 
 interface SecondaryButtonProps {
   title: string;
@@ -30,7 +31,7 @@ const SecondaryButton = (props: SecondaryButtonProps) => {
       activeOpacity={0.5}
       disabled={disabled}
     >
-      <Text style={[styles.title, textStyle]}>{title}</Text>
+      <Text style={[globalStyles.h4, styles.title, textStyle]}>{title}</Text>
     </TouchableOpacity>
   );
 };

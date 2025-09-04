@@ -13,11 +13,12 @@ export const createButtonStyles = (colors: ColorsType) =>
       justifyContent: 'center',
     },
     disabled: {
-      opacity: 0.7,
+      backgroundColor: colors.disableBtnBG,
     },
     title: {
       color: colors.background,
-      fontSize: Platform.OS === 'ios' ? RFValue(12) : RFValue(15),
-      fontWeight: Platform.OS === 'ios' ? '600' : '700',
+    },
+    disabledTitle: {
+      color: colors.disableBtnTxt,
     },
   });

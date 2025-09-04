@@ -1,14 +1,15 @@
-import React from "react";
+import React from 'react';
 import {
   StyleProp,
   Text,
   TextStyle,
   TouchableOpacity,
-  ViewStyle
-} from "react-native";
-import { createButtonStyles } from "./styles";
-import { useTheme } from "@/utils/ThemeContext";
-import { ThemeContextType } from "@/utils/ThemeContext";
+  ViewStyle,
+} from 'react-native';
+import { createButtonStyles } from './styles';
+import { useTheme } from '@/utils/ThemeContext';
+import { ThemeContextType } from '@/utils/ThemeContext';
+import { globalStyles } from '@/utils/globalStyles';
 
 interface PrimaryButtonProps {
   title: string;
@@ -30,7 +31,16 @@ const PrimaryButton = (props: PrimaryButtonProps) => {
       activeOpacity={0.5}
       disabled={disabled}
     >
-      <Text style={[styles.title, textStyle]}>{title}</Text>
+      <Text
+        style={[
+          globalStyles.h4,
+          styles.title,
+          textStyle,
+          disabled && styles.disabledTitle,
+        ]}
+      >
+        {title}
+      </Text>
     </TouchableOpacity>
   );
 };
