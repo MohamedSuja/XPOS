@@ -5,5 +5,5 @@ export type HomeStackParamList = {
   WalletScreen: undefined;
 };
 
-export type AppStackScreenProps<Screen extends keyof HomeStackParamList> =
+export type HomeStackScreenProps<Screen extends keyof HomeStackParamList> =
   NativeStackScreenProps<HomeStackParamList, Screen>;
