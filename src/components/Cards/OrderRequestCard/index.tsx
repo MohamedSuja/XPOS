@@ -42,6 +42,7 @@ interface OrderRequstCardProps {
   complete?: string;
   title?: string;
   delivered_at?: string;
+  onPress?: () => void;
 }
 
 const OrderRequestCard: React.FC<OrderRequstCardProps> = ({
@@ -57,6 +58,7 @@ const OrderRequestCard: React.FC<OrderRequstCardProps> = ({
   complete,
   title,
   delivered_at,
+  onPress,
 }) => {
   const { colors }: ThemeContextType = useTheme();
   const styles = createButtonStyles(colors);
@@ -105,8 +107,10 @@ const OrderRequestCard: React.FC<OrderRequstCardProps> = ({
   }, [targetDate]);
 
   return (
-    <View
+    <TouchableOpacity
+      activeOpacity={0.8}
       style={[styles.container, { backgroundColor: colors.background }, style]}
+      onPress={onPress}
     >
       {/* Header */}
       <View style={styles.header}>
@@ -176,7 +180,7 @@ const OrderRequestCard: React.FC<OrderRequstCardProps> = ({
           />
         </View>
       )}
-    </View>
+    </TouchableOpacity>
   );
 };
 

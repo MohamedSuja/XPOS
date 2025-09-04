@@ -5,7 +5,7 @@ import { createStyles } from './styles';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import SearchInput from '@/components/Inputs/SearchInput';
 import CategoryItem from '@/components/Cards/CategoryItem';
-import { AppStackScreenProps } from '@/navigation/NavigationModels/MenuStack';
+import { MenuStackScreenProps } from '@/navigation/NavigationModels/MenuStack';
 import BackButton from '@/components/Buttons/BackButton';
 import { globalStyles } from '@/utils/globalStyles';
 import { hp } from '@/utils/Scaling';
@@ -15,7 +15,7 @@ import ItemCard from '@/components/Cards/ItemCard';
 const CategoryViewScreen = ({
   navigation,
   route,
-}: AppStackScreenProps<'CategoryViewScreen'>) => {
+}: MenuStackScreenProps<'CategoryViewScreen'>) => {
   const { colors }: ThemeContextType = useTheme();
   const styles = createStyles(colors);
   const flatListRef = useRef<FlatList>(null);

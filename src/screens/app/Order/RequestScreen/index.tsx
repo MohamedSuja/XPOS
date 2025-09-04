@@ -9,8 +9,11 @@ import {
   selectOrdersRequestListStatus,
 } from '@/feature/slices/orders_slice';
 import { STATUS } from '@/feature/services/status_constants';
+import { OrderStackScreenProps } from '@/navigation/NavigationModels/OrderStack';
 
-const RequestScreen = () => {
+const RequestScreen = ({
+  navigation,
+}: OrderStackScreenProps<'TopTabNavigator'>) => {
   const { colors }: ThemeContextType = useTheme();
   const dispatch = useAppDispatch();
   const ordersListData = useAppSelector(selectOrdersRequestListData);
@@ -100,6 +103,11 @@ const RequestScreen = () => {
           items={orderItems}
           onAccept={() => handleAccept(order.id)}
           onDecline={() => handleDecline(order.id)}
+          onPress={() =>
+            navigation.navigate('OrderViewScreen', {
+              orderId: '',
+            })
+          }
         />
       );
     },

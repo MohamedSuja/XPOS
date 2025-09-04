@@ -18,6 +18,7 @@ import TopTabNavigator from '../TopTab';
 import MenuStack from '../Stacks/MenuStack';
 import HomeStack from '../Stacks/HomeStack';
 import ReportStack from '../Stacks/ReportStack';
+import OrderStack from '../Stacks/OrderStack';
 
 const Tab = createBottomTabNavigator();
 const BottomTab = () => {
@@ -114,8 +115,8 @@ const BottomTab = () => {
         })}
       />
       <Tab.Screen
-        name="TopTab"
-        component={TopTabNavigator}
+        name="OrderStack"
+        component={OrderStack}
         options={() => ({
           tabBarButton: props => (
             <Pressable

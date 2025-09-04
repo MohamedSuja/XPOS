@@ -11,10 +11,6 @@ import { createSlice } from '@reduxjs/toolkit';
 const DEFAULT_STATE: IAuthState = {
   authSliceStatus: undefined,
 
-  // User credentials
-  username: undefined,
-  password: undefined,
-
   // Error
   authenticationError: undefined,
 
@@ -36,17 +32,6 @@ const auth_slice = createSlice({
   reducers: {
     resetAuth: () => {
       return DEFAULT_STATE;
-    },
-    setUserCredentials: (
-      state,
-      action: { payload: { username: string; password: string } },
-    ) => {
-      state.username = action.payload.username;
-      state.password = action.payload.password;
-    },
-    clearUserCredentials: state => {
-      state.username = undefined;
-      state.password = undefined;
     },
   },
   extraReducers: (builder: any) => {
@@ -120,8 +105,7 @@ const auth_slice = createSlice({
   },
 });
 // Reset Auth
-export const { resetAuth, setUserCredentials, clearUserCredentials } =
-  auth_slice.actions;
+export const { resetAuth } = auth_slice.actions;
 
 export const selectAuthSliceStatus = (state: RootState) =>
   state.auth.authSliceStatus;

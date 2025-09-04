@@ -2,10 +2,6 @@
 export default interface IAuthState {
   authSliceStatus: string | undefined;
 
-  // User credentials
-  username: string | undefined;
-  password: string | undefined;
-
   // Auth Error
   authenticationError: IAuthError | undefined;
 

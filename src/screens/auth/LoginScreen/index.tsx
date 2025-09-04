@@ -20,10 +20,7 @@ import PasswordTextInput from '@/components/Inputs/PasswordTextInput';
 import PrimaryButton from '@/components/Buttons/PrimaryButton';
 import { useAppDispatch, useAppSelector } from '@/feature/stateHooks';
 import { requestAuthenticateLoginData } from '@/feature/thunks/auth_thunks';
-import {
-  selectAuthenticationLoginDataStatus,
-  setUserCredentials,
-} from '@/feature/slices/auth_slice';
+import { selectAuthenticationLoginDataStatus } from '@/feature/slices/auth_slice';
 import Config from 'react-native-config';
 
 const BASE_URL = Config.BASE_URL;
@@ -132,7 +129,6 @@ const LoginScreen = () => {
           password: password,
         }),
       );
-      dispatch(setUserCredentials({ username: userName, password: password }));
 
       // Reset validation errors after successful submission
       setErrors({ userName: '', password: '' });

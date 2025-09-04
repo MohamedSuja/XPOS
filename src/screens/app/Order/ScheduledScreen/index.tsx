@@ -124,7 +124,7 @@ const ScheduledScreen = () => {
           date={dateStr}
           time={timeStr}
           title={order.customer.name}
-          delivered_at={order.delivered_at}
+          delivered_at={'2026-08-25T12:00:00'}
           style={{
             backgroundColor: colors.cardBG,
           }}
