@@ -20,6 +20,7 @@ import Octicons from 'react-native-vector-icons/Octicons';
 import { hp, wp } from '@/utils/Scaling';
 import EarningIcon from '@/assets/icons/Earning.svg';
 import FoodDeliveryIcon from '@/assets/icons/food-delivery.svg';
+import DriverRequestIcon from '@/assets/icons/DriverRequest.svg';
 import OrderRequestCard from '@/components/Cards/OrderRequestCard';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -205,27 +206,27 @@ const HomeScreen = ({ navigation }: AppStackScreenProps<'HomeScreen'>) => {
         {/* send request */}
 
         <View style={styles.sendRequestBox}>
-          <View style={{ width: wp('60%'), gap: hp('1%') }}>
-            <Text style={[globalStyles.h5, { color: colors.headerTxt }]}>
+          <View style={{ width: wp('50%'), gap: hp('1%') }}>
+            <Text style={[globalStyles.h8, { color: colors.headerTxt }]}>
               Need a Delivery Driver?
             </Text>
-            <Text style={[globalStyles.h9, { color: colors.inputTxt }]}>
+            <Text style={[globalStyles.h12, { color: colors.inputTxt }]}>
               Send a quick request and we'll assign a driver for your order.
             </Text>
             <TouchableOpacity style={styles.sendRequestButton}>
-              <Text style={[globalStyles.h9, { color: colors.background }]}>
+              <Text style={[globalStyles.h7, { color: colors.background }]}>
                 Send Request
               </Text>
             </TouchableOpacity>
           </View>
 
-          <FoodDeliveryIcon width={hp(3)} height={hp(3)} />
+          <DriverRequestIcon width={hp(14)} height={hp(14)} />
         </View>
         {/* Contact */}
         <View style={styles.contactBox}>
           <View style={{ width: wp('70%') }}>
             <Text style={[globalStyles.h5, { color: colors.headerTxt }]}>
-              Need Help?
+              Help & Support
             </Text>
             <Text style={[globalStyles.h9, { color: colors.inputTxt }]}>
               Reach out anytime for quick answers and admin support.

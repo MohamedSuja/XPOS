@@ -210,7 +210,7 @@ const lightColors = {
   readyBorder: '#AFEBC1',
   readyBG: '#E3FFEB',
   acceptedTxt: '#EB2229',
-  acceptedBorder: '#FFD8D9',
+  acceptedBorder: '#FDD7D8',
   acceptedBG: '#FFF4F4',
   cardBG: '#FFF5F5',
   cardBorder: '#FFD7D7',
