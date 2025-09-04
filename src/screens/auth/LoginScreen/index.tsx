@@ -26,10 +26,7 @@ import {
 } from 'react-native-responsive-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAppDispatch, useAppSelector } from '@/feature/stateHooks';
-import {
-  selectAuthenticationLoginDataStatus,
-  setUserCredentials,
-} from '@/feature/slices/auth_slice';
+import { selectAuthenticationLoginDataStatus } from '@/feature/slices/auth_slice';
 import { requestAuthenticateLoginData } from '@/feature/thunks/auth_thunks';
 import CustomInput from '@/components/Inputs/customInput';
 import PrimaryButton from '@/components/Buttons/PrimaryButton';
