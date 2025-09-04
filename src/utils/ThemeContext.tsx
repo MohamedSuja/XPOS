@@ -71,6 +71,9 @@ export type ColorsType = {
   itemCardInactive: string;
   itemCardInactiveBorder: string;
   profileSeparator: string;
+  divider3: string;
+  border1: string;
+  warning: string;
 };
 export type ThemeContextType = {
   isDark: boolean;
@@ -148,6 +151,9 @@ const ThemeContext = createContext<ThemeContextType>({
     itemCardInactive: '#F3F3F3',
     itemCardInactiveBorder: '#DFDFDF',
     profileSeparator: '#EFEFEF',
+    divider3: '#CDCDCD',
+    border1: '#E0E0E0',
+    warning: '#A80006',
   },
   toggleTheme: () => {},
 });
@@ -222,6 +228,9 @@ const lightColors = {
   itemCardInactive: '#F3F3F3',
   itemCardInactiveBorder: '#DFDFDF',
   profileSeparator: '#EFEFEF',
+  divider3: '#CDCDCD',
+  border1: '#E0E0E0',
+  warning: '#A80006',
 };
 
 const darkColors = {
@@ -292,6 +301,9 @@ const darkColors = {
   itemCardInactive: '#F3F3F3',
   itemCardInactiveBorder: '#DFDFDF',
   profileSeparator: '#EFEFEF',
+  divider3: '#CDCDCD',
+  border1: '#E0E0E0',
+  warning: '#A80006',
 };
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
