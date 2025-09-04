@@ -56,13 +56,13 @@ const DateRangePicker = (props: DateRangePickerProps) => {
     <TouchableOpacity onPress={onOpen}>
       <View style={[styles.container, style]}>
         <View style={styles.inputContainer}>
-          <Text style={[globalStyles.h8, styles.inputText]}>
+          <Text style={[globalStyles.h9, styles.inputText]}>
             {startDate
               ? moment(startDate, 'YYYY-MM-DD').format('DD/MM/YYYY')
               : 'DD/MM/YYYY'}
           </Text>
           <View style={styles.divider} />
-          <Text style={[globalStyles.h8, styles.inputText]}>
+          <Text style={[globalStyles.h9, styles.inputText]}>
             {endDate
               ? moment(endDate, 'YYYY-MM-DD').format('DD/MM/YYYY')
               : 'DD/MM/YYYY'}

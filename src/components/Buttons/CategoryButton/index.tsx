@@ -9,6 +9,7 @@ import {
 import { createButtonStyles } from './styles';
 import { useTheme } from '@/utils/ThemeContext';
 import { ThemeContextType } from '@/utils/ThemeContext';
+import { globalStyles } from '@/utils/globalStyles';
 
 interface CategoryButtonProps {
   title: string;
@@ -38,6 +39,7 @@ const CategoryButton = (props: CategoryButtonProps) => {
       <Text
         style={[
           styles.title,
+          globalStyles.h8,
           {
             color: active ? colors.background : colors.dropDownIcon,
           },

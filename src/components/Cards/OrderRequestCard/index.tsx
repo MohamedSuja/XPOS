@@ -41,6 +41,7 @@ interface OrderRequstCardProps {
   complete?: string;
   title?: string;
   delivered_at?: string;
+  onPress?: () => void;
 }
 
 const OrderRequestCard: React.FC<OrderRequstCardProps> = ({
@@ -56,6 +57,7 @@ const OrderRequestCard: React.FC<OrderRequstCardProps> = ({
   complete,
   title,
   delivered_at,
+  onPress,
 }) => {
   const { colors }: ThemeContextType = useTheme();
   const styles = createButtonStyles(colors);
@@ -104,8 +106,10 @@ const OrderRequestCard: React.FC<OrderRequstCardProps> = ({
   }, [targetDate]);
 
   return (
-    <View
+    <TouchableOpacity
+      activeOpacity={0.8}
       style={[styles.container, { backgroundColor: colors.background }, style]}
+      onPress={onPress}
     >
       {/* Header */}
       <View style={styles.header}>
@@ -114,11 +118,11 @@ const OrderRequestCard: React.FC<OrderRequstCardProps> = ({
             Order #{orderNumber}
           </Text>
           {title && (
-            <Text style={[globalStyles.h8, styles.titleText]}>{title}</Text>
+            <Text style={[globalStyles.h5, styles.titleText]}>{title}</Text>
           )}
           {date && time && !complete && (
             <View style={styles.dateContainer}>
-              <Text style={[globalStyles.h9, styles.dateText]}>{date}</Text>
+              <Text style={[globalStyles.h8, styles.dateText]}>{date}</Text>
               <Text style={[globalStyles.h9, { color: colors.divider2 }]}>
                 |
               </Text>
@@ -129,7 +133,7 @@ const OrderRequestCard: React.FC<OrderRequstCardProps> = ({
           {complete && (
             <View style={styles.dateContainer}>
               <Calendar fill={'#4D4D4D'} width={16} height={16} />
-              <Text style={[globalStyles.h9, styles.completeText]}>
+              <Text style={[globalStyles.h12, styles.completeText]}>
                 {complete}
               </Text>
             </View>
@@ -175,7 +179,7 @@ const OrderRequestCard: React.FC<OrderRequstCardProps> = ({
           />
         </View>
       )}
-    </View>
+    </TouchableOpacity>
   );
 };
 

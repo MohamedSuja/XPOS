@@ -15,7 +15,6 @@ export const createButtonStyles = (colors: ColorsType) =>
     },
     title: {
       color: colors.background,
-      fontSize: Platform.OS === 'ios' ? RFValue(12) : RFValue(15),
       fontWeight: Platform.OS === 'ios' ? '600' : '700',
     },
   });

@@ -4,5 +4,5 @@ export type ReportStackParamList = {
   ReportScreen: undefined;
 };
 
-export type AppStackScreenProps<Screen extends keyof ReportStackParamList> =
+export type ReportStackScreenProps<Screen extends keyof ReportStackParamList> =
   NativeStackScreenProps<ReportStackParamList, Screen>;

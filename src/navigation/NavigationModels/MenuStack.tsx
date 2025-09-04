@@ -13,5 +13,5 @@ export type MenuStackParamList = {
     | undefined;
 };
 
-export type AppStackScreenProps<Screen extends keyof MenuStackParamList> =
+export type MenuStackScreenProps<Screen extends keyof MenuStackParamList> =
   NativeStackScreenProps<MenuStackParamList, Screen>;

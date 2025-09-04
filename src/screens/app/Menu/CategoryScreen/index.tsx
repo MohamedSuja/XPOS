@@ -5,12 +5,12 @@ import { createStyles } from './styles';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import SearchInput from '@/components/Inputs/SearchInput';
 import CategoryItem from '@/components/Cards/CategoryItem';
-import { AppStackScreenProps } from '@/navigation/NavigationModels/MenuStack';
+import { MenuStackScreenProps } from '@/navigation/NavigationModels/MenuStack';
 import { hp } from '@/utils/Scaling';
 
 const CategoryScreen = ({
   navigation,
-}: AppStackScreenProps<'CategoryScreen'>) => {
+}: MenuStackScreenProps<'CategoryScreen'>) => {
   const { colors }: ThemeContextType = useTheme();
   const styles = createStyles(colors);
 

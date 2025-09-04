@@ -28,18 +28,18 @@ const TimeCard: React.FC<TimeCardProps> = ({ time, days }) => {
   return (
     <View style={styles.container}>
       <View style={styles.timeContainer}>
-        <Text style={[globalStyles.h1, styles.timeNumber]}>{days}</Text>
-        <Text style={[globalStyles.h9, styles.timeText]}>Days</Text>
+        <Text style={[globalStyles.h4, styles.timeNumber]}>{days}</Text>
+        <Text style={[globalStyles.h12, styles.timeText]}>Days</Text>
       </View>
       <View style={styles.divider} />
       <View style={styles.timeContainer}>
-        <Text style={[globalStyles.h1, styles.timeNumber]}>{timeArray[0]}</Text>
-        <Text style={[globalStyles.h9, styles.timeText]}>Hours</Text>
+        <Text style={[globalStyles.h4, styles.timeNumber]}>{timeArray[0]}</Text>
+        <Text style={[globalStyles.h12, styles.timeText]}>Hours</Text>
       </View>
       <View style={styles.divider} />
       <View style={styles.timeContainer}>
-        <Text style={[globalStyles.h1, styles.timeNumber]}>{timeArray[1]}</Text>
-        <Text style={[globalStyles.h9, styles.timeText]}>Minutes</Text>
+        <Text style={[globalStyles.h4, styles.timeNumber]}>{timeArray[1]}</Text>
+        <Text style={[globalStyles.h12, styles.timeText]}>Minutes</Text>
       </View>
     </View>
   );
