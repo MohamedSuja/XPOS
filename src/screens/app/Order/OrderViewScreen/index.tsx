@@ -84,6 +84,7 @@ const OrderViewScreen = () => {
         </View>
 
         <OrderViewCard />
+        <OrderViewCard />
       </ScrollView>
       <View style={styles.footer}>
         <PrimaryButton style={styles.logoutButton} title="Mark as preparing" />
