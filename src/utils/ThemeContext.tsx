@@ -71,6 +71,9 @@ export type ColorsType = {
   itemCardInactive: string;
   itemCardInactiveBorder: string;
   profileSeparator: string;
+  divider3: string;
+  border1: string;
+  warning: string;
   earningBG: string;
 };
 export type ThemeContextType = {
@@ -149,6 +152,9 @@ const ThemeContext = createContext<ThemeContextType>({
     itemCardInactive: '#F3F3F3',
     itemCardInactiveBorder: '#DFDFDF',
     profileSeparator: '#EFEFEF',
+    divider3: '#CDCDCD',
+    border1: '#E0E0E0',
+    warning: '#A80006',
     earningBG: '#790004',
   },
   toggleTheme: () => {},
@@ -224,6 +230,9 @@ const lightColors = {
   itemCardInactive: '#F3F3F3',
   itemCardInactiveBorder: '#DFDFDF',
   profileSeparator: '#EFEFEF',
+  divider3: '#CDCDCD',
+  border1: '#E0E0E0',
+  warning: '#A80006',
   earningBG: '#790004',
 };
 
@@ -295,6 +304,9 @@ const darkColors = {
   itemCardInactive: '#F3F3F3',
   itemCardInactiveBorder: '#DFDFDF',
   profileSeparator: '#EFEFEF',
+  divider3: '#CDCDCD',
+  border1: '#E0E0E0',
+  warning: '#A80006',
   earningBG: '#790004',
 };
 
