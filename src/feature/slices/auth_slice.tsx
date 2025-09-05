@@ -110,10 +110,6 @@ export const { resetAuth } = auth_slice.actions;
 export const selectAuthSliceStatus = (state: RootState) =>
   state.auth.authSliceStatus;
 
-// User credentials selectors
-export const selectUsername = (state: RootState) => state.auth.username;
-export const selectPassword = (state: RootState) => state.auth.password;
-
 export const selectAuthenticationError = (state: RootState) =>
   state.auth.authenticationError;
 
