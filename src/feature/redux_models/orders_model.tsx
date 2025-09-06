@@ -71,7 +71,94 @@ export interface IOrderDetailsResponseBody {
   success: boolean | undefined;
   message: string | undefined;
   errors: any[];
-  data: any;
+  data: {
+    order: {
+      id: number;
+      unique_id: string;
+      status: string;
+      total: string;
+      subtotal: string;
+      base_subtotal: string;
+      panel_subtotal: string;
+      delivery_fee: string;
+      platform_fee: string;
+      panel_fee: string;
+      discount: string;
+      promo_discount_amount: string;
+      promo_code_name: string | null;
+      delivery_type: string;
+      delivery_option: string;
+      delivery_instructions: string;
+      preparation_instructions: string;
+      payment_method: string | null;
+      payment_status: string | null;
+      created_at: string;
+      updated_at: string;
+      accepted_at: string | null;
+      preparing_at: string | null;
+      ready_for_pickup_at: string | null;
+      out_for_delivery_at: string | null;
+      delivered_at: string | null;
+      cancelled_at: string | null;
+      estimated_delivery_time: string | null;
+      customer: {
+        id: number;
+        name: string;
+        phone: string;
+        email: string | null;
+      };
+      delivery_address: {
+        id: number;
+        address: string | null;
+        city: string;
+        state: string;
+        country: string;
+        postal_code: string;
+        latitude: string;
+        longitude: string;
+      };
+      driver: any | null;
+      items: Array<{
+        id: number;
+        item_name: string;
+        item_description: string;
+        quantity: number | null;
+        unit_price: number | null;
+        total_price: number;
+        special_instructions: string | null;
+        variants: Array<{
+          variant_name: string;
+          variant_value: string | null;
+          variant_price: number;
+        }>;
+        add_ons: any[];
+      }>;
+      fee_breakdown: {
+        base_subtotal: string;
+        panel_subtotal: string;
+        subtotal: string;
+        delivery_fee: string;
+        platform_fee: string;
+        panel_fee: string;
+        discount: string;
+        promo_discount_amount: string;
+        total: string;
+        commission: {
+          panel_earning: string;
+          platform_earning: string;
+          driver_earning: string;
+          currency: string;
+        };
+      };
+      cancel_reason: string | null;
+      order_summary: {
+        total_items: number;
+        total_quantity: number;
+      };
+      currency_symbol: string;
+    };
+    timezone: string;
+  };
 }
 
 export interface IOrderAcceptResponseBody {

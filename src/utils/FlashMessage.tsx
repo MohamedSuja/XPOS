@@ -1,6 +1,5 @@
-import { showMessage } from "react-native-flash-message";
-import { StyleSheet, Vibration } from "react-native";
-import C, { Colors } from "./Colors";
+import { showMessage } from 'react-native-flash-message';
+import { StyleSheet, Vibration } from 'react-native';
 
 const duration = 3500;
 
@@ -9,12 +8,11 @@ export const ErrorFlash = (description: string) => {
     textStyle: styles.textStyle,
     titleStyle: styles.titleStyle,
     message: description,
-    type: "default",
-    backgroundColor: Colors.brand["error"], // background color
-    color: Colors.brand["white"],
+    type: 'default',
+    backgroundColor: '#FF4D4F', // suitable error color (red)
+    color: '#FFFFFF', // white text
     duration: duration,
   });
-  Vibration.vibrate();
 };
 
 export const SuccessFlash = (description: string) => {
@@ -22,9 +20,9 @@ export const SuccessFlash = (description: string) => {
     textStyle: styles.textStyle,
     titleStyle: styles.titleStyle,
     message: description,
-    type: "default",
-    backgroundColor: Colors.brand["success"], // background color
-    color: Colors.brand["white"],
+    type: 'default',
+    backgroundColor: '#52C41A', // suitable success color (green)
+    color: '#FFFFFF', // white text
     duration: duration,
   });
 };
@@ -34,9 +32,9 @@ export const WarningFlash = (description: string) => {
     textStyle: styles.textStyle,
     titleStyle: styles.titleStyle,
     message: description,
-    type: "default",
-    backgroundColor: Colors.brand["warning"], // background color
-    color: Colors.brand["white"],
+    type: 'default',
+    backgroundColor: '#FAAD14', // suitable warning color (amber/yellow)
+    color: '#FFFFFF', // white text
     duration: duration,
   });
 };

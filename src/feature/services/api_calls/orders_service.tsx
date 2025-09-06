@@ -45,44 +45,44 @@ export function requestOrdersListService(
 }
 
 export function requestOrderDetailsService(
-  orderId: number,
+  orderId: string,
 ): Promise<AxiosResponse<IOrderDetailsResponseBody>> {
-  const url = `${BASE_URL}/pos/orders/${orderId}`;
+  const url = `${BASE_URL}/api/pos/orders/${orderId}`;
   return requests.get(url);
 }
 
 export function requestOrderAcceptService(
-  orderId: number,
+  orderId: string,
 ): Promise<AxiosResponse<IOrderAcceptResponseBody>> {
-  const url = `${BASE_URL}/pos/orders/${orderId}/accept`;
+  const url = `${BASE_URL}/api/pos/orders/${orderId}/accept`;
   return requests.put(url, {});
 }
 
 export function requestOrderMarkReadyService(
-  orderId: number,
+  orderId: string,
 ): Promise<AxiosResponse<IOrderMarkReadyResponseBody>> {
-  const url = `${BASE_URL}/pos/orders/${orderId}/mark-ready`;
+  const url = `${BASE_URL}/api/pos/orders/${orderId}/mark-ready`;
   return requests.put(url, {});
 }
 
 export function requestOrderStartDeliveryService(
-  orderId: number,
+  orderId: string,
 ): Promise<AxiosResponse<IOrderStartDeliveryResponseBody>> {
-  const url = `${BASE_URL}/pos/orders/${orderId}/start-delivery`;
+  const url = `${BASE_URL}/api/pos/orders/${orderId}/start-delivery`;
   return requests.put(url, {});
 }
 
 export function requestOrderMarkDeliveredService(
-  orderId: number,
+  orderId: string,
 ): Promise<AxiosResponse<IOrderMarkDeliveredResponseBody>> {
-  const url = `${BASE_URL}/pos/orders/${orderId}/mark-delivered`;
+  const url = `${BASE_URL}/api/pos/orders/${orderId}/mark-delivered`;
   return requests.put(url, {});
 }
 
 export function requestOrderRejectService(
-  orderId: number,
+  orderId: string,
 ): Promise<AxiosResponse<IOrderRejectResponseBody>> {
-  const url = `${BASE_URL}/pos/orders/${orderId}/reject`;
+  const url = `${BASE_URL}/api/pos/orders/${orderId}/reject`;
   return requests.put(url, {});
 }
 
@@ -98,6 +98,6 @@ export function requestOrderSummaryService(
     queryParams.append('end_date', params.end_date);
   }
 
-  const url = `${BASE_URL}/pos/orders/summary?${queryParams.toString()}`;
+  const url = `${BASE_URL}/api/pos/orders/summary?${queryParams.toString()}`;
   return requests.get(url);
 }

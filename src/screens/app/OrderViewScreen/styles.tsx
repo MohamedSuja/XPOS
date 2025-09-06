@@ -63,9 +63,10 @@ export const createStyles = (colors: ColorsType) =>
       backgroundColor: colors.background,
       borderColor: colors.uploaderBorder,
       borderTopWidth: hp(0.1),
+      paddingVertical: hp(1),
     },
-    logoutButton: {
+    footerButton: {
       marginHorizontal: wp(4),
-      marginVertical: hp(2),
+      marginVertical: hp(0.8),
     },
   });

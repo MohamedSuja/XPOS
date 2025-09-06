@@ -7,6 +7,7 @@ import ProfileScreen from '@/screens/app/ProfileScreen';
 import WalletScreen from '@/screens/app/WalletScreen';
 import CategoryViewScreen from '@/screens/app/Menu/CategoryViewScreen';
 import OrderViewScreen from '@/screens/app/OrderViewScreen';
+import OrderSummaryScreen from '@/screens/app/OrderSummaryScreen';
 
 const Stack = createNativeStackNavigator<UserStackParamList>();
 
@@ -24,6 +25,7 @@ const UserStack = () => {
       <Stack.Screen name="WalletScreen" component={WalletScreen} />
       <Stack.Screen name="CategoryViewScreen" component={CategoryViewScreen} />
       <Stack.Screen name="OrderViewScreen" component={OrderViewScreen} />
+      <Stack.Screen name="OrderSummaryScreen" component={OrderSummaryScreen} />
     </Stack.Navigator>
   );
 };

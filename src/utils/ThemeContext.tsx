@@ -75,6 +75,8 @@ export type ColorsType = {
   border1: string;
   warning: string;
   earningBG: string;
+  border2: string;
+  totalBG: string;
 };
 export type ThemeContextType = {
   isDark: boolean;
@@ -156,6 +158,8 @@ const ThemeContext = createContext<ThemeContextType>({
     border1: '#E0E0E0',
     warning: '#A80006',
     earningBG: '#790004',
+    border2: '#DBDBDB',
+    totalBG: '#F2FEF5',
   },
   toggleTheme: () => {},
 });
@@ -234,6 +238,8 @@ const lightColors = {
   border1: '#E0E0E0',
   warning: '#A80006',
   earningBG: '#790004',
+  border2: '#DBDBDB',
+  totalBG: '#F2FEF5',
 };
 
 const darkColors = {
@@ -308,6 +314,8 @@ const darkColors = {
   border1: '#E0E0E0',
   warning: '#A80006',
   earningBG: '#790004',
+  border2: '#DBDBDB',
+  totalBG: '#F2FEF5',
 };
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({

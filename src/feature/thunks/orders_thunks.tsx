@@ -39,7 +39,7 @@ export const requestOrdersListData = createAsyncThunk(
 
 export const requestOrderDetailsData = createAsyncThunk(
   '@/orders/details',
-  async (orderId: number, { rejectWithValue }) => {
+  async (orderId: string, { rejectWithValue }) => {
     try {
       const response = await requestOrderDetailsService(orderId);
       return response?.data;
@@ -55,7 +55,7 @@ export const requestOrderDetailsData = createAsyncThunk(
 
 export const requestOrderAcceptData = createAsyncThunk(
   '@/orders/accept',
-  async (orderId: number, { rejectWithValue }) => {
+  async (orderId: string, { rejectWithValue }) => {
     try {
       const response = await requestOrderAcceptService(orderId);
       return response?.data;
@@ -71,7 +71,7 @@ export const requestOrderAcceptData = createAsyncThunk(
 
 export const requestOrderMarkReadyData = createAsyncThunk(
   '@/orders/mark-ready',
-  async (orderId: number, { rejectWithValue }) => {
+  async (orderId: string, { rejectWithValue }) => {
     try {
       const response = await requestOrderMarkReadyService(orderId);
       return response?.data;
@@ -87,7 +87,7 @@ export const requestOrderMarkReadyData = createAsyncThunk(
 
 export const requestOrderStartDeliveryData = createAsyncThunk(
   '@/orders/start-delivery',
-  async (orderId: number, { rejectWithValue }) => {
+  async (orderId: string, { rejectWithValue }) => {
     try {
       const response = await requestOrderStartDeliveryService(orderId);
       return response?.data;
@@ -103,7 +103,7 @@ export const requestOrderStartDeliveryData = createAsyncThunk(
 
 export const requestOrderMarkDeliveredData = createAsyncThunk(
   '@/orders/mark-delivered',
-  async (orderId: number, { rejectWithValue }) => {
+  async (orderId: string, { rejectWithValue }) => {
     try {
       const response = await requestOrderMarkDeliveredService(orderId);
       return response?.data;
@@ -119,7 +119,7 @@ export const requestOrderMarkDeliveredData = createAsyncThunk(
 
 export const requestOrderRejectData = createAsyncThunk(
   '@/orders/reject',
-  async (orderId: number, { rejectWithValue }) => {
+  async (orderId: string, { rejectWithValue }) => {
     try {
       const response = await requestOrderRejectService(orderId);
       return response?.data;

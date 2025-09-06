@@ -16,6 +16,7 @@ import {
   requestOrderSummaryData,
   requestOrdersListData,
 } from '@/feature/thunks/orders_thunks';
+import { ErrorFlash } from '@/utils/FlashMessage';
 
 const DEFAULT_STATE: IOrdersState = {
   ordersSliceStatus: undefined,
@@ -301,11 +302,22 @@ const orders_slice = createSlice({
       state.orderMarkReadyData = action.payload;
     });
 
-    builder.addCase(requestOrderMarkReadyData.rejected, (state, action) => {
-      state.ordersSliceStatus = STATUS.FAILED;
-      state.orderMarkReadyStatus = STATUS.FAILED;
-      state.ordersError = action.payload;
-    });
+    builder.addCase(
+      requestOrderMarkReadyData.rejected,
+      (state, action: any) => {
+        state.ordersSliceStatus = STATUS.FAILED;
+        state.orderMarkReadyStatus = STATUS.FAILED;
+        state.ordersError = action.payload;
+
+        if (action?.payload?.status === 500) {
+          // ErrorFlash(action?.payload?.error);
+        } else if (action?.payload?.status === 400) {
+          ErrorFlash(action?.payload?.message);
+        } else if (action?.error) {
+          ErrorFlash(action?.payload?.message);
+        }
+      },
+    );
     // Order Mark Ready End
 
     // Order Start Delivery Start

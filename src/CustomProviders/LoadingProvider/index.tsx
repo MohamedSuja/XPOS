@@ -38,7 +38,6 @@ const LoadingProvider: React.FC<LoadingProviderProps> = ({ children }) => {
       {children}
       <FlashMessage
         position="top"
-        floating
         statusBarHeight={Platform.OS == 'ios' ? hp(6) : hp(4)}
       />
       <AppLoadingModel visible={loading} />
