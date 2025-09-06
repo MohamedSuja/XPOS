@@ -3,10 +3,22 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import OrderRequestCard from '@/components/Cards/OrderRequestCard';
 import { useAppDispatch, useAppSelector } from '@/feature/stateHooks';
-import { requestOrdersListData } from '@/feature/thunks/orders_thunks';
 import {
+  requestOrderAcceptData,
+  requestOrderRejectData,
+  requestOrdersListData,
+} from '@/feature/thunks/orders_thunks';
+import {
+  selectOrderAcceptData,
+  selectOrderAcceptStatus,
+  selectOrderRejectData,
+  selectOrderRejectStatus,
   selectOrdersRequestListData,
   selectOrdersRequestListStatus,
+  resetOrderAccept,
+  resetOrderReject,
+  selectIsOrderAcceptLoading,
+  selectIsOrderRejectLoading,
 } from '@/feature/slices/orders_slice';
 import { STATUS } from '@/feature/services/status_constants';
 
@@ -26,6 +38,32 @@ const RequestScreen = ({ navigation }: any) => {
   useEffect(() => {
     loadOrders(1, true);
   }, []);
+
+  // Monitor accept status and clear after success
+  const OrderAcceptStatus = useAppSelector(selectOrderAcceptStatus);
+  const OrderAcceptData = useAppSelector(selectOrderAcceptData);
+
+  useEffect(() => {
+    if (OrderAcceptStatus === STATUS.SUCCEEDED) {
+      // Clear the accept status after successful operation
+      setTimeout(() => {
+        dispatch(resetOrderAccept());
+      }, 1000);
+    }
+  }, [OrderAcceptStatus, dispatch]);
+
+  // Monitor reject status and clear after success
+  const OrderRejectStatus = useAppSelector(selectOrderRejectStatus);
+  const OrderRejectData = useAppSelector(selectOrderRejectData);
+
+  useEffect(() => {
+    if (OrderRejectStatus === STATUS.SUCCEEDED) {
+      // Clear the reject status after successful operation
+      setTimeout(() => {
+        dispatch(resetOrderReject());
+      }, 1000);
+    }
+  }, [OrderRejectStatus, dispatch]);
 
   const loadOrders = useCallback(
     async (page: number, reset: boolean = false) => {
@@ -65,19 +103,25 @@ const RequestScreen = ({ navigation }: any) => {
     }
   }, [currentPage, isLoadingMore, hasMoreData, pagination, loadOrders]);
 
-  const handleAccept = useCallback((orderId: number) => {
-    // TODO: Implement accept order logic
-    console.log('Accept order:', orderId);
-  }, []);
-
-  const handleDecline = useCallback((orderId: number) => {
-    // TODO: Implement decline order logic
-    console.log('Decline order:', orderId);
-  }, []);
-
   const renderOrderItem = useCallback(
     ({ item }: { item: any }) => {
       const order = item;
+
+      const onSelectDecline = () => {
+        dispatch(requestOrderRejectData(item.id));
+      };
+
+      const onSelectAccept = () => {
+        dispatch(requestOrderAcceptData(item.id));
+      };
+
+      // Check if this specific order is loading
+      const isAcceptLoading = useAppSelector(
+        selectIsOrderAcceptLoading(item.id),
+      );
+      const isRejectLoading = useAppSelector(
+        selectIsOrderRejectLoading(item.id),
+      );
 
       // Format items for OrderRequestCard
       const orderItems =
@@ -98,12 +142,14 @@ const RequestScreen = ({ navigation }: any) => {
         <OrderRequestCard
           orderNumber={order.unique_id}
           items={orderItems}
-          onAccept={() => handleAccept(order.id)}
-          onDecline={() => handleDecline(order.id)}
+          onAccept={onSelectAccept}
+          onDecline={onSelectDecline}
+          loadingAccept={isAcceptLoading}
+          loadingDecline={isRejectLoading}
         />
       );
     },
-    [handleAccept, handleDecline],
+    [dispatch],
   );
 
   const renderFooter = useCallback(() => {

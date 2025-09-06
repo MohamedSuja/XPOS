@@ -26,6 +26,7 @@ export interface IOrdersState {
   // Order Accept
   orderAcceptStatus: string | undefined;
   orderAcceptData: IOrderAcceptResponseBody | undefined;
+  orderAcceptLoadingIds: string[];
 
   // Order Mark Ready
   orderMarkReadyStatus: string | undefined;
@@ -42,6 +43,7 @@ export interface IOrdersState {
   // Order Reject
   orderRejectStatus: string | undefined;
   orderRejectData: IOrderRejectResponseBody | undefined;
+  orderRejectLoadingIds: string[];
 
   // Order Summary
   orderSummaryStatus: string | undefined;

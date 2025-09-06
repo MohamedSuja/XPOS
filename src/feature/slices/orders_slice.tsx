@@ -45,6 +45,7 @@ const DEFAULT_STATE: IOrdersState = {
   // Order Accept
   orderAcceptStatus: undefined,
   orderAcceptData: undefined,
+  orderAcceptLoadingIds: [] as string[],
 
   // Order Mark Ready
   orderMarkReadyStatus: undefined,
@@ -61,6 +62,7 @@ const DEFAULT_STATE: IOrdersState = {
   // Order Reject
   orderRejectStatus: undefined,
   orderRejectData: undefined,
+  orderRejectLoadingIds: [] as string[],
 
   // Order Summary
   orderSummaryStatus: undefined,
@@ -152,6 +154,54 @@ const orders_slice = createSlice({
     resetOrderSummary: (state: IOrdersState) => {
       state.orderSummaryStatus = undefined;
       state.orderSummaryData = undefined;
+    },
+
+    removeOrderFromRequestList: (
+      state: IOrdersState,
+      action: { payload: string },
+    ) => {
+      if (state.ordersRequestListData?.data?.orders) {
+        state.ordersRequestListData.data.orders =
+          state.ordersRequestListData.data.orders.filter(
+            (order: any) => order.id !== action.payload,
+          );
+      }
+    },
+
+    addOrderAcceptLoading: (
+      state: IOrdersState,
+      action: { payload: string },
+    ) => {
+      if (!state.orderAcceptLoadingIds.includes(action.payload)) {
+        state.orderAcceptLoadingIds.push(action.payload);
+      }
+    },
+
+    removeOrderAcceptLoading: (
+      state: IOrdersState,
+      action: { payload: string },
+    ) => {
+      state.orderAcceptLoadingIds = state.orderAcceptLoadingIds.filter(
+        id => id !== action.payload,
+      );
+    },
+
+    addOrderRejectLoading: (
+      state: IOrdersState,
+      action: { payload: string },
+    ) => {
+      if (!state.orderRejectLoadingIds.includes(action.payload)) {
+        state.orderRejectLoadingIds.push(action.payload);
+      }
+    },
+
+    removeOrderRejectLoading: (
+      state: IOrdersState,
+      action: { payload: string },
+    ) => {
+      state.orderRejectLoadingIds = state.orderRejectLoadingIds.filter(
+        id => id !== action.payload,
+      );
     },
   },
 
@@ -272,21 +322,47 @@ const orders_slice = createSlice({
     // Order Details End
 
     // Order Accept Start
-    builder.addCase(requestOrderAcceptData.pending, state => {
+    builder.addCase(requestOrderAcceptData.pending, (state, action) => {
       state.ordersSliceStatus = STATUS.LOADING;
       state.orderAcceptStatus = STATUS.LOADING;
+
+      // Add order ID to loading list
+      const orderId = action.meta.arg;
+      if (!state.orderAcceptLoadingIds.includes(orderId)) {
+        state.orderAcceptLoadingIds.push(orderId);
+      }
     });
 
     builder.addCase(requestOrderAcceptData.fulfilled, (state, action) => {
       state.ordersSliceStatus = STATUS.SUCCEEDED;
       state.orderAcceptStatus = STATUS.SUCCEEDED;
       state.orderAcceptData = action.payload;
+
+      // Remove the order from request list after success
+      const orderId = action.meta.arg;
+      if (state.ordersRequestListData?.data?.orders) {
+        state.ordersRequestListData.data.orders =
+          state.ordersRequestListData.data.orders.filter(
+            (order: any) => order.id !== orderId,
+          );
+      }
+
+      // Remove order ID from loading list
+      state.orderAcceptLoadingIds = state.orderAcceptLoadingIds.filter(
+        id => id !== orderId,
+      );
     });
 
     builder.addCase(requestOrderAcceptData.rejected, (state, action) => {
       state.ordersSliceStatus = STATUS.FAILED;
       state.orderAcceptStatus = STATUS.FAILED;
       state.ordersError = action.payload;
+
+      // Remove order ID from loading list
+      const orderId = action.meta.arg;
+      state.orderAcceptLoadingIds = state.orderAcceptLoadingIds.filter(
+        id => id !== orderId,
+      );
     });
     // Order Accept End
 
@@ -365,21 +441,47 @@ const orders_slice = createSlice({
     // Order Mark Delivered End
 
     // Order Reject Start
-    builder.addCase(requestOrderRejectData.pending, state => {
+    builder.addCase(requestOrderRejectData.pending, (state, action) => {
       state.ordersSliceStatus = STATUS.LOADING;
       state.orderRejectStatus = STATUS.LOADING;
+
+      // Add order ID to loading list
+      const orderId = action.meta.arg;
+      if (!state.orderRejectLoadingIds.includes(orderId)) {
+        state.orderRejectLoadingIds.push(orderId);
+      }
     });
 
     builder.addCase(requestOrderRejectData.fulfilled, (state, action) => {
       state.ordersSliceStatus = STATUS.SUCCEEDED;
       state.orderRejectStatus = STATUS.SUCCEEDED;
       state.orderRejectData = action.payload;
+
+      // Remove the order from request list after success
+      const orderId = action.meta.arg;
+      if (state.ordersRequestListData?.data?.orders) {
+        state.ordersRequestListData.data.orders =
+          state.ordersRequestListData.data.orders.filter(
+            (order: any) => order.id !== orderId,
+          );
+      }
+
+      // Remove order ID from loading list
+      state.orderRejectLoadingIds = state.orderRejectLoadingIds.filter(
+        id => id !== orderId,
+      );
     });
 
     builder.addCase(requestOrderRejectData.rejected, (state, action) => {
       state.ordersSliceStatus = STATUS.FAILED;
       state.orderRejectStatus = STATUS.FAILED;
       state.ordersError = action.payload;
+
+      // Remove order ID from loading list
+      const orderId = action.meta.arg;
+      state.orderRejectLoadingIds = state.orderRejectLoadingIds.filter(
+        id => id !== orderId,
+      );
     });
     // Order Reject End
 
@@ -412,6 +514,11 @@ export const {
   resetOrderMarkDelivered,
   resetOrderReject,
   resetOrderSummary,
+  removeOrderFromRequestList,
+  addOrderAcceptLoading,
+  removeOrderAcceptLoading,
+  addOrderRejectLoading,
+  removeOrderRejectLoading,
 } = orders_slice.actions;
 
 export const selectOrdersSliceStatus = (state: RootState) =>
@@ -457,6 +564,11 @@ export const selectOrderAcceptStatus = (state: RootState) =>
   state.orders.orderAcceptStatus;
 export const selectOrderAcceptData = (state: RootState) =>
   state.orders.orderAcceptData;
+export const selectOrderAcceptLoadingIds = (state: RootState) =>
+  state.orders.orderAcceptLoadingIds;
+export const selectIsOrderAcceptLoading =
+  (orderId: string) => (state: RootState) =>
+    state.orders.orderAcceptLoadingIds.includes(orderId);
 
 // Order Mark Ready Selectors
 export const selectOrderMarkReadyStatus = (state: RootState) =>
@@ -481,6 +593,11 @@ export const selectOrderRejectStatus = (state: RootState) =>
   state.orders.orderRejectStatus;
 export const selectOrderRejectData = (state: RootState) =>
   state.orders.orderRejectData;
+export const selectOrderRejectLoadingIds = (state: RootState) =>
+  state.orders.orderRejectLoadingIds;
+export const selectIsOrderRejectLoading =
+  (orderId: string) => (state: RootState) =>
+    state.orders.orderRejectLoadingIds.includes(orderId);
 
 // Order Summary Selectors
 export const selectOrderSummaryStatus = (state: RootState) =>

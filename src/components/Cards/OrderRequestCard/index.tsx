@@ -27,6 +27,8 @@ interface OrderRequstCardProps {
   items: OrderItem[];
   onAccept?: () => void;
   onDecline?: () => void;
+  loadingDecline?: boolean;
+  loadingAccept?: boolean;
   type?:
     | 'scheduled'
     | 'accepted'
@@ -58,6 +60,8 @@ const OrderRequestCard: React.FC<OrderRequstCardProps> = ({
   title,
   delivered_at,
   onPress,
+  loadingDecline,
+  loadingAccept,
 }) => {
   const { colors }: ThemeContextType = useTheme();
   const styles = createButtonStyles(colors);
@@ -107,7 +111,7 @@ const OrderRequestCard: React.FC<OrderRequstCardProps> = ({
 
   return (
     <TouchableOpacity
-      activeOpacity={0.8}
+      activeOpacity={onPress ? 0.5 : 1}
       style={[styles.container, { backgroundColor: colors.background }, style]}
       onPress={onPress}
     >
@@ -170,12 +174,14 @@ const OrderRequestCard: React.FC<OrderRequstCardProps> = ({
             title="Decline"
             onPress={onDecline}
             style={styles.declineButton}
+            loading={loadingDecline}
           />
 
           <PrimaryButton
             title="Accept"
             onPress={onAccept}
             style={styles.acceptButton}
+            loading={loadingAccept}
           />
         </View>
       )}
