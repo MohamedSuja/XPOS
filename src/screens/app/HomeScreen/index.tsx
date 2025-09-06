@@ -25,9 +25,8 @@ import OrderRequestCard from '@/components/Cards/OrderRequestCard';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import PrimaryButton from '@/components/Buttons/PrimaryButton';
-import { AppStackScreenProps } from '@/navigation/NavigationModels/HomeStack';
 
-const HomeScreen = ({ navigation }: AppStackScreenProps<'HomeScreen'>) => {
+const HomeScreen = ({ navigation }: any) => {
   const { colors }: ThemeContextType = useTheme();
   const styles = createStyles(colors);
 
@@ -59,7 +58,7 @@ const HomeScreen = ({ navigation }: AppStackScreenProps<'HomeScreen'>) => {
             }}
           >
             <Image
-              source={require('../../../../assets/images/SampleLogo.png')}
+              source={require('../../../assets/images/SampleLogo.png')}
               style={styles.logo}
             />
           </Pressable>
@@ -107,7 +106,7 @@ const HomeScreen = ({ navigation }: AppStackScreenProps<'HomeScreen'>) => {
         {/* Current earnings */}
         <ImageBackground
           style={styles.currentBox}
-          source={require('../../../../assets/images/HomeBG.png')}
+          source={require('../../../assets/images/HomeBG.png')}
         >
           {earningLoading ? (
             <View

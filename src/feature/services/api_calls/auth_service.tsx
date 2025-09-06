@@ -16,8 +16,8 @@ export function requestAuthenticateLoginDataService(
 }
 
 // Auth Logout Service ----
-export function requestAuthenticateLogoutDataService(
-  requestBody: IAuthenticationLoginDataRequestBody,
-): Promise<AxiosResponse<IAuthenticationLogoutDataResponseBody>> {
-  return requests.post(`${BASE_URL}/api/pos/logout`, requestBody);
+export function requestAuthenticateLogoutDataService(): Promise<
+  AxiosResponse<IAuthenticationLogoutDataResponseBody>
+> {
+  return requests.post(`${BASE_URL}/api/pos/logout`);
 }

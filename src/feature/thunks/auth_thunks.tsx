@@ -32,9 +32,9 @@ export const requestAuthenticateLoginData = createAsyncThunk(
 // Auth Logout Data Thunks -----
 export const requestAuthenticateLogoutData = createAsyncThunk(
   '@/auth/pos/logout',
-  async (body: IAuthenticationLoginDataRequestBody, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await requestAuthenticateLogoutDataService(body);
+      const response = await requestAuthenticateLogoutDataService();
       return response?.data;
     } catch (err: any) {
       const error: AxiosError<IAuthError> = err; // cast the error for access
