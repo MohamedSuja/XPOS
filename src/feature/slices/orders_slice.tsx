@@ -6,7 +6,16 @@ import {
   IOrdersListResponseBody,
   IOrdersListParams,
 } from '@/feature/redux_models/orders_model';
-import { requestOrdersListData } from '@/feature/thunks/orders_thunks';
+import {
+  requestOrderAcceptData,
+  requestOrderDetailsData,
+  requestOrderMarkDeliveredData,
+  requestOrderMarkReadyData,
+  requestOrderRejectData,
+  requestOrderStartDeliveryData,
+  requestOrderSummaryData,
+  requestOrdersListData,
+} from '@/feature/thunks/orders_thunks';
 
 const DEFAULT_STATE: IOrdersState = {
   ordersSliceStatus: undefined,
@@ -29,6 +38,33 @@ const DEFAULT_STATE: IOrdersState = {
   ordersCanceledListStatus: undefined,
   ordersCanceledListData: undefined,
 
+  orderDetailsStatus: undefined,
+  orderDetailsData: undefined,
+
+  // Order Accept
+  orderAcceptStatus: undefined,
+  orderAcceptData: undefined,
+
+  // Order Mark Ready
+  orderMarkReadyStatus: undefined,
+  orderMarkReadyData: undefined,
+
+  // Order Start Delivery
+  orderStartDeliveryStatus: undefined,
+  orderStartDeliveryData: undefined,
+
+  // Order Mark Delivered
+  orderMarkDeliveredStatus: undefined,
+  orderMarkDeliveredData: undefined,
+
+  // Order Reject
+  orderRejectStatus: undefined,
+  orderRejectData: undefined,
+
+  // Order Summary
+  orderSummaryStatus: undefined,
+  orderSummaryData: undefined,
+
   ordersError: undefined,
 };
 
@@ -45,7 +81,77 @@ const orders_slice = createSlice({
     resetOrdersList: (
       state: IOrdersState,
       action: { payload?: IOrdersListParams },
-    ) => {},
+    ) => {
+      // Reset only the relevant orders list status and data based on the payload type
+      if (action.payload && action.payload.request) {
+        switch (action.payload.request) {
+          case 'request':
+            state.ordersRequestListStatus = undefined;
+            state.ordersRequestListData = undefined;
+            break;
+          case 'ongoing':
+            state.ordersOngoingListStatus = undefined;
+            state.ordersOngoingListData = undefined;
+            break;
+          case 'scheduled':
+            state.ordersScheduledListStatus = undefined;
+            state.ordersScheduledListData = undefined;
+            break;
+          case 'completed':
+            state.ordersCompletedListStatus = undefined;
+            state.ordersCompletedListData = undefined;
+            break;
+          case 'cancelled':
+            state.ordersCanceledListStatus = undefined;
+            state.ordersCanceledListData = undefined;
+            break;
+          default:
+            break;
+        }
+      } else {
+        // If no payload, reset all lists
+        state.ordersRequestListStatus = undefined;
+        state.ordersRequestListData = undefined;
+        state.ordersOngoingListStatus = undefined;
+        state.ordersOngoingListData = undefined;
+        state.ordersScheduledListStatus = undefined;
+        state.ordersScheduledListData = undefined;
+        state.ordersCompletedListStatus = undefined;
+        state.ordersCompletedListData = undefined;
+        state.ordersCanceledListStatus = undefined;
+        state.ordersCanceledListData = undefined;
+      }
+    },
+
+    resetOrderAccept: (state: IOrdersState) => {
+      state.orderAcceptStatus = undefined;
+      state.orderAcceptData = undefined;
+    },
+
+    resetOrderMarkReady: (state: IOrdersState) => {
+      state.orderMarkReadyStatus = undefined;
+      state.orderMarkReadyData = undefined;
+    },
+
+    resetOrderStartDelivery: (state: IOrdersState) => {
+      state.orderStartDeliveryStatus = undefined;
+      state.orderStartDeliveryData = undefined;
+    },
+
+    resetOrderMarkDelivered: (state: IOrdersState) => {
+      state.orderMarkDeliveredStatus = undefined;
+      state.orderMarkDeliveredData = undefined;
+    },
+
+    resetOrderReject: (state: IOrdersState) => {
+      state.orderRejectStatus = undefined;
+      state.orderRejectData = undefined;
+    },
+
+    resetOrderSummary: (state: IOrdersState) => {
+      state.orderSummaryStatus = undefined;
+      state.orderSummaryData = undefined;
+    },
   },
 
   extraReducers: builder => {
@@ -143,10 +249,158 @@ const orders_slice = createSlice({
 
       state.ordersError = action.payload;
     });
+
+    // Order Details Start
+    builder.addCase(requestOrderDetailsData.pending, state => {
+      state.ordersSliceStatus = STATUS.LOADING;
+      state.orderDetailsStatus = STATUS.LOADING;
+    });
+
+    builder.addCase(requestOrderDetailsData.fulfilled, (state, action) => {
+      state.ordersSliceStatus = STATUS.SUCCEEDED;
+      state.orderDetailsStatus = STATUS.SUCCEEDED;
+      state.orderDetailsData = action.payload;
+    });
+
+    builder.addCase(requestOrderDetailsData.rejected, (state, action) => {
+      state.ordersSliceStatus = STATUS.FAILED;
+      state.orderDetailsStatus = STATUS.FAILED;
+      state.ordersError = action.payload;
+    });
+
+    // Order Details End
+
+    // Order Accept Start
+    builder.addCase(requestOrderAcceptData.pending, state => {
+      state.ordersSliceStatus = STATUS.LOADING;
+      state.orderAcceptStatus = STATUS.LOADING;
+    });
+
+    builder.addCase(requestOrderAcceptData.fulfilled, (state, action) => {
+      state.ordersSliceStatus = STATUS.SUCCEEDED;
+      state.orderAcceptStatus = STATUS.SUCCEEDED;
+      state.orderAcceptData = action.payload;
+    });
+
+    builder.addCase(requestOrderAcceptData.rejected, (state, action) => {
+      state.ordersSliceStatus = STATUS.FAILED;
+      state.orderAcceptStatus = STATUS.FAILED;
+      state.ordersError = action.payload;
+    });
+    // Order Accept End
+
+    // Order Mark Ready Start
+    builder.addCase(requestOrderMarkReadyData.pending, state => {
+      state.ordersSliceStatus = STATUS.LOADING;
+      state.orderMarkReadyStatus = STATUS.LOADING;
+    });
+
+    builder.addCase(requestOrderMarkReadyData.fulfilled, (state, action) => {
+      state.ordersSliceStatus = STATUS.SUCCEEDED;
+      state.orderMarkReadyStatus = STATUS.SUCCEEDED;
+      state.orderMarkReadyData = action.payload;
+    });
+
+    builder.addCase(requestOrderMarkReadyData.rejected, (state, action) => {
+      state.ordersSliceStatus = STATUS.FAILED;
+      state.orderMarkReadyStatus = STATUS.FAILED;
+      state.ordersError = action.payload;
+    });
+    // Order Mark Ready End
+
+    // Order Start Delivery Start
+    builder.addCase(requestOrderStartDeliveryData.pending, state => {
+      state.ordersSliceStatus = STATUS.LOADING;
+      state.orderStartDeliveryStatus = STATUS.LOADING;
+    });
+
+    builder.addCase(
+      requestOrderStartDeliveryData.fulfilled,
+      (state, action) => {
+        state.ordersSliceStatus = STATUS.SUCCEEDED;
+        state.orderStartDeliveryStatus = STATUS.SUCCEEDED;
+        state.orderStartDeliveryData = action.payload;
+      },
+    );
+
+    builder.addCase(requestOrderStartDeliveryData.rejected, (state, action) => {
+      state.ordersSliceStatus = STATUS.FAILED;
+      state.orderStartDeliveryStatus = STATUS.FAILED;
+      state.ordersError = action.payload;
+    });
+    // Order Start Delivery End
+
+    // Order Mark Delivered Start
+    builder.addCase(requestOrderMarkDeliveredData.pending, state => {
+      state.ordersSliceStatus = STATUS.LOADING;
+      state.orderMarkDeliveredStatus = STATUS.LOADING;
+    });
+
+    builder.addCase(
+      requestOrderMarkDeliveredData.fulfilled,
+      (state, action) => {
+        state.ordersSliceStatus = STATUS.SUCCEEDED;
+        state.orderMarkDeliveredStatus = STATUS.SUCCEEDED;
+        state.orderMarkDeliveredData = action.payload;
+      },
+    );
+
+    builder.addCase(requestOrderMarkDeliveredData.rejected, (state, action) => {
+      state.ordersSliceStatus = STATUS.FAILED;
+      state.orderMarkDeliveredStatus = STATUS.FAILED;
+      state.ordersError = action.payload;
+    });
+    // Order Mark Delivered End
+
+    // Order Reject Start
+    builder.addCase(requestOrderRejectData.pending, state => {
+      state.ordersSliceStatus = STATUS.LOADING;
+      state.orderRejectStatus = STATUS.LOADING;
+    });
+
+    builder.addCase(requestOrderRejectData.fulfilled, (state, action) => {
+      state.ordersSliceStatus = STATUS.SUCCEEDED;
+      state.orderRejectStatus = STATUS.SUCCEEDED;
+      state.orderRejectData = action.payload;
+    });
+
+    builder.addCase(requestOrderRejectData.rejected, (state, action) => {
+      state.ordersSliceStatus = STATUS.FAILED;
+      state.orderRejectStatus = STATUS.FAILED;
+      state.ordersError = action.payload;
+    });
+    // Order Reject End
+
+    // Order Summary Start
+    builder.addCase(requestOrderSummaryData.pending, state => {
+      state.ordersSliceStatus = STATUS.LOADING;
+      state.orderSummaryStatus = STATUS.LOADING;
+    });
+
+    builder.addCase(requestOrderSummaryData.fulfilled, (state, action) => {
+      state.ordersSliceStatus = STATUS.SUCCEEDED;
+      state.orderSummaryStatus = STATUS.SUCCEEDED;
+      state.orderSummaryData = action.payload;
+    });
+
+    builder.addCase(requestOrderSummaryData.rejected, (state, action) => {
+      state.ordersSliceStatus = STATUS.FAILED;
+      state.orderSummaryStatus = STATUS.FAILED;
+      state.ordersError = action.payload;
+    });
+    // Order Summary End
   },
 });
 
-export const { resetOrders } = orders_slice.actions;
+export const {
+  resetOrders,
+  resetOrderAccept,
+  resetOrderMarkReady,
+  resetOrderStartDelivery,
+  resetOrderMarkDelivered,
+  resetOrderReject,
+  resetOrderSummary,
+} = orders_slice.actions;
 
 export const selectOrdersSliceStatus = (state: RootState) =>
   state.orders.ordersSliceStatus;
@@ -180,6 +434,47 @@ export const selectOrdersCanceledListStatus = (state: RootState) =>
   state.orders.ordersCanceledListStatus;
 export const selectOrdersCanceledListData = (state: RootState) =>
   state.orders.ordersCanceledListData;
+
+export const selectOrderDetailsStatus = (state: RootState) =>
+  state.orders.orderDetailsStatus;
+export const selectOrderDetailsData = (state: RootState) =>
+  state.orders.orderDetailsData;
+
+// Order Accept Selectors
+export const selectOrderAcceptStatus = (state: RootState) =>
+  state.orders.orderAcceptStatus;
+export const selectOrderAcceptData = (state: RootState) =>
+  state.orders.orderAcceptData;
+
+// Order Mark Ready Selectors
+export const selectOrderMarkReadyStatus = (state: RootState) =>
+  state.orders.orderMarkReadyStatus;
+export const selectOrderMarkReadyData = (state: RootState) =>
+  state.orders.orderMarkReadyData;
+
+// Order Start Delivery Selectors
+export const selectOrderStartDeliveryStatus = (state: RootState) =>
+  state.orders.orderStartDeliveryStatus;
+export const selectOrderStartDeliveryData = (state: RootState) =>
+  state.orders.orderStartDeliveryData;
+
+// Order Mark Delivered Selectors
+export const selectOrderMarkDeliveredStatus = (state: RootState) =>
+  state.orders.orderMarkDeliveredStatus;
+export const selectOrderMarkDeliveredData = (state: RootState) =>
+  state.orders.orderMarkDeliveredData;
+
+// Order Reject Selectors
+export const selectOrderRejectStatus = (state: RootState) =>
+  state.orders.orderRejectStatus;
+export const selectOrderRejectData = (state: RootState) =>
+  state.orders.orderRejectData;
+
+// Order Summary Selectors
+export const selectOrderSummaryStatus = (state: RootState) =>
+  state.orders.orderSummaryStatus;
+export const selectOrderSummaryData = (state: RootState) =>
+  state.orders.orderSummaryData;
 
 export const selectOrdersError = (state: RootState) => state.orders.ordersError;
 
