@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 const instance = axios.create({
   // baseURL: BASE_URL,
   timeout: 1000 * 60 * 60,
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
     // Authorization: `Bearer ${token}`,
   },
 });
@@ -14,12 +14,12 @@ const responseBody = (response: AxiosResponse) => response;
 
 const createConfig = (body: any): AxiosRequestConfig => ({
   headers:
-    body instanceof FormData ? { "Content-Type": "multipart/form-data" } : {},
+    body instanceof FormData ? { 'Content-Type': 'multipart/form-data' } : {},
 });
 
 export const requests = {
   get: (url: string) => instance.get(url).then(responseBody),
-  post: (url: string, body: any) =>
+  post: (url: string, body?: any) =>
     instance.post(url, body, createConfig(body)).then(responseBody),
   patch: (url: string, body: any) =>
     instance.patch(url, body, createConfig(body)).then(responseBody),
@@ -36,7 +36,7 @@ instance.interceptors.request.use(
   function (error: any) {
     // Do something with request error
     return Promise.reject(error);
-  }
+  },
 );
 
 instance.interceptors.response.use(
@@ -51,10 +51,10 @@ instance.interceptors.response.use(
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
     const errorMsg = error.response.data;
-    console.error("ERROR => ", errorMsg);
+    console.error('ERROR => ', errorMsg);
 
     return Promise.reject(errorMsg);
-  }
+  },
 );
 
 export function setAccessToken(token: string) {

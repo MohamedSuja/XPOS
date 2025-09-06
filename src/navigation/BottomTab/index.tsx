@@ -15,14 +15,13 @@ import {
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import { globalStyles } from '@/utils/globalStyles';
 import TopTabNavigator from '../TopTab';
-import MenuStack from '../Stacks/MenuStack';
-import HomeStack from '../Stacks/HomeStack';
-import ReportStack from '../Stacks/ReportStack';
-import OrderStack from '../Stacks/OrderStack';
 import {
   SafeAreaView,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
+import HomeScreen from '@/screens/app/HomeScreen';
+import CategoryScreen from '@/screens/app/Menu/CategoryScreen';
+import ReportScreen from '@/screens/app/ReportScreen';
 
 const Tab = createBottomTabNavigator();
 const BottomTab = () => {
@@ -79,7 +78,7 @@ const BottomTab = () => {
       >
         <Tab.Screen
           name="Home"
-          component={HomeStack}
+          component={HomeScreen}
           options={() => ({
             tabBarButton: props => (
               <Pressable
@@ -141,7 +140,7 @@ const BottomTab = () => {
         />
         <Tab.Screen
           name="OrderStack"
-          component={OrderStack}
+          component={TopTabNavigator}
           options={() => ({
             tabBarButton: props => (
               <Pressable
@@ -202,8 +201,8 @@ const BottomTab = () => {
           })}
         />
         <Tab.Screen
-          name="Menu"
-          component={MenuStack}
+          name="Category"
+          component={CategoryScreen}
           options={() => ({
             tabBarButton: props => (
               <Pressable
@@ -265,7 +264,7 @@ const BottomTab = () => {
         />
         <Tab.Screen
           name="Report"
-          component={ReportStack}
+          component={ReportScreen}
           options={() => ({
             tabBarButton: props => (
               <Pressable
