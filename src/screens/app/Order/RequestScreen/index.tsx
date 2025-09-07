@@ -1,5 +1,5 @@
 import { View, Text, FlatList, ActivityIndicator } from 'react-native';
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import OrderRequestCard from '@/components/Cards/OrderRequestCard';
 import { useAppDispatch, useAppSelector } from '@/feature/stateHooks';
@@ -19,6 +19,8 @@ import {
   resetOrderReject,
   selectIsOrderAcceptLoading,
   selectIsOrderRejectLoading,
+  selectOrderAcceptLoadingIds,
+  selectOrderRejectLoadingIds,
 } from '@/feature/slices/orders_slice';
 import { STATUS } from '@/feature/services/status_constants';
 
@@ -42,6 +44,18 @@ const RequestScreen = ({ navigation }: any) => {
   // Monitor accept status and clear after success
   const OrderAcceptStatus = useAppSelector(selectOrderAcceptStatus);
   const OrderAcceptData = useAppSelector(selectOrderAcceptData);
+
+  const acceptLoadingIds = useAppSelector(selectOrderAcceptLoadingIds);
+  const rejectLoadingIds = useAppSelector(selectOrderRejectLoadingIds);
+
+  const acceptLoadingSet = useMemo(
+    () => new Set((acceptLoadingIds || []).map(id => String(id))),
+    [acceptLoadingIds],
+  );
+  const rejectLoadingSet = useMemo(
+    () => new Set((rejectLoadingIds || []).map(id => String(id))),
+    [rejectLoadingIds],
+  );
 
   useEffect(() => {
     if (OrderAcceptStatus === STATUS.SUCCEEDED) {
@@ -116,12 +130,11 @@ const RequestScreen = ({ navigation }: any) => {
       };
 
       // Check if this specific order is loading
-      const isAcceptLoading = useAppSelector(
-        selectIsOrderAcceptLoading(item.id),
-      );
-      const isRejectLoading = useAppSelector(
-        selectIsOrderRejectLoading(item.id),
-      );
+      const isAcceptLoading = acceptLoadingSet.has(String(item.id));
+
+      const isRejectLoading = rejectLoadingSet.has(String(item.id));
+
+      console.log(isAcceptLoading, isRejectLoading, 1212121212);
 
       // Format items for OrderRequestCard
       const orderItems =
@@ -146,10 +159,12 @@ const RequestScreen = ({ navigation }: any) => {
           onDecline={onSelectDecline}
           loadingAccept={isAcceptLoading}
           loadingDecline={isRejectLoading}
+          date={dateStr}
+          time={timeStr}
         />
       );
     },
-    [dispatch],
+    [dispatch, acceptLoadingSet, rejectLoadingSet],
   );
 
   const renderFooter = useCallback(() => {
