@@ -77,6 +77,15 @@ const OngoingScreen = () => {
     }
   }, [currentPage, isLoadingMore, hasMoreData, pagination, loadOrders]);
 
+  // Reload list whenever screen gains focus using navigation listener
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      loadOrders(1, true);
+    });
+
+    return unsubscribe;
+  }, [navigation, loadOrders]);
+
   const handleSearch = useCallback(
     async (query: string) => {
       setSearchQuery(query);
