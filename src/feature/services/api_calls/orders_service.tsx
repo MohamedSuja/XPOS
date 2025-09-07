@@ -22,7 +22,6 @@ export function requestOrdersListService(
   const queryParams = new URLSearchParams();
 
   // Mandatory parameters
-  queryParams.append('request', params?.request);
   queryParams.append('per_page', params?.per_page.toString());
   queryParams.append('page', params?.page.toString());
 
@@ -40,7 +39,10 @@ export function requestOrdersListService(
     queryParams.append('delivery_type', params.delivery_type);
   }
 
-  const url = `${BASE_URL}/api/pos/orders?${queryParams.toString()}`;
+  const url = `${BASE_URL}/api/pos/orders?${
+    params?.request
+  }=&${queryParams.toString()}`;
+
   return requests.get(url);
 }
 
