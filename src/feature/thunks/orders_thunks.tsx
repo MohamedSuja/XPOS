@@ -8,6 +8,7 @@ import {
   requestOrderAcceptService,
   requestOrderDetailsService,
   requestOrderMarkDeliveredService,
+  requestOrderMarkPreparingService,
   requestOrderMarkReadyService,
   requestOrderRejectService,
   requestOrderStartDeliveryService,
@@ -74,6 +75,22 @@ export const requestOrderMarkReadyData = createAsyncThunk(
   async (orderId: string, { rejectWithValue }) => {
     try {
       const response = await requestOrderMarkReadyService(orderId);
+      return response?.data;
+    } catch (err: any) {
+      const error: AxiosError<IOrdersError> = err;
+      if (!error) {
+        throw err;
+      }
+      return rejectWithValue(error);
+    }
+  },
+);
+
+export const requestOrderMarkPreparingData = createAsyncThunk(
+  '@/orders/mark-preparing',
+  async (orderId: string, { rejectWithValue }) => {
+    try {
+      const response = await requestOrderMarkPreparingService(orderId);
       return response?.data;
     } catch (err: any) {
       const error: AxiosError<IOrdersError> = err;

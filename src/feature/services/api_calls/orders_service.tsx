@@ -4,6 +4,7 @@ import Config from 'react-native-config';
 import {
   IOrderAcceptResponseBody,
   IOrderDetailsResponseBody,
+  IOrderMarkPreparingResponseBody,
   IOrderMarkDeliveredResponseBody,
   IOrderMarkReadyResponseBody,
   IOrderRejectResponseBody,
@@ -64,6 +65,13 @@ export function requestOrderMarkReadyService(
   orderId: string,
 ): Promise<AxiosResponse<IOrderMarkReadyResponseBody>> {
   const url = `${BASE_URL}/api/pos/orders/${orderId}/mark-ready`;
+  return requests.put(url, {});
+}
+
+export function requestOrderMarkPreparingService(
+  orderId: string,
+): Promise<AxiosResponse<IOrderMarkPreparingResponseBody>> {
+  const url = `${BASE_URL}/api/pos/orders/${orderId}/mark-preparing`;
   return requests.put(url, {});
 }
 

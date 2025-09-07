@@ -10,6 +10,7 @@ import {
   requestOrderAcceptData,
   requestOrderDetailsData,
   requestOrderMarkDeliveredData,
+  requestOrderMarkPreparingData,
   requestOrderMarkReadyData,
   requestOrderRejectData,
   requestOrderStartDeliveryData,
@@ -50,6 +51,10 @@ const DEFAULT_STATE: IOrdersState = {
   // Order Mark Ready
   orderMarkReadyStatus: undefined,
   orderMarkReadyData: undefined,
+
+  // Order Mark Preparing
+  orderMarkPreparingStatus: undefined,
+  orderMarkPreparingData: undefined,
 
   // Order Start Delivery
   orderStartDeliveryStatus: undefined,
@@ -134,6 +139,11 @@ const orders_slice = createSlice({
     resetOrderMarkReady: (state: IOrdersState) => {
       state.orderMarkReadyStatus = undefined;
       state.orderMarkReadyData = undefined;
+    },
+
+    resetOrderMarkPreparing: (state: IOrdersState) => {
+      state.orderMarkPreparingStatus = undefined;
+      state.orderMarkPreparingData = undefined;
     },
 
     resetOrderStartDelivery: (state: IOrdersState) => {
@@ -407,6 +417,39 @@ const orders_slice = createSlice({
     );
     // Order Mark Ready End
 
+    // Order Mark Preparing Start
+    builder.addCase(requestOrderMarkPreparingData.pending, state => {
+      state.ordersSliceStatus = STATUS.LOADING;
+      state.orderMarkPreparingStatus = STATUS.LOADING;
+    });
+
+    builder.addCase(
+      requestOrderMarkPreparingData.fulfilled,
+      (state, action) => {
+        state.ordersSliceStatus = STATUS.SUCCEEDED;
+        state.orderMarkPreparingStatus = STATUS.SUCCEEDED;
+        state.orderMarkPreparingData = action.payload;
+      },
+    );
+
+    builder.addCase(
+      requestOrderMarkPreparingData.rejected,
+      (state, action: any) => {
+        state.ordersSliceStatus = STATUS.FAILED;
+        state.orderMarkPreparingStatus = STATUS.FAILED;
+        state.ordersError = action.payload;
+
+        if (action?.payload?.status === 500) {
+          // ErrorFlash(action?.payload?.error);
+        } else if (action?.payload?.status === 400) {
+          ErrorFlash(action?.payload?.message);
+        } else if (action?.error) {
+          ErrorFlash(action?.payload?.message);
+        }
+      },
+    );
+    // Order Mark Preparing End
+
     // Order Start Delivery Start
     builder.addCase(requestOrderStartDeliveryData.pending, state => {
       state.ordersSliceStatus = STATUS.LOADING;
@@ -532,6 +575,7 @@ export const {
   resetOrders,
   resetOrderAccept,
   resetOrderMarkReady,
+  resetOrderMarkPreparing,
   resetOrderStartDelivery,
   resetOrderMarkDelivered,
   resetOrderReject,
@@ -597,6 +641,12 @@ export const selectOrderMarkReadyStatus = (state: RootState) =>
   state.orders.orderMarkReadyStatus;
 export const selectOrderMarkReadyData = (state: RootState) =>
   state.orders.orderMarkReadyData;
+
+// Order Mark Preparing Selectors
+export const selectOrderMarkPreparingStatus = (state: RootState) =>
+  state.orders.orderMarkPreparingStatus;
+export const selectOrderMarkPreparingData = (state: RootState) =>
+  state.orders.orderMarkPreparingData;
 
 // Order Start Delivery Selectors
 export const selectOrderStartDeliveryStatus = (state: RootState) =>

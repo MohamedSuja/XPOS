@@ -32,6 +32,10 @@ export interface IOrdersState {
   orderMarkReadyStatus: string | undefined;
   orderMarkReadyData: IOrderMarkReadyResponseBody | undefined;
 
+  // Order Mark Preparing
+  orderMarkPreparingStatus: string | undefined;
+  orderMarkPreparingData: IOrderMarkPreparingResponseBody | undefined;
+
   // Order Start Delivery
   orderStartDeliveryStatus: string | undefined;
   orderStartDeliveryData: IOrderStartDeliveryResponseBody | undefined;
@@ -171,6 +175,13 @@ export interface IOrderAcceptResponseBody {
 }
 
 export interface IOrderMarkReadyResponseBody {
+  success: boolean | undefined;
+  message: string | undefined;
+  errors: any[];
+  data: any;
+}
+
+export interface IOrderMarkPreparingResponseBody {
   success: boolean | undefined;
   message: string | undefined;
   errors: any[];
