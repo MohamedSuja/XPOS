@@ -23,12 +23,15 @@ import RoomServiceIcon from '@/assets/icons/RoomService.svg';
 import OrderViewCard from '@/components/Cards/OrderViewCard';
 import {
   requestOrderDetailsData,
+  requestOrderMarkPreparingData,
   requestOrderMarkReadyData,
 } from '@/feature/thunks/orders_thunks';
 import { UserStackScreenProps } from '@/navigation/NavigationModels/UserStack';
 import {
   selectOrderDetailsData,
   selectOrderDetailsStatus,
+  selectOrderMarkPreparingData,
+  selectOrderMarkPreparingStatus,
   selectOrderMarkReadyData,
   selectOrderMarkReadyStatus,
 } from '@/feature/slices/orders_slice';
@@ -50,6 +53,11 @@ const OrderViewScreen = ({
   const OrderMarkReadyData = useAppSelector(selectOrderMarkReadyData);
   const OrderMarkReadyStatus = useAppSelector(selectOrderMarkReadyStatus);
 
+  const OrderMarkPreparingData = useAppSelector(selectOrderMarkPreparingData);
+  const OrderMarkPreparingStatus = useAppSelector(
+    selectOrderMarkPreparingStatus,
+  );
+
   const data = OrderDetailsData?.data.order;
   const [status, setStatus] = useState<any>(undefined);
 
@@ -65,7 +73,7 @@ const OrderViewScreen = ({
     switch (status) {
       case 'accepted':
         return 'accepted';
-      case 'pending':
+      case 'preparing':
         return 'preparing';
       case 'ready_for_pickup':
         return 'ready';
@@ -82,7 +90,15 @@ const OrderViewScreen = ({
     }
   }, [OrderDetailsStatus]);
 
-  const onPressPreparing = () => {};
+  const onPressPreparing = () => {
+    dispatch(requestOrderMarkPreparingData(route.params?.orderId));
+  };
+
+  useUpdateEffect(() => {
+    if (OrderMarkPreparingStatus == STATUS.SUCCEEDED) {
+      setStatus(getOrderType('preparing'));
+    }
+  }, [OrderMarkPreparingStatus]);
 
   const onPressReady = () => {
     dispatch(requestOrderMarkReadyData(route.params?.orderId));
