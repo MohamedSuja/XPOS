@@ -104,6 +104,8 @@ const CompletedScreen = () => {
         return 'ready';
       case 'out_for_delivery':
         return 'picked';
+      case 'delivered':
+        return 'picked';
       default:
         return undefined;
     }

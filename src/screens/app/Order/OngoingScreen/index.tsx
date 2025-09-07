@@ -91,7 +91,7 @@ const OngoingScreen = () => {
     switch (status) {
       case 'accepted':
         return 'accepted';
-      case 'pending':
+      case 'preparing':
         return 'preparing';
       case 'ready_for_pickup':
         return 'ready';

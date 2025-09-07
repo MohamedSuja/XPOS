@@ -102,6 +102,8 @@ const CancelledScreen = () => {
         return 'ready';
       case 'out_for_delivery':
         return 'picked';
+      case 'cancelled':
+        return 'cancelled';
       default:
         return undefined;
     }

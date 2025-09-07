@@ -347,6 +347,17 @@ const orders_slice = createSlice({
           );
       }
 
+      // Decrement the request total count used for the tab badge
+      const paginationByStatus =
+        state.ordersRequestListData?.data?.pagination_by_status;
+      if (
+        paginationByStatus?.request?.total !== undefined &&
+        typeof paginationByStatus.request.total === 'number' &&
+        paginationByStatus.request.total > 0
+      ) {
+        paginationByStatus.request.total -= 1;
+      }
+
       // Remove order ID from loading list
       state.orderAcceptLoadingIds = state.orderAcceptLoadingIds.filter(
         id => id !== orderId,
@@ -464,6 +475,17 @@ const orders_slice = createSlice({
           state.ordersRequestListData.data.orders.filter(
             (order: any) => order.id !== orderId,
           );
+      }
+
+      // Decrement the request total count used for the tab badge
+      const paginationByStatus =
+        state.ordersRequestListData?.data?.pagination_by_status;
+      if (
+        paginationByStatus?.request?.total !== undefined &&
+        typeof paginationByStatus.request.total === 'number' &&
+        paginationByStatus.request.total > 0
+      ) {
+        paginationByStatus.request.total -= 1;
       }
 
       // Remove order ID from loading list
