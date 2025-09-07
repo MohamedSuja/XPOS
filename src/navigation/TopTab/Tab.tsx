@@ -68,22 +68,22 @@ const TabButton = ({
         );
       case 1:
         return (
-          ordersOngoingListData?.data?.pagination_by_status?.request?.total || 0
+          ordersOngoingListData?.data?.pagination_by_status?.ongoing?.total || 0
         );
       case 2:
         return (
-          ordersScheduledListData?.data?.pagination_by_status?.request?.total ||
-          0
+          ordersScheduledListData?.data?.pagination_by_status?.scheduled
+            ?.total || 0
         );
       case 3:
         return (
-          ordersCompletedListData?.data?.pagination_by_status?.request?.total ||
-          0
+          ordersCompletedListData?.data?.pagination_by_status?.completed
+            ?.total || 0
         );
       case 4:
         return (
-          ordersCanceledListData?.data?.pagination_by_status?.request?.total ||
-          0
+          ordersCanceledListData?.data?.pagination_by_status?.cancelled
+            ?.total || 0
         );
       default:
         return 0;

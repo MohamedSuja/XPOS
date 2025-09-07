@@ -9,7 +9,7 @@ import ReadyIcon from '@/assets/icons/Ready.svg';
 import AcceptedIcon from '@/assets/icons/Accepted.svg';
 
 interface TextButtonProps {
-  type:
+  type?:
     | 'preparing'
     | 'picked'
     | 'cancelled'
@@ -23,7 +23,7 @@ const Tag = (props: TextButtonProps) => {
   const { type, style } = props;
   const { colors }: ThemeContextType = useTheme();
   const styles = createButtonStyles(colors);
-  return (
+  return type ? (
     <View
       style={[
         styles.container,
@@ -78,7 +78,7 @@ const Tag = (props: TextButtonProps) => {
         {type === 'scheduled' && 'Scheduled'}
       </Text>
     </View>
-  );
+  ) : null;
 };
 
 export default Tag;

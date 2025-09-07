@@ -8,10 +8,22 @@ import DangerIcon from '@/assets/icons/Danger.svg';
 import CrossIcon from '@/assets/icons/Cross.svg';
 import { wp } from '@/utils/Scaling';
 
-interface OrderCardProps {}
+interface OrderItemProps {
+  item_name: string;
+  item_description: string;
+  quantity: number | null;
+  unit_price: number | null;
+  total_price: number;
+  special_instructions: string | null;
+  variants: Array<{
+    variant_name: string;
+    variant_value: string | null;
+    variant_price: number;
+  }>;
+  add_ons: any[];
+}
 
-const OrderViewCard = (props: OrderCardProps) => {
-  const {} = props;
+const OrderViewCard = (props: OrderItemProps) => {
   const { colors }: ThemeContextType = useTheme();
   const styles = createButtonStyles(colors);
 
@@ -19,46 +31,59 @@ const OrderViewCard = (props: OrderCardProps) => {
     <View style={[styles.container]}>
       <View style={styles.titleContainer}>
         <View style={styles.titleTextContainer}>
-          <Text style={[globalStyles.h5, styles.title]}>
-            Dum Chicken Biriyani{' '}
-          </Text>
+          <Text style={[globalStyles.h5, styles.title]}>{props.item_name}</Text>
           <View style={styles.titleSubContainer}>
-            <Text style={[globalStyles.h9, styles.subtitle]}>Large : </Text>
-            <Text style={[globalStyles.h5, styles.subtitleNumber]}>1</Text>
-            <Text style={[globalStyles.h9, styles.subtitle]}>
-              Extra Large :{' '}
-            </Text>
-            <Text style={[globalStyles.h5, styles.subtitleNumber]}>1</Text>
+            {props.variants.map((variant, index) => (
+              <View
+                key={index}
+                style={{ flexDirection: 'row', alignItems: 'center' }}
+              >
+                <Text style={[globalStyles.h9, styles.subtitle]}>
+                  {variant.variant_name}:{' '}
+                </Text>
+                <Text style={[globalStyles.h5, styles.subtitleNumber]}>
+                  {variant.variant_value}
+                </Text>
+                {index < props.variants.length - 1 && (
+                  <Text style={[globalStyles.h9, styles.subtitle]}> | </Text>
+                )}
+              </View>
+            ))}
           </View>
         </View>
         <View style={styles.totalContainer}>
           <CrossIcon width={wp(3)} height={wp(3)} />
-          <Text style={[globalStyles.h2, styles.totalText]}>2</Text>
+          <Text style={[globalStyles.h2, styles.totalText]}>
+            {props.quantity || 0}
+          </Text>
         </View>
       </View>
-      <Text style={[globalStyles.h8, styles.addOns]}>Add-ons</Text>
 
-      <View style={styles.addOnsItemContainer}>
-        <PlusIcon width={wp(3)} height={wp(3)} />
-        <Text style={[globalStyles.h9, styles.addOnsItem]}>
-          Lorem ipsum dolor sit amet, consectetur
-        </Text>
-      </View>
-      <View style={styles.addOnsItemContainer}>
-        <PlusIcon width={wp(3)} height={wp(3)} />
-        <Text style={[globalStyles.h9, styles.addOnsItem]}>
-          Lorem ipsum dolor sit amet, consectetur
-        </Text>
-      </View>
+      {props.add_ons && props.add_ons.length > 0 && (
+        <>
+          <Text style={[globalStyles.h8, styles.addOns]}>Add-ons</Text>
+          {props.add_ons.map((addon, index) => (
+            <View key={index} style={styles.addOnsItemContainer}>
+              <PlusIcon width={wp(3)} height={wp(3)} />
+              <Text style={[globalStyles.h9, styles.addOnsItem]}>
+                {addon.name || addon}
+              </Text>
+            </View>
+          ))}
+        </>
+      )}
 
-      <Text style={[globalStyles.h8, styles.Instruction]}>Instruction</Text>
-
-      <View style={styles.instructionContainer}>
-        <DangerIcon width={wp(3)} height={wp(3)} />
-        <Text style={[globalStyles.h9, styles.instructionItemText]}>
-          Lorem ipsum dolor sit amet, consectetur{' '}
-        </Text>
-      </View>
+      {props.special_instructions && (
+        <>
+          <Text style={[globalStyles.h8, styles.Instruction]}>Instruction</Text>
+          <View style={styles.instructionContainer}>
+            <DangerIcon width={wp(3)} height={wp(3)} />
+            <Text style={[globalStyles.h9, styles.instructionItemText]}>
+              {props.special_instructions}
+            </Text>
+          </View>
+        </>
+      )}
     </View>
   );
 };
