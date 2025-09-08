@@ -9,7 +9,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import { createStyles } from './styles';
@@ -25,12 +25,15 @@ import OrderRequestCard from '@/components/Cards/OrderRequestCard';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import PrimaryButton from '@/components/Buttons/PrimaryButton';
+import { useNotification } from '@/CustomProviders/NotificationProvider';
 
 const HomeScreen = ({ navigation }: any) => {
   const { colors }: ThemeContextType = useTheme();
   const styles = createStyles(colors);
 
   const [earningLoading, setEarningLoading] = useState(false);
+
+  const { setNavigator } = useNotification();
 
   // handle admin call
   const handleAdminCall = () => {
@@ -40,6 +43,12 @@ const HomeScreen = ({ navigation }: any) => {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    if (navigation) {
+      setNavigator(navigation);
+    }
+  }, [navigation]);
 
   return (
     <SafeAreaView style={styles.container}>

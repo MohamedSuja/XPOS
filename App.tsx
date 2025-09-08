@@ -8,6 +8,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import LoadingProvider from '@/CustomProviders/LoadingProvider';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import BootSplash from 'react-native-bootsplash';
+import { NotificationProvider } from '@/CustomProviders/NotificationProvider';
 
 const App = () => {
   useEffect(() => {
@@ -28,7 +29,9 @@ const App = () => {
           <GestureHandlerRootView style={{ flex: 1 }}>
             <SafeAreaProvider>
               <LoadingProvider>
-                <AppRoutes />
+                <NotificationProvider>
+                  <AppRoutes />
+                </NotificationProvider>
               </LoadingProvider>
             </SafeAreaProvider>
           </GestureHandlerRootView>

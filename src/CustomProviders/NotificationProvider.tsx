@@ -20,6 +20,8 @@ import notifee, {
   Event,
 } from '@notifee/react-native';
 import SoundPlayer from 'react-native-sound-player';
+import { useAppDispatch } from '@/feature/stateHooks';
+import { requestOrdersListData } from '@/feature/thunks/orders_thunks';
 
 const NotificationContext = createContext<any>(null);
 
@@ -28,12 +30,23 @@ export const NotificationProvider = ({ children }: any) => {
 
   const navigationRef = useRef<any>(null);
 
+  const dispatch = useAppDispatch();
+
   onMessage(messaging, async remoteMessage => {
     console.log('foreground remoteMessage', remoteMessage);
     if (typeof remoteMessage?.data?.notifee === 'string') {
-      console.log('foreground trigger');
-      // SoundPlayer.playAsset(require('../../assets/audios/OrderRing.wav'));
-      // handleViewOrder(JSON.parse(remoteMessage?.data?.notifee)?.data);
+      SoundPlayer.playAsset(require('../../assets/audios/OrderRing.wav'));
+      displayOrderAlertNotificationForeground(
+        JSON.parse(remoteMessage?.data?.notifee),
+      );
+      // Reload request orders list
+      await dispatch(
+        requestOrdersListData({
+          request: 'request',
+          per_page: 10,
+          page: 1,
+        }),
+      ).unwrap();
     } else {
       displayForegroundPushNotification(remoteMessage?.notification);
     }
@@ -42,20 +55,39 @@ export const NotificationProvider = ({ children }: any) => {
   setBackgroundMessageHandler(messaging, async remoteMessage => {
     console.log('background message', remoteMessage);
     if (typeof remoteMessage?.data?.notifee === 'string') {
-      // displayNotification(JSON.parse(remoteMessage?.data?.notifee));
+      displayOrderAlertNotification(JSON.parse(remoteMessage?.data?.notifee));
+      await dispatch(
+        requestOrdersListData({
+          request: 'request',
+          per_page: 10,
+          page: 1,
+        }),
+      ).unwrap();
     }
   });
 
   const createChannel = async () => {
     try {
       await notifee.createChannel({
-        id: 'order-response-channel',
+        id: 'order-alert-channel',
         name: 'Order response',
         badge: false,
         importance: AndroidImportance.HIGH,
         visibility: AndroidVisibility.PUBLIC,
         vibration: true,
-        sound: 'default',
+        sound: 'orderring',
+        bypassDnd: true,
+        vibrationPattern: [300, 200],
+      });
+
+      await notifee.createChannel({
+        id: 'order-alert-foreground-channel',
+        name: 'Order response',
+        badge: false,
+        importance: AndroidImportance.HIGH,
+        visibility: AndroidVisibility.PUBLIC,
+        vibration: true,
+        sound: 'none',
         bypassDnd: true,
         vibrationPattern: [300, 200],
       });
@@ -74,6 +106,12 @@ export const NotificationProvider = ({ children }: any) => {
 
       await notifee.onBackgroundEvent(async (event: Event) => {
         console.log('BG trigger', event?.detail?.pressAction?.id);
+        if (event?.detail?.pressAction?.id == 'ViewOrder') {
+          navigationRef.current.navigate('OrderStack');
+          if (event?.detail?.notification?.id) {
+            notifee.cancelDisplayedNotification(event?.detail.notification.id);
+          }
+        }
       });
     } catch (error) {
       console.log(error);
@@ -81,22 +119,54 @@ export const NotificationProvider = ({ children }: any) => {
   };
 
   // response display notification
-  const displayResponseNotification = (responseMessage: any) => {
+  const displayOrderAlertNotification = (responseMessage: any) => {
     try {
       notifee.displayNotification({
-        title: responseMessage?.action_performed
-          ? 'Order Accepted'
-          : 'Order Declined',
-        body: `Order ID : ${responseMessage?.driver_request?.id}`,
-        data: { requestId: responseMessage?.driver_request?.id },
+        title: responseMessage?.data?.message_en,
+        body: `Order ID : #${responseMessage?.data?.uniqueId}`,
+        data: { requestId: responseMessage?.data?.orderId },
         android: {
-          channelId: 'order-response-channel',
+          channelId: 'order-alert-channel',
           category: AndroidCategory.MESSAGE,
           importance: AndroidImportance.HIGH,
           visibility: AndroidVisibility.PUBLIC,
           smallIcon: 'ic_launcher',
           pressAction: {
-            id: 'default',
+            id: 'ViewOrder',
+            launchActivity: 'default',
+          },
+          // Custom colors
+          color: '#EB2229',
+
+          // Enhanced properties
+          ongoing: true,
+          autoCancel: false,
+          showTimestamp: true,
+          loopSound: true,
+          timeoutAfter: 20000,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // response display order alert notification foreground
+  const displayOrderAlertNotificationForeground = (responseMessage: any) => {
+    try {
+      notifee.displayNotification({
+        title: responseMessage?.data?.message_en,
+        body: `Order ID : #${responseMessage?.data?.uniqueId}`,
+        data: { requestId: responseMessage?.data?.orderId },
+        android: {
+          channelId: 'order-alert-foreground-channel',
+          category: AndroidCategory.MESSAGE,
+          importance: AndroidImportance.HIGH,
+          visibility: AndroidVisibility.PUBLIC,
+          smallIcon: 'ic_launcher',
+          pressAction: {
+            id: 'ViewOrder',
+            launchActivity: 'default',
           },
           // Custom colors
           color: '#EB2229',

@@ -134,8 +134,6 @@ const RequestScreen = ({ navigation }: any) => {
 
       const isRejectLoading = rejectLoadingSet.has(String(item.id));
 
-      console.log(isAcceptLoading, isRejectLoading, 1212121212);
-
       // Format items for OrderRequestCard
       const orderItems =
         order.items?.map((item: any) => ({

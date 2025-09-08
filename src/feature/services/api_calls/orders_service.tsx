@@ -1,6 +1,5 @@
 import { AxiosResponse } from 'axios';
 import { requests } from '../api';
-import Config from 'react-native-config';
 import {
   IOrderAcceptResponseBody,
   IOrderDetailsResponseBody,
@@ -14,8 +13,6 @@ import {
   IOrdersListParams,
   IOrdersListResponseBody,
 } from '@/feature/redux_models/orders_model';
-
-const BASE_URL = Config.BASE_URL;
 
 export function requestOrdersListService(
   params: IOrdersListParams,
@@ -40,9 +37,7 @@ export function requestOrdersListService(
     queryParams.append('delivery_type', params.delivery_type);
   }
 
-  const url = `${BASE_URL}/api/pos/orders?${
-    params?.request
-  }=&${queryParams.toString()}`;
+  const url = `/api/pos/orders?${params?.request}=&${queryParams.toString()}`;
 
   return requests.get(url);
 }
@@ -50,49 +45,49 @@ export function requestOrdersListService(
 export function requestOrderDetailsService(
   orderId: string,
 ): Promise<AxiosResponse<IOrderDetailsResponseBody>> {
-  const url = `${BASE_URL}/api/pos/orders/${orderId}`;
+  const url = `/api/pos/orders/${orderId}`;
   return requests.get(url);
 }
 
 export function requestOrderAcceptService(
   orderId: string,
 ): Promise<AxiosResponse<IOrderAcceptResponseBody>> {
-  const url = `${BASE_URL}/api/pos/orders/${orderId}/accept`;
+  const url = `/api/pos/orders/${orderId}/accept`;
   return requests.put(url, {});
 }
 
 export function requestOrderMarkReadyService(
   orderId: string,
 ): Promise<AxiosResponse<IOrderMarkReadyResponseBody>> {
-  const url = `${BASE_URL}/api/pos/orders/${orderId}/mark-ready`;
+  const url = `/api/pos/orders/${orderId}/mark-ready`;
   return requests.put(url, {});
 }
 
 export function requestOrderMarkPreparingService(
   orderId: string,
 ): Promise<AxiosResponse<IOrderMarkPreparingResponseBody>> {
-  const url = `${BASE_URL}/api/pos/orders/${orderId}/mark-preparing`;
+  const url = `/api/pos/orders/${orderId}/mark-preparing`;
   return requests.put(url, {});
 }
 
 export function requestOrderStartDeliveryService(
   orderId: string,
 ): Promise<AxiosResponse<IOrderStartDeliveryResponseBody>> {
-  const url = `${BASE_URL}/api/pos/orders/${orderId}/start-delivery`;
+  const url = `/api/pos/orders/${orderId}/start-delivery`;
   return requests.put(url, {});
 }
 
 export function requestOrderMarkDeliveredService(
   orderId: string,
 ): Promise<AxiosResponse<IOrderMarkDeliveredResponseBody>> {
-  const url = `${BASE_URL}/api/pos/orders/${orderId}/mark-delivered`;
+  const url = `/api/pos/orders/${orderId}/mark-delivered`;
   return requests.put(url, {});
 }
 
 export function requestOrderRejectService(
   orderId: string,
 ): Promise<AxiosResponse<IOrderRejectResponseBody>> {
-  const url = `${BASE_URL}/api/pos/orders/${orderId}/reject`;
+  const url = `/api/pos/orders/${orderId}/reject`;
   return requests.put(url, {});
 }
 
@@ -108,6 +103,6 @@ export function requestOrderSummaryService(
     queryParams.append('end_date', params.end_date);
   }
 
-  const url = `${BASE_URL}/api/pos/orders/summary?${queryParams.toString()}`;
+  const url = `/api/pos/orders/summary?${queryParams.toString()}`;
   return requests.get(url);
 }
