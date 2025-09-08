@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "606699157820",
+    "project_id": "x-technologies-4fe7b",
+    "storage_bucket": "x-technologies-4fe7b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:606699157820:android:86f2e2190038369ca84639",
+        "android_client_info": {
+          "package_name": "com.food.xrest"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHyygdsF4ypIM7P6P-pAv2jGA911h01Pw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:606699157820:android:ac6e0568434a4f95a84639",
+        "android_client_info": {
+          "package_name": "com.food.xriders"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHyygdsF4ypIM7P6P-pAv2jGA911h01Pw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

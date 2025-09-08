@@ -1,4 +1,4 @@
-package com.xpos
+package com.food.xrest
 
 import android.app.Application
 import com.facebook.react.PackageList
