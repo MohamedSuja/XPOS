@@ -1,8 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { Alert } from 'react-native';
+import Config from 'react-native-config';
+
+const BASE_URL = Config.BASE_URL;
 
 const instance = axios.create({
-  // baseURL: BASE_URL,
+  baseURL: BASE_URL,
   timeout: 1000 * 60 * 60,
   headers: {
     'Content-Type': 'application/json',
@@ -50,7 +54,17 @@ instance.interceptors.response.use(
   (error: any) => {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
+    const originalConfig = error.config;
     const errorMsg = error.response.data;
+
+    if (!error.response) {
+      console.log('No response from server - possible network issue.');
+      Alert.alert('Network Error!');
+    }
+
+    if (error.response.status === 500 && !originalConfig._retry)
+      [Alert.alert('Server Error!')];
+
     console.error('ERROR => ', errorMsg);
 
     return Promise.reject(errorMsg);

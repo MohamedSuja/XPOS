@@ -1,4 +1,4 @@
-package com.xpos
+package com.food.xrest
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

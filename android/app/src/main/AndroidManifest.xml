@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
   <uses-permission android:name="android.permission.INTERNET" />
+   <uses-permission android:name="android.permission.VIBRATE" /> 
 
   <application
     android:name=".MainApplication"
@@ -9,6 +10,7 @@
     android:allowBackup="false"
     android:theme="@style/AppTheme"
     android:supportsRtl="true">
+             <service android:name="app.notifee.core.ForegroundService" android:foregroundServiceType="location|camera|microphone" />
     <activity
       android:name=".MainActivity"
       android:label="@string/app_name"
