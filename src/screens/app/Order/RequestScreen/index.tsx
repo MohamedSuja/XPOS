@@ -1,19 +1,30 @@
 import { View, Text, FlatList, ActivityIndicator } from 'react-native';
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import OrderRequestCard from '@/components/Cards/OrderRequestCard';
 import { useAppDispatch, useAppSelector } from '@/feature/stateHooks';
-import { requestOrdersListData } from '@/feature/thunks/orders_thunks';
 import {
+  requestOrderAcceptData,
+  requestOrderRejectData,
+  requestOrdersListData,
+} from '@/feature/thunks/orders_thunks';
+import {
+  selectOrderAcceptData,
+  selectOrderAcceptStatus,
+  selectOrderRejectData,
+  selectOrderRejectStatus,
   selectOrdersRequestListData,
   selectOrdersRequestListStatus,
+  resetOrderAccept,
+  resetOrderReject,
+  selectIsOrderAcceptLoading,
+  selectIsOrderRejectLoading,
+  selectOrderAcceptLoadingIds,
+  selectOrderRejectLoadingIds,
 } from '@/feature/slices/orders_slice';
 import { STATUS } from '@/feature/services/status_constants';
-import { OrderStackScreenProps } from '@/navigation/NavigationModels/OrderStack';
 
-const RequestScreen = ({
-  navigation,
-}: OrderStackScreenProps<'TopTabNavigator'>) => {
+const RequestScreen = ({ navigation }: any) => {
   const { colors }: ThemeContextType = useTheme();
   const dispatch = useAppDispatch();
   const ordersListData = useAppSelector(selectOrdersRequestListData);
@@ -29,6 +40,44 @@ const RequestScreen = ({
   useEffect(() => {
     loadOrders(1, true);
   }, []);
+
+  // Monitor accept status and clear after success
+  const OrderAcceptStatus = useAppSelector(selectOrderAcceptStatus);
+  const OrderAcceptData = useAppSelector(selectOrderAcceptData);
+
+  const acceptLoadingIds = useAppSelector(selectOrderAcceptLoadingIds);
+  const rejectLoadingIds = useAppSelector(selectOrderRejectLoadingIds);
+
+  const acceptLoadingSet = useMemo(
+    () => new Set((acceptLoadingIds || []).map(id => String(id))),
+    [acceptLoadingIds],
+  );
+  const rejectLoadingSet = useMemo(
+    () => new Set((rejectLoadingIds || []).map(id => String(id))),
+    [rejectLoadingIds],
+  );
+
+  useEffect(() => {
+    if (OrderAcceptStatus === STATUS.SUCCEEDED) {
+      // Clear the accept status after successful operation
+      setTimeout(() => {
+        dispatch(resetOrderAccept());
+      }, 1000);
+    }
+  }, [OrderAcceptStatus, dispatch]);
+
+  // Monitor reject status and clear after success
+  const OrderRejectStatus = useAppSelector(selectOrderRejectStatus);
+  const OrderRejectData = useAppSelector(selectOrderRejectData);
+
+  useEffect(() => {
+    if (OrderRejectStatus === STATUS.SUCCEEDED) {
+      // Clear the reject status after successful operation
+      setTimeout(() => {
+        dispatch(resetOrderReject());
+      }, 1000);
+    }
+  }, [OrderRejectStatus, dispatch]);
 
   const loadOrders = useCallback(
     async (page: number, reset: boolean = false) => {
@@ -68,19 +117,24 @@ const RequestScreen = ({
     }
   }, [currentPage, isLoadingMore, hasMoreData, pagination, loadOrders]);
 
-  const handleAccept = useCallback((orderId: number) => {
-    // TODO: Implement accept order logic
-    console.log('Accept order:', orderId);
-  }, []);
-
-  const handleDecline = useCallback((orderId: number) => {
-    // TODO: Implement decline order logic
-    console.log('Decline order:', orderId);
-  }, []);
-
   const renderOrderItem = useCallback(
     ({ item }: { item: any }) => {
       const order = item;
+
+      const onSelectDecline = () => {
+        dispatch(requestOrderRejectData(item.id));
+      };
+
+      const onSelectAccept = () => {
+        dispatch(requestOrderAcceptData(item.id));
+      };
+
+      // Check if this specific order is loading
+      const isAcceptLoading = acceptLoadingSet.has(String(item.id));
+
+      const isRejectLoading = rejectLoadingSet.has(String(item.id));
+
+      console.log(isAcceptLoading, isRejectLoading, 1212121212);
 
       // Format items for OrderRequestCard
       const orderItems =
@@ -101,17 +155,16 @@ const RequestScreen = ({
         <OrderRequestCard
           orderNumber={order.unique_id}
           items={orderItems}
-          onAccept={() => handleAccept(order.id)}
-          onDecline={() => handleDecline(order.id)}
-          onPress={() =>
-            navigation.navigate('OrderViewScreen', {
-              orderId: '',
-            })
-          }
+          onAccept={onSelectAccept}
+          onDecline={onSelectDecline}
+          loadingAccept={isAcceptLoading}
+          loadingDecline={isRejectLoading}
+          date={dateStr}
+          time={timeStr}
         />
       );
     },
-    [handleAccept, handleDecline],
+    [dispatch, acceptLoadingSet, rejectLoadingSet],
   );
 
   const renderFooter = useCallback(() => {
@@ -123,6 +176,15 @@ const RequestScreen = ({
       </View>
     );
   }, [isLoadingMore, colors.primary]);
+
+  // Reload list whenever screen gains focus using navigation listener
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      loadOrders(1, true);
+    });
+
+    return unsubscribe;
+  }, [navigation, loadOrders]);
 
   const renderEmpty = useCallback(() => {
     if (ordersListStatus === STATUS.LOADING) return null;

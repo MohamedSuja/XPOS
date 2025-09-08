@@ -10,7 +10,6 @@ import React, { useRef, useEffect, useState } from 'react';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import { createStyles } from './styles';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AppStackScreenProps } from '@/navigation/NavigationModels/MenuStack';
 import BackButton from '@/components/Buttons/BackButton';
 import { globalStyles } from '@/utils/globalStyles';
 import { hp } from '@/utils/Scaling';
@@ -28,8 +27,6 @@ import { useAppDispatch, useAppSelector } from '@/feature/stateHooks';
 import {
   resetAuth,
   selectAuthenticationLogoutDataStatus,
-  selectPassword,
-  selectUsername,
 } from '@/feature/slices/auth_slice';
 import { useUpdateEffect } from '@/utils/useUpdateEffect';
 import { STATUS } from '@/feature/services/status_constants';
@@ -42,9 +39,6 @@ const ProfileScreen = () => {
   const dispatch = useAppDispatch();
   const logoutStatus = useAppSelector(selectAuthenticationLogoutDataStatus);
 
-  const username = useAppSelector(selectUsername);
-  const password = useAppSelector(selectPassword);
-
   useUpdateEffect(() => {
     if (logoutStatus == STATUS.SUCCEEDED) {
       dispatch(resetAuth());
@@ -52,12 +46,7 @@ const ProfileScreen = () => {
   }, [logoutStatus]);
 
   const handleLogout = () => {
-    dispatch(
-      requestAuthenticateLogoutData({
-        user_name: username,
-        password: password,
-      }),
-    );
+    dispatch(requestAuthenticateLogoutData());
   };
 
   const insets = useSafeAreaInsets();

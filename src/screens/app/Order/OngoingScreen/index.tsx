@@ -11,10 +11,15 @@ import {
 } from '@/feature/slices/orders_slice';
 import { requestOrdersListData } from '@/feature/thunks/orders_thunks';
 import { STATUS } from '@/feature/services/status_constants';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { UserStackParamList } from '@/navigation/NavigationModels/UserStack';
 
 const OngoingScreen = () => {
   const { colors }: ThemeContextType = useTheme();
   const styles = createStyles(colors);
+  const navigation =
+    useNavigation<NativeStackNavigationProp<UserStackParamList>>();
 
   const dispatch = useAppDispatch();
   const ordersListData = useAppSelector(selectOrdersOngoingListData);
@@ -72,6 +77,15 @@ const OngoingScreen = () => {
     }
   }, [currentPage, isLoadingMore, hasMoreData, pagination, loadOrders]);
 
+  // Reload list whenever screen gains focus using navigation listener
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      loadOrders(1, true);
+    });
+
+    return unsubscribe;
+  }, [navigation, loadOrders]);
+
   const handleSearch = useCallback(
     async (query: string) => {
       setSearchQuery(query);
@@ -86,7 +100,7 @@ const OngoingScreen = () => {
     switch (status) {
       case 'accepted':
         return 'accepted';
-      case 'pending':
+      case 'preparing':
         return 'preparing';
       case 'ready_for_pickup':
         return 'ready';
@@ -131,6 +145,11 @@ const OngoingScreen = () => {
             backgroundColor: colors.background,
             borderColor: colors.acceptedBorder,
             borderWidth: 0.5,
+          }}
+          onPress={() => {
+            navigation.navigate('OrderViewScreen', {
+              orderId: item?.id,
+            });
           }}
         />
       );

@@ -11,10 +11,12 @@ import {
 } from '@/feature/slices/orders_slice';
 import { requestOrdersListData } from '@/feature/thunks/orders_thunks';
 import { STATUS } from '@/feature/services/status_constants';
+import { useNavigation } from '@react-navigation/native';
 
 const CompletedScreen = () => {
   const { colors }: ThemeContextType = useTheme();
   const styles = createStyles(colors);
+  const navigation = useNavigation();
 
   const dispatch = useAppDispatch();
   const ordersListData = useAppSelector(selectOrdersCompletedListData);
@@ -88,6 +90,15 @@ const CompletedScreen = () => {
     }
   }, [currentPage, isLoadingMore, hasMoreData, pagination, loadOrders]);
 
+  // Reload list whenever screen gains focus using navigation listener
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      loadOrders(1, true);
+    });
+
+    return unsubscribe;
+  }, [navigation, loadOrders]);
+
   const onRefresh = useCallback(async () => {
     // Clear date filter then reload first page without dates
     setDateRange({ startDate: '', endDate: '' });
@@ -103,6 +114,8 @@ const CompletedScreen = () => {
       case 'ready_for_pickup':
         return 'ready';
       case 'out_for_delivery':
+        return 'picked';
+      case 'delivered':
         return 'picked';
       default:
         return undefined;

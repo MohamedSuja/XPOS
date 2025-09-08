@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  ActivityIndicator,
   StyleProp,
   Text,
   TextStyle,
@@ -17,30 +18,39 @@ interface PrimaryButtonProps {
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
   disabled?: boolean | undefined;
+  loading?: boolean;
 }
 
 const PrimaryButton = (props: PrimaryButtonProps) => {
-  const { title, onPress, style, textStyle, disabled } = props;
+  const { title, onPress, style, textStyle, disabled, loading } = props;
   const { colors }: ThemeContextType = useTheme();
   const styles = createButtonStyles(colors);
 
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={[styles.container, disabled && styles.disabled, style]}
+      style={[
+        styles.container,
+        (disabled || loading) && styles.disabled,
+        style,
+      ]}
       activeOpacity={0.5}
-      disabled={disabled}
+      disabled={disabled || loading}
     >
-      <Text
-        style={[
-          globalStyles.h4,
-          styles.title,
-          textStyle,
-          disabled && styles.disabledTitle,
-        ]}
-      >
-        {title}
-      </Text>
+      {loading ? (
+        <ActivityIndicator size="small" color={colors.background} />
+      ) : (
+        <Text
+          style={[
+            globalStyles.h4,
+            styles.title,
+            textStyle,
+            (disabled || loading) && styles.disabledTitle,
+          ]}
+        >
+          {title}
+        </Text>
+      )}
     </TouchableOpacity>
   );
 };

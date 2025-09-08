@@ -5,6 +5,7 @@ import BottomTab from './BottomTab';
 import { useAppSelector } from '@/feature/stateHooks';
 import { selectAuthenticationLoginDataStatus } from '@/feature/slices/auth_slice';
 import { STATUS } from '@/feature/services/status_constants';
+import UserStack from './Stacks/UserStack';
 
 const AppRoutes = () => {
   const AuthenticationLoginDataStatus = useAppSelector(
@@ -34,7 +35,7 @@ const AppRoutes = () => {
   return (
     <NavigationContainer>
       {AuthenticationLoginDataStatus === STATUS.SUCCEEDED ? (
-        <BottomTab />
+        <UserStack />
       ) : (
         <AuthStack />
       )}
