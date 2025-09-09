@@ -14,6 +14,7 @@ import { STATUS } from '@/feature/services/status_constants';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { UserStackParamList } from '@/navigation/NavigationModels/UserStack';
+import OrderOngoingCard from '@/components/Cards/OrderOngoingCard';
 
 const OngoingScreen = () => {
   const { colors }: ThemeContextType = useTheme();
@@ -133,19 +134,11 @@ const OngoingScreen = () => {
       const orderType = getOrderType(order.status);
 
       return (
-        <OrderRequestCard
+        <OrderOngoingCard
           orderNumber={order.unique_id}
           items={orderItems}
           type={orderType}
           title={order.customer.name}
-          style={{
-            backgroundColor: colors.cardBG,
-          }}
-          cardStyle={{
-            backgroundColor: colors.background,
-            borderColor: colors.acceptedBorder,
-            borderWidth: 0.5,
-          }}
           onPress={() => {
             navigation.navigate('OrderViewScreen', {
               orderId: item?.id,

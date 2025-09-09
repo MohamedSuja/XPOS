@@ -12,6 +12,7 @@ import {
 import { requestOrdersListData } from '@/feature/thunks/orders_thunks';
 import { STATUS } from '@/feature/services/status_constants';
 import { useNavigation } from '@react-navigation/native';
+import OrderScheduledCard from '@/components/Cards/OrderScheduledCard';
 
 const ScheduledScreen = () => {
   const { colors }: ThemeContextType = useTheme();
@@ -128,7 +129,7 @@ const ScheduledScreen = () => {
       const orderType = getOrderType(order.status);
 
       return (
-        <OrderRequestCard
+        <OrderScheduledCard
           orderNumber={order.unique_id}
           items={orderItems}
           type={orderType}
@@ -136,14 +137,6 @@ const ScheduledScreen = () => {
           time={timeStr}
           title={order.customer.name}
           delivered_at={'2026-08-25T12:00:00'}
-          style={{
-            backgroundColor: colors.cardBG,
-          }}
-          cardStyle={{
-            backgroundColor: colors.background,
-            borderColor: colors.acceptedBorder,
-            borderWidth: 0.5,
-          }}
         />
       );
     },
