@@ -26,6 +26,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import PrimaryButton from '@/components/Buttons/PrimaryButton';
 import { useNotification } from '@/CustomProviders/NotificationProvider';
+import { useAppSelector } from '@/feature/stateHooks';
 
 const HomeScreen = ({ navigation }: any) => {
   const { colors }: ThemeContextType = useTheme();
@@ -34,6 +35,8 @@ const HomeScreen = ({ navigation }: any) => {
   const [earningLoading, setEarningLoading] = useState(false);
 
   const { setNavigator } = useNotification();
+
+  const userData = useAppSelector(state => state.auth);
 
   // handle admin call
   const handleAdminCall = () => {
@@ -67,13 +70,25 @@ const HomeScreen = ({ navigation }: any) => {
             }}
           >
             <Image
-              source={require('../../../assets/images/SampleLogo.png')}
+              source={
+                userData.image
+                  ? { uri: userData.image }
+                  : require('../../../assets/images/SampleLogo.png')
+              }
               style={styles.logo}
             />
           </Pressable>
           <View>
-            <Text style={[globalStyles.h4, { color: colors.inputTxt }]}>
-              The Valampuri
+            <Text
+              style={[
+                globalStyles.h4,
+                {
+                  color: colors.inputTxt,
+                  width: wp('55%'),
+                },
+              ]}
+            >
+              {userData.userName}
             </Text>
             <View
               style={[

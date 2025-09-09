@@ -20,7 +20,7 @@ const AppRoutes = () => {
 
   useEffect(() => {
     if (AuthenticationLoginDataStatus == STATUS.SUCCEEDED) {
-      setAccessToken(AuthenticationLoginData?.data.token);
+      setAccessToken(AuthenticationLoginData || '');
     }
   }, []);
 

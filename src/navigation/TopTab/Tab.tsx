@@ -18,6 +18,7 @@ import {
   selectOrdersScheduledListData,
 } from '@/feature/slices/orders_slice';
 import { useAppSelector } from '@/feature/stateHooks';
+import { globalStyles } from '@/utils/globalStyles';
 
 interface TabButtonProps {
   state: {
@@ -40,15 +41,9 @@ interface TabButtonProps {
     emit: (event: any) => { defaultPrevented: boolean };
     navigate: (name: string, params?: any) => void;
   };
-  position: any;
 }
 
-const TabButton = ({
-  state,
-  descriptors,
-  navigation,
-  position,
-}: TabButtonProps) => {
+const TabButton = ({ state, descriptors, navigation }: TabButtonProps) => {
   const { colors }: ThemeContextType = useTheme();
   const styles = createStyles(colors);
   const [input, setInput] = useState<number>(0);
@@ -166,6 +161,7 @@ const TabButton = ({
                 >
                   <Text
                     style={[
+                      globalStyles.h10,
                       styles.badgeText,
                       {
                         color: isFocused ? colors.primary : colors.dropDownIcon,

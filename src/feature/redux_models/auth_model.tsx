@@ -4,14 +4,17 @@ export default interface IAuthState {
 
   // Auth Error
   authenticationError: IAuthError | undefined;
-
   // Login data
-  authenticationLoginData: IAuthenticationLoginDataResponseBody | undefined;
   authenticationLoginStatus: string | undefined;
-
   // Logout data
-  authenticationLogoutData: IAuthenticationLogoutDataResponseBody | undefined;
   authenticationLogoutStatus: string | undefined;
+
+  // user data
+  id: number | undefined;
+  userName: string | undefined;
+  address: string | undefined;
+  image: string | undefined;
+  token: string | undefined;
 }
 
 // Auth Data Error

@@ -10,9 +10,10 @@ import React from 'react';
 import { createButtonStyles } from './styles';
 import { useTheme } from '@/utils/ThemeContext';
 import { ThemeContextType } from '@/utils/ThemeContext';
-import LeftArrowIcon from '@/assets/icons/LeftArrow.svg';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import { wp } from '@/utils/Scaling';
 import { useNavigation } from '@react-navigation/native';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 interface BackButtonProps {
   onPress?: () => void;
@@ -39,7 +40,7 @@ const BackButton = (props: BackButtonProps) => {
       disabled={disabled}
       activeOpacity={0.5}
     >
-      <LeftArrowIcon width={wp(5)} height={wp(5)} />
+      <AntDesign name="arrowleft" size={RFValue(18)} color={colors.primary} />
     </TouchableOpacity>
   );
 };
