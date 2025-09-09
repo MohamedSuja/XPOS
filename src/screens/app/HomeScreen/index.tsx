@@ -9,7 +9,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import { createStyles } from './styles';
@@ -27,12 +27,16 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import PrimaryButton from '@/components/Buttons/PrimaryButton';
 import { useNotification } from '@/CustomProviders/NotificationProvider';
 import { useAppSelector } from '@/feature/stateHooks';
+import { requests } from '@/feature/services/api';
+import { ErrorFlash } from '@/utils/FlashMessage';
+import { useFocusEffect } from '@react-navigation/native';
 
 const HomeScreen = ({ navigation }: any) => {
   const { colors }: ThemeContextType = useTheme();
   const styles = createStyles(colors);
 
   const [earningLoading, setEarningLoading] = useState(false);
+  const [earningData, setEarningData] = useState<any>(null);
 
   const { setNavigator } = useNotification();
 
@@ -47,11 +51,38 @@ const HomeScreen = ({ navigation }: any) => {
     }
   };
 
+  // get today earnings
+  const getEarnings = () => {
+    try {
+      setEarningLoading(true);
+      requests
+        .get('/api/pos/stats/today-earnings')
+        .then(res => {
+          setEarningData(res?.data?.data);
+        })
+        .catch(error => {
+          ErrorFlash(error.data?.message || 'Something went wrong!');
+        })
+        .finally(() => {
+          setEarningLoading(false);
+        });
+    } catch (error) {
+      setEarningLoading(false);
+      ErrorFlash('Something went wrong!');
+    }
+  };
+
   useEffect(() => {
     if (navigation) {
       setNavigator(navigation);
     }
   }, [navigation]);
+
+  useFocusEffect(
+    useCallback(() => {
+      getEarnings();
+    }, []),
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -158,7 +189,7 @@ const HomeScreen = ({ navigation }: any) => {
                 <View style={styles.countBG}>
                   <FoodDeliveryIcon width={hp(3)} height={hp(3)} />
                   <Text style={[globalStyles.h8, { color: colors.earningBG }]}>
-                    10 Deliveries
+                    {earningData?.delivered_orders} Deliveries
                   </Text>
                 </View>
               </View>
@@ -173,7 +204,7 @@ const HomeScreen = ({ navigation }: any) => {
                     { color: colors.background, fontSize: RFValue(22) },
                   ]}
                 >
-                  Rs.1,000.00
+                  {earningData?.currency} {earningData?.today_earnings}
                 </Text>
                 <Text style={[globalStyles.h9, { color: colors.background }]}>
                   Earnings Today

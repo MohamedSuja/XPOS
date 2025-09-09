@@ -24,7 +24,7 @@ export const createStyles = (colors: ColorsType) =>
       backgroundColor: colors.background,
       paddingHorizontal: wp('4%'),
       paddingTop: hp('3%'),
-      marginBottom: hp('4%'),
+      marginBottom: hp('2%'),
       flex: 1,
     },
     formContainer: {
@@ -38,5 +38,10 @@ export const createStyles = (colors: ColorsType) =>
       justifyContent: 'center',
       marginRight: wp('2%'),
       width: wp('28%'),
+    },
+    versionTxt: {
+      color: colors.border,
+      alignSelf: 'center',
+      marginTop: hp('1%'),
     },
   });

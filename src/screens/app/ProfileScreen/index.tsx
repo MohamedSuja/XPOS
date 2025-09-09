@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import { createStyles } from './styles';
 import BackButton from '@/components/Buttons/BackButton';
@@ -27,6 +27,7 @@ import BankIcon from '@/assets/icons/Bank.svg';
 import { requests } from '@/feature/services/api';
 import { ErrorFlash } from '@/utils/FlashMessage';
 import { useFocusEffect } from '@react-navigation/native';
+import DeviceInfo from 'react-native-device-info';
 
 const ProfileScreen = ({ navigation }: any) => {
   const { colors }: ThemeContextType = useTheme();
@@ -36,6 +37,14 @@ const ProfileScreen = ({ navigation }: any) => {
   const logoutStatus = useAppSelector(selectAuthenticationLogoutDataStatus);
 
   const userData = useAppSelector(state => state.auth);
+
+  const [version, setVersion] = useState<any>(null);
+  const [versionName, setVersionName] = useState<any>(null);
+
+  const getVersion = async () => {
+    setVersion(DeviceInfo.getVersion());
+    setVersionName(DeviceInfo.getBuildNumber());
+  };
 
   useUpdateEffect(() => {
     if (logoutStatus == STATUS.SUCCEEDED) {
@@ -70,6 +79,9 @@ const ProfileScreen = ({ navigation }: any) => {
     }, []),
   );
 
+  useEffect(() => {
+    getVersion();
+  }, []);
   return (
     <View style={[styles.root]}>
       <View style={[styles.headerContainer]}>
@@ -201,6 +213,10 @@ const ProfileScreen = ({ navigation }: any) => {
           title="Log Out"
           onPress={handleLogout}
         />
+
+        <Text style={[globalStyles.h12, styles.versionTxt]}>
+          Version {version} ({versionName})
+        </Text>
       </ScrollView>
     </View>
   );
