@@ -118,7 +118,7 @@ const OrderScheduledCard: React.FC<OrderRequstCardProps> = ({
             {date && time && !complete && (
               <View style={styles.dateContainer}>
                 <Text style={[globalStyles.h8, styles.dateText]}>{date}</Text>
-                <Text style={[globalStyles.h9, { color: colors.divider2 }]}>
+                <Text style={[globalStyles.h9, { color: colors.divider3 }]}>
                   |
                 </Text>
                 <Text style={[globalStyles.h9, styles.dateText]}>{time}</Text>
