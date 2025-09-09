@@ -18,27 +18,6 @@ const AppRoutes = () => {
 
   const AuthenticationLoginData = useAppSelector(selectAuthenticationLoginData);
 
-  const config = {
-    screens: {
-      // LoginScreen: {
-      //   path: 'login/:token',
-      // },
-      // HomeStack: {
-      //   path: 'home',
-      //   screens: {
-      //     NotificationScreen: {
-      //       path: 'notification',
-      //     },
-      //   },
-      // },
-    },
-  };
-
-  const linking = {
-    prefixes: ['com.xpos://', 'https://xpos.com/'],
-    config,
-  };
-
   useEffect(() => {
     if (AuthenticationLoginDataStatus == STATUS.SUCCEEDED) {
       setAccessToken(AuthenticationLoginData?.data.token);
