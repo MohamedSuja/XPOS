@@ -19,6 +19,9 @@ export type UserStackParamList = {
   OrderViewScreen: { orderId: string };
   ReportScreen: undefined;
   OrderSummaryScreen: undefined;
+  SupportCenterScreen: undefined;
+  BankDetailsScreen: undefined;
+  PrivacyPolicyScreen: undefined;
 };
 
 export type UserStackScreenProps<Screen extends keyof UserStackParamList> =

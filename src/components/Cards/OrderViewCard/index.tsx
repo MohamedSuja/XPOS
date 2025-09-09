@@ -12,13 +12,10 @@ interface OrderItemProps {
   item_name: string;
   item_description: string;
   quantity: number | null;
-  unit_price: number | null;
-  total_price: number;
   special_instructions: string | null;
   variants: Array<{
     variant_name: string;
     variant_value: string | null;
-    variant_price: number;
   }>;
   add_ons: any[];
 }
@@ -33,22 +30,23 @@ const OrderViewCard = (props: OrderItemProps) => {
         <View style={styles.titleTextContainer}>
           <Text style={[globalStyles.h5, styles.title]}>{props.item_name}</Text>
           <View style={styles.titleSubContainer}>
-            {props.variants.map((variant, index) => (
-              <View
-                key={index}
-                style={{ flexDirection: 'row', alignItems: 'center' }}
-              >
-                <Text style={[globalStyles.h9, styles.subtitle]}>
-                  {variant.variant_name}:{' '}
-                </Text>
-                <Text style={[globalStyles.h5, styles.subtitleNumber]}>
-                  {variant.variant_value}
-                </Text>
-                {index < props.variants.length - 1 && (
-                  <Text style={[globalStyles.h9, styles.subtitle]}> | </Text>
-                )}
-              </View>
-            ))}
+            {props.variants?.length > 0 &&
+              props.variants.map((variant, index) => (
+                <View
+                  key={index}
+                  style={{ flexDirection: 'row', alignItems: 'center' }}
+                >
+                  <Text style={[globalStyles.h9, styles.subtitle]}>
+                    {variant.variant_name}:{' '}
+                  </Text>
+                  <Text style={[globalStyles.h5, styles.subtitleNumber]}>
+                    {variant.variant_value}
+                  </Text>
+                  {index < props.variants.length - 1 && (
+                    <Text style={[globalStyles.h9, styles.subtitle]}> | </Text>
+                  )}
+                </View>
+              ))}
           </View>
         </View>
         <View style={styles.totalContainer}>

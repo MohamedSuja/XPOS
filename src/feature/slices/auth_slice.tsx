@@ -17,11 +17,15 @@ const DEFAULT_STATE: IAuthState = {
   authenticationError: undefined,
 
   // Auth Login Data
-  authenticationLoginData: undefined,
   authenticationLoginStatus: undefined,
-
-  authenticationLogoutData: undefined,
   authenticationLogoutStatus: undefined,
+
+  // user data
+  id: undefined,
+  userName: undefined,
+  address: undefined,
+  image: undefined,
+  token: undefined,
 };
 
 const INITIAL_STATE: IAuthState = {
@@ -49,9 +53,17 @@ const auth_slice = createSlice({
       requestAuthenticateLoginData.fulfilled,
       (state: IAuthState, action: any) => {
         setAccessToken(action.payload.data.token);
-        state.authenticationLoginData = action.payload;
+
         state.authSliceStatus = STATUS.SUCCEEDED;
         state.authenticationLoginStatus = STATUS.SUCCEEDED;
+        state.id = action.payload.data?.branch?.id;
+        state.userName = action.payload.data?.branch?.name;
+        state.address =
+          action.payload.data?.branch?.address_line_1 +
+          ' ' +
+          action.payload.data?.branch?.address_line_2;
+        state.image = action.payload.data?.user?.image;
+        state.token = action.payload.data?.token;
         requestRegisterDevice();
       },
     );
@@ -96,24 +108,41 @@ const auth_slice = createSlice({
       requestAuthenticateLogoutData.fulfilled,
       (state: IAuthState, action: any) => {
         removeAccessToken();
-        state.authenticationLogoutData = undefined;
         state.authSliceStatus = STATUS.SUCCEEDED;
         state.authenticationLogoutStatus = STATUS.SUCCEEDED;
+        state.authenticationLoginStatus = STATUS.FAILED;
+        state.id = undefined;
+        state.userName = undefined;
+        state.address = undefined;
+        state.image = undefined;
+        state.token = undefined;
       },
     );
     builder.addCase(
       requestAuthenticateLogoutData.rejected,
       (state: IAuthState, action: any) => {
-        if (action?.payload?.status === 500) {
-          // ErrorFlash(action?.payload?.error);
-        } else if (action?.payload?.status === 400) {
-          // ErrorFlash(action?.payload?.errors[0]);
-        } else if (action?.error) {
-          // ErrorFlash(action?.payload?.error);
-        }
         state.authenticationError = action.payload;
         state.authSliceStatus = STATUS.FAILED;
         state.authenticationLogoutStatus = STATUS.FAILED;
+        let errorMessage = '';
+
+        if (action?.payload?.status == 422) {
+          let alertDescription = '';
+          const errors = action?.payload?.errors;
+
+          if (errors) {
+            for (const key in errors) {
+              const errorMessagesArray = errors[key];
+              errorMessagesArray.forEach((message: string) => {
+                alertDescription += `${message}\n`;
+              });
+            }
+          }
+          errorMessage = alertDescription.trim();
+        } else {
+          errorMessage = action?.payload?.message;
+        }
+        ErrorFlash(errorMessage || 'Something went wrong!');
       },
     );
     // End Authenticate Logout ---
@@ -130,13 +159,11 @@ export const selectAuthenticationError = (state: RootState) =>
 
 // Auth Login Data Selectors ---
 export const selectAuthenticationLoginData = (state: RootState) =>
-  state.auth.authenticationLoginData;
+  state.auth.token;
 export const selectAuthenticationLoginDataStatus = (state: RootState) =>
   state.auth.authenticationLoginStatus;
 // End Auth Login Data Selectors ---
 
-export const selectAuthenticationLogoutData = (state: RootState) =>
-  state.auth.authenticationLogoutData;
 export const selectAuthenticationLogoutDataStatus = (state: RootState) =>
   state.auth.authenticationLogoutStatus;
 

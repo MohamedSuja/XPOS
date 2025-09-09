@@ -43,6 +43,7 @@ export const requestOrderDetailsData = createAsyncThunk(
   async (orderId: string, { rejectWithValue }) => {
     try {
       const response = await requestOrderDetailsService(orderId);
+      console.log(response?.data);
       return response?.data;
     } catch (err: any) {
       const error: AxiosError<IOrdersError> = err;

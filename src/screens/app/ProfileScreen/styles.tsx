@@ -12,9 +12,9 @@ export const createStyles = (colors: ColorsType) =>
     headerContainer: {
       backgroundColor: colors.background,
       paddingHorizontal: wp('5%'),
-      paddingBottom: hp(2.5),
+      paddingVertical: hp('2%'),
       borderBottomWidth: 1,
-      borderBottomColor: colors.border,
+      borderBottomColor: colors.stroke,
     },
     headerContent: {
       flexDirection: 'row',
@@ -27,6 +27,7 @@ export const createStyles = (colors: ColorsType) =>
       left: 0,
     },
     headerTxt: {
+      fontSize: RFValue(16),
       color: colors.headerTxt,
       textAlign: 'center',
     },
@@ -36,9 +37,8 @@ export const createStyles = (colors: ColorsType) =>
     },
     profileHeader: {
       alignItems: 'center',
-      justifyContent: 'space-between',
+      justifyContent: 'center',
     },
-    profileImageContainer: {},
 
     profileImage: {
       width: hp(12),
@@ -60,7 +60,8 @@ export const createStyles = (colors: ColorsType) =>
       bottom: 0,
     },
     profileName: {
-      marginTop: hp(2),
+      marginTop: hp(1),
+      color: colors.headerTxt,
     },
     locationContainer: {
       flexDirection: 'row',
@@ -69,7 +70,7 @@ export const createStyles = (colors: ColorsType) =>
       marginTop: hp(1),
     },
     locationText: {
-      color: colors.headerTxt,
+      color: colors.subTitle,
     },
     profileButtonContainer: {
       marginTop: hp(2),
@@ -92,11 +93,33 @@ export const createStyles = (colors: ColorsType) =>
     },
     profileButtonSeparator: {
       height: 1,
-      backgroundColor: colors.profileSeparator,
+      backgroundColor: colors.profileBorder,
       marginVertical: hp(2),
     },
     logoutButton: {
       marginHorizontal: wp('5%'),
       marginTop: hp(3),
+    },
+    ratingBG: {
+      backgroundColor: colors.inputTxt,
+      borderRadius: 20,
+      paddingVertical: wp('1%'),
+      paddingHorizontal: wp('2%'),
+      flexDirection: 'row',
+      gap: wp('2%'),
+      alignItems: 'center',
+      marginTop: hp(1),
+    },
+    timeContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: wp('2%'),
+    },
+    statusContainer: {
+      paddingVertical: hp('0.7%'),
+      paddingHorizontal: wp('3%'),
+      borderRadius: 4,
+      alignSelf: 'center',
+      marginTop: hp(1),
     },
   });

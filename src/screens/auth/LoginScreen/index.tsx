@@ -24,9 +24,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useAppDispatch, useAppSelector } from '@/feature/stateHooks';
-import { selectAuthenticationLoginDataStatus } from '@/feature/slices/auth_slice';
+import { useAppDispatch } from '@/feature/stateHooks';
 import { requestAuthenticateLoginData } from '@/feature/thunks/auth_thunks';
 import CustomInput from '@/components/Inputs/customInput';
 import PrimaryButton from '@/components/Buttons/PrimaryButton';
@@ -54,10 +52,6 @@ const LoginScreen = () => {
       inputRefs[index + 1].current.focus();
     }
   };
-
-  const AuthenticationLoginDataStatus = useAppSelector(
-    selectAuthenticationLoginDataStatus,
-  );
 
   const handleSubmit = (values: any) => {
     try {

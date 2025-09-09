@@ -162,8 +162,6 @@ const OrderViewScreen = ({
                 item_description={item.item_description}
                 quantity={item.quantity}
                 special_instructions={item.special_instructions}
-                total_price={item.total_price}
-                unit_price={item.unit_price}
               />
             ))
           : null}

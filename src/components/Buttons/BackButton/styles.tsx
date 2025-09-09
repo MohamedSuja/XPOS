@@ -5,11 +5,11 @@ import { RFValue } from 'react-native-responsive-fontsize';
 export const createButtonStyles = (colors: any) =>
   StyleSheet.create({
     container: {
-      borderRadius: 100,
       alignSelf: 'flex-start',
-      padding: wp(2.5),
-      borderWidth: 1,
+      padding: wp('1%'),
+      borderRadius: 100,
       borderColor: colors.border,
+      borderWidth: 1,
     },
     disabled: {
       opacity: 0.5,
