@@ -14,7 +14,7 @@ middleware = [logger];
 const authPersistConfig = {
   key: 'auth',
   storage: AsyncStorage,
-  whitelist: [], // Only persist auth slice
+  whitelist: ['auth'], // Only persist auth slice
 };
 
 const persistedRootReducer = persistReducer(authPersistConfig, rootReducer);
