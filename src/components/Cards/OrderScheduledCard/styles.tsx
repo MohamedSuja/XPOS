@@ -53,7 +53,7 @@ export const createButtonStyles = (colors: ColorsType) =>
     itemName: {
       color: colors.inputTxt,
       borderRightWidth: 1,
-      width: '85%',
+      width: '88%',
       borderColor: colors.cardBorder,
     },
     quantityText: {
