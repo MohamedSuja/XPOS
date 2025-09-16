@@ -14,10 +14,6 @@ import { globalStyles } from '@/utils/globalStyles';
 import { hp, wp } from '@/utils/Scaling';
 import PrimaryButton from '@/components/Buttons/PrimaryButton';
 import { useAppDispatch, useAppSelector } from '@/feature/stateHooks';
-import {
-  resetAuth,
-  selectAuthenticationLogoutDataStatus,
-} from '@/feature/slices/auth_slice';
 import Tag from '@/components/Tag';
 import RoomServiceIcon from '@/assets/icons/RoomService.svg';
 import OrderViewCard from '@/components/Cards/OrderViewCard';
@@ -107,7 +103,7 @@ const OrderViewScreen = ({
   useUpdateEffect(() => {
     if (OrderMarkReadyStatus == STATUS.SUCCEEDED) {
       setStatus(getOrderType(data?.status));
-      navigation.navigate('OrderSummaryScreen');
+      navigation.navigate('OrderSummaryScreen', { orderId: data?.id });
     }
   }, [OrderMarkReadyStatus]);
 

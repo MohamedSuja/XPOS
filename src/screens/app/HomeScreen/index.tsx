@@ -30,6 +30,7 @@ import { useAppSelector } from '@/feature/stateHooks';
 import { requests } from '@/feature/services/api';
 import { ErrorFlash } from '@/utils/FlashMessage';
 import { useFocusEffect } from '@react-navigation/native';
+import OrderOngoingCard from '@/components/Cards/OrderOngoingCard';
 
 const HomeScreen = ({ navigation }: any) => {
   const { colors }: ThemeContextType = useTheme();
@@ -37,6 +38,8 @@ const HomeScreen = ({ navigation }: any) => {
 
   const [earningLoading, setEarningLoading] = useState(false);
   const [earningData, setEarningData] = useState<any>(null);
+  const [lastOrder, setLastOrder] = useState<any>(null);
+  const [onlineStatus, setOnlineStatus] = useState(false);
 
   const { setNavigator } = useNotification();
 
@@ -61,7 +64,7 @@ const HomeScreen = ({ navigation }: any) => {
           setEarningData(res?.data?.data);
         })
         .catch(error => {
-          ErrorFlash(error.data?.message || 'Something went wrong!');
+          ErrorFlash(error?.message || 'Something went wrong!');
         })
         .finally(() => {
           setEarningLoading(false);
@@ -72,6 +75,55 @@ const HomeScreen = ({ navigation }: any) => {
     }
   };
 
+  // get latest Order
+  const getLatestOrder = () => {
+    try {
+      requests
+        .get('/api/pos/orders/latest-ongoing')
+        .then(res => {
+          setLastOrder(res.data?.data);
+          console.log(res.data.data);
+        })
+        .catch(error => {
+          console.log(error);
+          ErrorFlash(error?.message || 'Something went wrong!');
+        });
+    } catch (error) {
+      ErrorFlash('Something went wrong!');
+    }
+  };
+
+  const getOrderType = (status: string) => {
+    switch (status) {
+      case 'accepted':
+        return 'accepted';
+      case 'preparing':
+        return 'preparing';
+      case 'ready_for_pickup':
+        return 'ready';
+      case 'out_for_delivery':
+        return 'picked';
+      default:
+        return undefined;
+    }
+  };
+
+  // get online status
+  const getOnlineStatus = () => {
+    try {
+      requests
+        .get('/api/pos/online-status')
+        .then(res => {
+          setOnlineStatus(res.data?.data?.online_status == 'online');
+        })
+        .catch(error => {
+          console.log(error);
+          ErrorFlash(error?.message || 'Something went wrong!');
+        });
+    } catch (error) {
+      ErrorFlash('Something went wrong!');
+    }
+  };
   useEffect(() => {
     if (navigation) {
       setNavigator(navigation);
@@ -81,6 +133,8 @@ const HomeScreen = ({ navigation }: any) => {
   useFocusEffect(
     useCallback(() => {
       getEarnings();
+      getLatestOrder();
+      getOnlineStatus();
     }, []),
   );
 
@@ -124,11 +178,24 @@ const HomeScreen = ({ navigation }: any) => {
             <View
               style={[
                 styles.statusContainer,
-                { backgroundColor: colors.readyBG },
+                {
+                  backgroundColor: onlineStatus
+                    ? colors.readyBG
+                    : colors.closeBG,
+                },
               ]}
             >
-              <Text style={[globalStyles.h12, { color: colors.readyTxt }]}>
-                Opened
+              <Text
+                style={[
+                  globalStyles.h12,
+                  {
+                    color: onlineStatus
+                      ? colors.readyTxt
+                      : colors.currentStatus,
+                  },
+                ]}
+              >
+                {onlineStatus ? ' Opened' : 'Closed'}
               </Text>
             </View>
           </View>
@@ -240,20 +307,16 @@ const HomeScreen = ({ navigation }: any) => {
             />
           </Pressable>
         </View>
-        <OrderRequestCard
-          orderNumber="1234567890"
-          items={[
-            { name: 'Dum Chicken Biriyani ', quantity: 1 },
-            { name: 'Seafood Nasi Goreng', quantity: 2 },
-          ]}
-          type="preparing"
-          style={{
-            backgroundColor: colors.cardBG,
-          }}
-          cardStyle={{
-            backgroundColor: colors.background,
-            borderColor: colors.acceptedBorder,
-            borderWidth: 0.5,
+
+        <OrderOngoingCard
+          orderNumber={lastOrder?.order?.unique_id}
+          items={lastOrder?.order?.items}
+          type={getOrderType(lastOrder?.order?.status)}
+          title={lastOrder?.order?.customer?.name}
+          onPress={() => {
+            navigation.navigate('OrderViewScreen', {
+              orderId: lastOrder?.order?.id,
+            });
           }}
         />
 

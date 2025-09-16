@@ -12,11 +12,14 @@ import {
 import { requestOrdersListData } from '@/feature/thunks/orders_thunks';
 import { STATUS } from '@/feature/services/status_constants';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { UserStackParamList } from '@/navigation/NavigationModels/UserStack';
 
 const CompletedScreen = () => {
   const { colors }: ThemeContextType = useTheme();
   const styles = createStyles(colors);
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<UserStackParamList>>();
 
   const dispatch = useAppDispatch();
   const ordersListData = useAppSelector(selectOrdersCompletedListData);
@@ -150,6 +153,11 @@ const CompletedScreen = () => {
             borderWidth: 0.5,
           }}
           complete={completeDate}
+          onPress={() => {
+            navigation.navigate('OrderSummaryScreen', {
+              orderId: item?.id,
+            });
+          }}
         />
       );
     },
