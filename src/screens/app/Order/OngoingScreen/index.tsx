@@ -35,6 +35,7 @@ const OngoingScreen = () => {
   const orders = ordersListData?.data?.orders || [];
   const pagination = ordersListData?.data?.pagination_by_status?.ongoing;
 
+  console.log('order list', ordersListData);
   useEffect(() => {
     loadOrders(1, true);
   }, []);
@@ -116,13 +117,6 @@ const OngoingScreen = () => {
     ({ item }: { item: any }) => {
       const order = item;
 
-      // Format items for OrderRequestCard
-      const orderItems =
-        order.items?.map((item: any) => ({
-          name: item.item_name,
-          quantity: item.quantity || 1,
-        })) || [];
-
       // Format date and time
       const orderDate = new Date(order.created_at);
       const dateStr = orderDate.toLocaleDateString();
@@ -135,10 +129,10 @@ const OngoingScreen = () => {
 
       return (
         <OrderOngoingCard
-          orderNumber={order.unique_id}
-          items={orderItems}
+          orderNumber={order?.unique_id}
+          items={order?.items}
           type={orderType}
-          title={order.customer.name}
+          title={order?.customer.name}
           onPress={() => {
             navigation.navigate('OrderViewScreen', {
               orderId: item?.id,

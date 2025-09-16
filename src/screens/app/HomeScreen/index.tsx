@@ -9,7 +9,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import { createStyles } from './styles';
@@ -27,12 +27,19 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import PrimaryButton from '@/components/Buttons/PrimaryButton';
 import { useNotification } from '@/CustomProviders/NotificationProvider';
 import { useAppSelector } from '@/feature/stateHooks';
+import { requests } from '@/feature/services/api';
+import { ErrorFlash } from '@/utils/FlashMessage';
+import { useFocusEffect } from '@react-navigation/native';
+import OrderOngoingCard from '@/components/Cards/OrderOngoingCard';
 
 const HomeScreen = ({ navigation }: any) => {
   const { colors }: ThemeContextType = useTheme();
   const styles = createStyles(colors);
 
   const [earningLoading, setEarningLoading] = useState(false);
+  const [earningData, setEarningData] = useState<any>(null);
+  const [lastOrder, setLastOrder] = useState<any>(null);
+  const [onlineStatus, setOnlineStatus] = useState(false);
 
   const { setNavigator } = useNotification();
 
@@ -47,11 +54,89 @@ const HomeScreen = ({ navigation }: any) => {
     }
   };
 
+  // get today earnings
+  const getEarnings = () => {
+    try {
+      setEarningLoading(true);
+      requests
+        .get('/api/pos/stats/today-earnings')
+        .then(res => {
+          setEarningData(res?.data?.data);
+        })
+        .catch(error => {
+          ErrorFlash(error?.message || 'Something went wrong!');
+        })
+        .finally(() => {
+          setEarningLoading(false);
+        });
+    } catch (error) {
+      setEarningLoading(false);
+      ErrorFlash('Something went wrong!');
+    }
+  };
+
+  // get latest Order
+  const getLatestOrder = () => {
+    try {
+      requests
+        .get('/api/pos/orders/latest-ongoing')
+        .then(res => {
+          setLastOrder(res.data?.data);
+          console.log(res.data.data);
+        })
+        .catch(error => {
+          console.log(error);
+          ErrorFlash(error?.message || 'Something went wrong!');
+        });
+    } catch (error) {
+      ErrorFlash('Something went wrong!');
+    }
+  };
+
+  const getOrderType = (status: string) => {
+    switch (status) {
+      case 'accepted':
+        return 'accepted';
+      case 'preparing':
+        return 'preparing';
+      case 'ready_for_pickup':
+        return 'ready';
+      case 'out_for_delivery':
+        return 'picked';
+      default:
+        return undefined;
+    }
+  };
+
+  // get online status
+  const getOnlineStatus = () => {
+    try {
+      requests
+        .get('/api/pos/online-status')
+        .then(res => {
+          setOnlineStatus(res.data?.data?.online_status == 'online');
+        })
+        .catch(error => {
+          console.log(error);
+          ErrorFlash(error?.message || 'Something went wrong!');
+        });
+    } catch (error) {
+      ErrorFlash('Something went wrong!');
+    }
+  };
   useEffect(() => {
     if (navigation) {
       setNavigator(navigation);
     }
   }, [navigation]);
+
+  useFocusEffect(
+    useCallback(() => {
+      getEarnings();
+      getLatestOrder();
+      getOnlineStatus();
+    }, []),
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -93,11 +178,24 @@ const HomeScreen = ({ navigation }: any) => {
             <View
               style={[
                 styles.statusContainer,
-                { backgroundColor: colors.readyBG },
+                {
+                  backgroundColor: onlineStatus
+                    ? colors.readyBG
+                    : colors.closeBG,
+                },
               ]}
             >
-              <Text style={[globalStyles.h12, { color: colors.readyTxt }]}>
-                Opened
+              <Text
+                style={[
+                  globalStyles.h12,
+                  {
+                    color: onlineStatus
+                      ? colors.readyTxt
+                      : colors.currentStatus,
+                  },
+                ]}
+              >
+                {onlineStatus ? ' Opened' : 'Closed'}
               </Text>
             </View>
           </View>
@@ -158,7 +256,7 @@ const HomeScreen = ({ navigation }: any) => {
                 <View style={styles.countBG}>
                   <FoodDeliveryIcon width={hp(3)} height={hp(3)} />
                   <Text style={[globalStyles.h8, { color: colors.earningBG }]}>
-                    10 Deliveries
+                    {earningData?.delivered_orders} Deliveries
                   </Text>
                 </View>
               </View>
@@ -173,7 +271,7 @@ const HomeScreen = ({ navigation }: any) => {
                     { color: colors.background, fontSize: RFValue(22) },
                   ]}
                 >
-                  Rs.1,000.00
+                  {earningData?.currency} {earningData?.today_earnings}
                 </Text>
                 <Text style={[globalStyles.h9, { color: colors.background }]}>
                   Earnings Today
@@ -209,20 +307,16 @@ const HomeScreen = ({ navigation }: any) => {
             />
           </Pressable>
         </View>
-        <OrderRequestCard
-          orderNumber="1234567890"
-          items={[
-            { name: 'Dum Chicken Biriyani ', quantity: 1 },
-            { name: 'Seafood Nasi Goreng', quantity: 2 },
-          ]}
-          type="preparing"
-          style={{
-            backgroundColor: colors.cardBG,
-          }}
-          cardStyle={{
-            backgroundColor: colors.background,
-            borderColor: colors.acceptedBorder,
-            borderWidth: 0.5,
+
+        <OrderOngoingCard
+          orderNumber={lastOrder?.order?.unique_id}
+          items={lastOrder?.order?.items}
+          type={getOrderType(lastOrder?.order?.status)}
+          title={lastOrder?.order?.customer?.name}
+          onPress={() => {
+            navigation.navigate('OrderViewScreen', {
+              orderId: lastOrder?.order?.id,
+            });
           }}
         />
 

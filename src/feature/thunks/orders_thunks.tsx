@@ -27,6 +27,7 @@ export const requestOrdersListData = createAsyncThunk(
   async (params: IOrdersListParams, { rejectWithValue }) => {
     try {
       const response = await requestOrdersListService(params);
+      console.log(response?.data);
       return response?.data;
     } catch (err: any) {
       const error: AxiosError<IOrdersError> = err;

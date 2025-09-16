@@ -18,7 +18,7 @@ export type UserStackParamList = {
   TopTabNavigator: undefined;
   OrderViewScreen: { orderId: string };
   ReportScreen: undefined;
-  OrderSummaryScreen: undefined;
+  OrderSummaryScreen: { orderId: number | undefined };
   SupportCenterScreen: undefined;
   BankDetailsScreen: undefined;
   PrivacyPolicyScreen: undefined;

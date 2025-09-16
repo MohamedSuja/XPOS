@@ -48,7 +48,7 @@ export const createStyles = (colors: ColorsType) =>
     logo: {
       width: wp('17%'),
       height: wp('17%'),
-      resizeMode: 'contain',
+      // resizeMode: 'contain',
       borderRadius: 100,
     },
     statusContainer: {

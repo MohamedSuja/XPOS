@@ -122,4 +122,9 @@ export const createStyles = (colors: ColorsType) =>
       alignSelf: 'center',
       marginTop: hp(1),
     },
+    versionTxt: {
+      color: colors.border,
+      alignSelf: 'center',
+      marginVertical: hp('1%'),
+    },
   });

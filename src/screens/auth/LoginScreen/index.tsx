@@ -28,6 +28,7 @@ import { useAppDispatch } from '@/feature/stateHooks';
 import { requestAuthenticateLoginData } from '@/feature/thunks/auth_thunks';
 import CustomInput from '@/components/Inputs/customInput';
 import PrimaryButton from '@/components/Buttons/PrimaryButton';
+import DeviceInfo from 'react-native-device-info';
 
 const LoginScreen = () => {
   const { colors }: ThemeContextType = useTheme();
@@ -39,6 +40,9 @@ const LoginScreen = () => {
   const [showPassword, setShowPassword] = useState(true);
   const [keyboardStatus, setKeyboardStatus] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const [version, setVersion] = useState<any>(null);
+  const [versionName, setVersionName] = useState<any>(null);
 
   const validationSchema = yup.object({
     userName: yup.string().required('User name is required'),
@@ -76,6 +80,11 @@ const LoginScreen = () => {
     }
   };
 
+  const getVersion = async () => {
+    setVersion(DeviceInfo.getVersion());
+    setVersionName(DeviceInfo.getBuildNumber());
+  };
+
   useEffect(() => {
     const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
       setKeyboardStatus(true);
@@ -88,6 +97,10 @@ const LoginScreen = () => {
       showSubscription.remove();
       hideSubscription.remove();
     };
+  }, []);
+
+  useEffect(() => {
+    getVersion();
   }, []);
 
   return (
@@ -224,6 +237,9 @@ const LoginScreen = () => {
                       </Text>
                     </Pressable>
                   </View>
+                  <Text style={[globalStyles.h12, styles.versionTxt]}>
+                    Version {version} ({versionName})
+                  </Text>
                 </View>
               </View>
             );

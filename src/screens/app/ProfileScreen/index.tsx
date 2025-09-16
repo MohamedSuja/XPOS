@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import { createStyles } from './styles';
 import BackButton from '@/components/Buttons/BackButton';
@@ -27,6 +27,8 @@ import BankIcon from '@/assets/icons/Bank.svg';
 import { requests } from '@/feature/services/api';
 import { ErrorFlash } from '@/utils/FlashMessage';
 import { useFocusEffect } from '@react-navigation/native';
+import DeviceInfo from 'react-native-device-info';
+import { formatTimeto12 } from '@/utils/formatTime';
 
 const ProfileScreen = ({ navigation }: any) => {
   const { colors }: ThemeContextType = useTheme();
@@ -36,6 +38,15 @@ const ProfileScreen = ({ navigation }: any) => {
   const logoutStatus = useAppSelector(selectAuthenticationLogoutDataStatus);
 
   const userData = useAppSelector(state => state.auth);
+
+  const [version, setVersion] = useState<any>(null);
+  const [versionName, setVersionName] = useState<any>(null);
+  const [profileData, setProfileData] = useState<any>(null);
+
+  const getVersion = async () => {
+    setVersion(DeviceInfo.getVersion());
+    setVersionName(DeviceInfo.getBuildNumber());
+  };
 
   useUpdateEffect(() => {
     if (logoutStatus == STATUS.SUCCEEDED) {
@@ -52,7 +63,7 @@ const ProfileScreen = ({ navigation }: any) => {
       requests
         .get(`/api/pos/profile`)
         .then(res => {
-          console.log(res.data);
+          setProfileData(res?.data?.data);
         })
         .catch(err => {
           console.log(err);
@@ -70,6 +81,9 @@ const ProfileScreen = ({ navigation }: any) => {
     }, []),
   );
 
+  useEffect(() => {
+    getVersion();
+  }, []);
   return (
     <View style={[styles.root]}>
       <View style={[styles.headerContainer]}>
@@ -91,7 +105,7 @@ const ProfileScreen = ({ navigation }: any) => {
             </Text>
             <View style={styles.ratingBG}>
               <Text style={[globalStyles.h8, { color: colors.background }]}>
-                3.5
+                {profileData?.branch?.details?.hygiene_ratings}
               </Text>
               <Octicons
                 name="star-fill"
@@ -100,19 +114,43 @@ const ProfileScreen = ({ navigation }: any) => {
               />
             </View>
             <View style={styles.locationContainer}>
-              <ClockIcon width={hp(3)} height={hp(3)} />
+              {/* <ClockIcon width={hp(3)} height={hp(3)} /> */}
               <Text style={[globalStyles.h12, styles.locationText]}>
-                Today 8.00 am to 5.00 pm
+                Today{' '}
+                {formatTimeto12(
+                  profileData?.branch?.opening_hours?.today?.open_time,
+                )}{' '}
+                to{' '}
+                {formatTimeto12(
+                  profileData?.branch?.opening_hours?.today?.close_time,
+                )}
               </Text>
             </View>
             <View
               style={[
                 styles.statusContainer,
-                { backgroundColor: colors.readyBG },
+                {
+                  backgroundColor:
+                    profileData?.branch?.online_status == 'online'
+                      ? colors.readyBG
+                      : colors.closeBG,
+                },
               ]}
             >
-              <Text style={[globalStyles.h12, { color: colors.readyTxt }]}>
-                Opened
+              <Text
+                style={[
+                  globalStyles.h12,
+                  {
+                    color:
+                      profileData?.branch?.online_status == 'online'
+                        ? colors.readyTxt
+                        : colors.currentStatus,
+                  },
+                ]}
+              >
+                {profileData?.branch?.online_status == 'online'
+                  ? 'Opened'
+                  : 'Closed'}
               </Text>
             </View>
           </View>
@@ -201,6 +239,10 @@ const ProfileScreen = ({ navigation }: any) => {
           title="Log Out"
           onPress={handleLogout}
         />
+
+        <Text style={[globalStyles.h12, styles.versionTxt]}>
+          Version {version} ({versionName})
+        </Text>
       </ScrollView>
     </View>
   );

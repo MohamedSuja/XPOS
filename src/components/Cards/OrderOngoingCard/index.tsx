@@ -19,7 +19,7 @@ import { useEffect, useMemo, useState } from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 
 interface OrderItem {
-  name: string;
+  item_name: string;
   quantity: number;
 }
 
@@ -77,17 +77,18 @@ const OrderOngoingCard: React.FC<OrderRequstCardProps> = ({
 
         {/* Order Items Section */}
         <View style={[styles.itemsContainer]}>
-          {items.map((item, index) => (
-            <View key={index} style={styles.itemRow}>
-              <Text style={[globalStyles.h5, styles.itemName]}>
-                {item.name}
-              </Text>
+          {items &&
+            items.map((item, index) => (
+              <View key={index} style={styles.itemRow}>
+                <Text style={[globalStyles.h5, styles.itemName]}>
+                  {item?.item_name}
+                </Text>
 
-              <Text style={[globalStyles.h5, styles.quantityText]}>
-                x{item.quantity}
-              </Text>
-            </View>
-          ))}
+                <Text style={[globalStyles.h5, styles.quantityText]}>
+                  x{item.quantity}
+                </Text>
+              </View>
+            ))}
         </View>
       </LinearGradient>
     </TouchableOpacity>
