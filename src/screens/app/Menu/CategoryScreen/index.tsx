@@ -1,121 +1,168 @@
-import { View, Text, FlatList } from 'react-native';
-import React from 'react';
+import { View, FlatList, RefreshControl } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import { createStyles } from './styles';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import SearchInput from '@/components/Inputs/SearchInput';
 import CategoryItem from '@/components/Cards/CategoryItem';
-import { MenuStackScreenProps } from '@/navigation/NavigationModels/MenuStack';
+
 import { hp } from '@/utils/Scaling';
+import { MenuStackScreenProps } from '@/navigation/NavigationModels/MenuStack';
+import { useAppDispatch, useAppSelector } from '@/feature/stateHooks';
+import {
+  selectMenuCategoriesData,
+  selectMenuCategoriesStatus,
+} from '@/feature/slices/menu_slice';
+import { requestMenuCategories } from '@/feature/thunks/menu_thunks';
+import { STATUS } from '@/feature/services/status_constants';
 
 const CategoryScreen = ({
   navigation,
 }: MenuStackScreenProps<'CategoryScreen'>) => {
   const { colors }: ThemeContextType = useTheme();
   const styles = createStyles(colors);
+  const dispatch = useAppDispatch();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [perPage, setPerPage] = useState(15);
+  const [allCategories, setAllCategories] = useState<any[]>([]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
-  const insets = useSafeAreaInsets();
+  const menuCategoriesData = useAppSelector(selectMenuCategoriesData);
+  const menuCategoriesStatus = useAppSelector(selectMenuCategoriesStatus);
+
+  useEffect(() => {
+    dispatch(
+      requestMenuCategories({
+        per_page: perPage,
+        page: 1,
+        status: 'approved',
+      }),
+    );
+  }, [dispatch, perPage]);
+
+  // Update allCategories when new data arrives
+  useEffect(() => {
+    if (menuCategoriesData?.data?.categories) {
+      // Always replace all categories since we're using page 1 with increasing per_page
+      setAllCategories(menuCategoriesData.data.categories);
+    }
+
+    // Reset loading states when data arrives
+    setIsRefreshing(false);
+    setIsLoadingMore(false);
+  }, [menuCategoriesData]);
+
+  // Filter categories based on search query
+  const filteredCategories = allCategories.filter(category =>
+    category.name.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
+
+  // Load more categories when reaching the end
+  const loadMoreCategories = () => {
+    const pagination = menuCategoriesData?.data?.pagination;
+    if (
+      pagination &&
+      allCategories.length < pagination.total &&
+      !isLoadingMore &&
+      !isRefreshing
+    ) {
+      setIsLoadingMore(true);
+      const newPerPage = perPage + 10;
+      setPerPage(newPerPage);
+      dispatch(
+        requestMenuCategories({
+          per_page: newPerPage,
+          page: 1,
+          status: 'approved',
+        }),
+      );
+    }
+  };
+
+  // Pull to refresh functionality
+  const onRefresh = () => {
+    setIsRefreshing(true);
+    setPerPage(15);
+    setAllCategories([]);
+    dispatch(
+      requestMenuCategories({
+        per_page: 15,
+        page: 1,
+        status: 'approved',
+      }),
+    );
+  };
+
+  // Reset pagination when search query changes
+  useEffect(() => {
+    if (searchQuery) {
+      // For search, we'll filter locally from all loaded categories
+      // In a real app, you might want to implement server-side search
+    } else {
+      // Reset to initial per_page when search is cleared
+      if (perPage > 15) {
+        setPerPage(15);
+        setAllCategories([]);
+        dispatch(
+          requestMenuCategories({
+            per_page: 15,
+            page: 1,
+            status: 'approved',
+          }),
+        );
+      }
+    }
+  }, [searchQuery, dispatch, perPage]);
+
+  const renderCategoryItem = ({ item }: { item: any }) => (
+    <CategoryItem
+      item={{
+        id: item.id,
+        name: item.name,
+        image:
+          item.image || 'https://via.placeholder.com/150x150?text=No+Image',
+      }}
+      onPress={() => {
+        navigation.navigate('CategoryViewScreen', {
+          item: item,
+        });
+      }}
+    />
+  );
+
   return (
     <View style={[styles.root]}>
       <View style={[styles.headerContainer, { paddingTop: hp(2.5) }]}>
         <SearchInput
           placeholder="Search main category"
           style={styles.searchInput}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
         />
       </View>
+
       <FlatList
         showsVerticalScrollIndicator={false}
         numColumns={2}
         columnWrapperStyle={styles.columnWrapper}
-        data={categoryData}
-        renderItem={({ item }) => (
-          <CategoryItem
-            item={item}
-            onPress={() => {
-              navigation.navigate('CategoryViewScreen', {
-                item: item,
-              });
-            }}
+        data={filteredCategories}
+        renderItem={renderCategoryItem}
+        keyExtractor={item => item.id.toString()}
+        contentContainerStyle={styles.listContainer}
+        onEndReached={loadMoreCategories}
+        onEndReachedThreshold={0.5}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={onRefresh}
+            colors={[colors.primary]}
+            tintColor={colors.primary}
           />
-        )}
+        }
       />
     </View>
   );
 };
 
 export default CategoryScreen;
-
-const categoryData = [
-  {
-    id: 1,
-    name: 'Pizza',
-    image:
-      'https://www.shutterstock.com/image-photo/fried-salmon-steak-cooked-green-600nw-2489026949.jpg',
-  },
-  {
-    id: 2,
-    name: 'Burger',
-    image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5k7T60odhyrtndKnNo0Ef-GmdAQTIdl22jg&s',
-  },
-  {
-    id: 3,
-    name: 'Salad',
-    image:
-      'https://img.freepik.com/free-photo/top-view-fast-food-mix-mozzarella-sticks-club-sandwich-hamburger-mushroom-pizza-caesar-shrimp-salad-french-fries-ketchup-mayo-cheese-sauces-table_141793-3998.jpg?semt=ais_hybrid&w=740',
-  },
-  {
-    id: 4,
-    name: 'Dessert',
-    image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8_kCgEQn9yIXh1QSwPJcN6QYJVceekyMXxQ&s',
-  },
-  {
-    id: 5,
-    name: 'Drink',
-    image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRoJ0RCxNrOLvYxHj8NSYEOBKgNLef73dF9A&s',
-  },
-  {
-    id: 6,
-    name: 'Soup',
-    image:
-      'https://bakewithshivesh.com/wp-content/uploads/2018/05/RASPBERRY-APPLE-CRISP.jpg',
-  },
-  {
-    id: 7,
-    name: 'Pasta',
-    image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjrvUCM4F6qU2P-gskxXTMQjn9jPhRPT5BZQ&s',
-  },
-  {
-    id: 8,
-    name: 'Fish',
-    image:
-      'https://i0.wp.com/digital-photography-school.com/wp-content/uploads/2019/10/MG_3869.jpg?fit=1500%2C1011&ssl=1',
-  },
-  {
-    id: 9,
-    name: 'Chicken',
-    image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3WF7SFm5a1kterAAcz-4ZxNDw6oglgIJHKA&s',
-  },
-  {
-    id: 10,
-    name: 'Beef',
-    image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjRHIfneW-xeaNFH91s9iLCN0w5fww9NPfEQ&s',
-  },
-  {
-    id: 11,
-    name: 'Vegetarian',
-    image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7Ovgxx5xzyfkobvR99fY1YWgoqso0zr_hdg&s',
-  },
-  {
-    id: 12,
-    name: 'Vegan',
-    image:
-      'https://clicklovegrow.com/wp-content/uploads/2020/03/Naomi-Sherman-Advanced-Graduate4.jpg',
-  },
-];

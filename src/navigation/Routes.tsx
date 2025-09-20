@@ -16,14 +16,6 @@ const AppRoutes = () => {
     selectAuthenticationLoginDataStatus,
   );
 
-  const AuthenticationLoginData = useAppSelector(selectAuthenticationLoginData);
-
-  useEffect(() => {
-    if (AuthenticationLoginDataStatus == STATUS.SUCCEEDED) {
-      setAccessToken(AuthenticationLoginData || '');
-    }
-  }, []);
-
   return (
     <NavigationContainer>
       {AuthenticationLoginDataStatus === STATUS.SUCCEEDED ? (

@@ -4,6 +4,7 @@ import logger from 'redux-logger';
 import rootReducer from './rootReducer';
 import { persistReducer, persistStore } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { setAccessToken } from './services/api';
 
 // configure store with middlewear and reducers
 let middleware: any = [];
@@ -32,6 +33,13 @@ export type AppDispatch = typeof store.dispatch;
 
 export default store;
 
-export const persistor = persistStore(store);
+export const persistor = persistStore(store, null, () => {
+  const state = store.getState();
+  const accessToken = state.auth.token;
+
+  if (accessToken) {
+    setAccessToken(accessToken);
+  }
+});
 
 // Clear cache if isRemember is false

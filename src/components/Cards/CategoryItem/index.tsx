@@ -14,7 +14,7 @@ interface CategoryItemProps {
   item: {
     id: number;
     name: string;
-    image: string;
+    image: string | null;
   };
   onPress?: ((event: GestureResponderEvent) => void) | undefined;
 }
@@ -22,13 +22,20 @@ interface CategoryItemProps {
 const CategoryItem = ({ item, onPress }: CategoryItemProps) => {
   const { colors }: ThemeContextType = useTheme();
   const styles = createButtonStyles(colors);
+
+  const defaultImage = 'https://via.placeholder.com/150x150?text=No+Image';
+
   return (
     <TouchableOpacity
       onPress={onPress}
       activeOpacity={0.7}
       style={styles.container}
     >
-      <Image source={{ uri: item.image }} style={styles.image} />
+      <Image
+        source={{ uri: item.image || defaultImage }}
+        style={styles.image}
+        defaultSource={{ uri: defaultImage }}
+      />
       <Text style={[globalStyles.h8, styles.name]}>{item.name}</Text>
     </TouchableOpacity>
   );
