@@ -136,6 +136,7 @@ export interface IOrderDetailsResponseBody {
           variant_name: string;
           variant_value: string | null;
           variant_price: number;
+          variant_quantity: number;
         }>;
         add_ons: any[];
       }>;

@@ -9,7 +9,10 @@ import {
   selectOrdersOngoingListData,
   selectOrdersOngoingListStatus,
 } from '@/feature/slices/orders_slice';
-import { requestOrdersListData } from '@/feature/thunks/orders_thunks';
+import {
+  requestOrderDetailsData,
+  requestOrdersListData,
+} from '@/feature/thunks/orders_thunks';
 import { STATUS } from '@/feature/services/status_constants';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -135,9 +138,20 @@ const OngoingScreen = () => {
           type={orderType}
           title={order?.customer.name}
           onPress={() => {
-            navigation.navigate('OrderViewScreen', {
-              orderId: item?.id,
-            });
+            dispatch(requestOrderDetailsData(item?.id));
+            if (orderType === 'preparing') {
+              navigation.navigate('OrderViewScreen', {
+                orderId: item?.id,
+              });
+            } else if (orderType === 'accepted') {
+              navigation.navigate('OrderViewScreen', {
+                orderId: item?.id,
+              });
+            } else if (orderType === 'ready') {
+              navigation.navigate('OrderSummaryScreen', {
+                orderId: item?.id,
+              });
+            }
           }}
         />
       );

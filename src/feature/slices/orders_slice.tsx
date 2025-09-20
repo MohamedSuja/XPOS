@@ -217,8 +217,6 @@ const orders_slice = createSlice({
 
   extraReducers: builder => {
     builder.addCase(requestOrdersListData.pending, (state, action) => {
-      state.ordersSliceStatus = STATUS.LOADING;
-
       // Set loading status based on the request type
       const requestType = action.meta.arg.request;
       switch (requestType) {
@@ -251,8 +249,6 @@ const orders_slice = createSlice({
           meta: { arg: IOrdersListParams };
         },
       ) => {
-        state.ordersSliceStatus = STATUS.SUCCEEDED;
-
         // Store data based on the request type
         const requestType = action.meta.arg.request;
         switch (requestType) {
@@ -284,8 +280,6 @@ const orders_slice = createSlice({
     );
 
     builder.addCase(requestOrdersListData.rejected, (state, action) => {
-      state.ordersSliceStatus = STATUS.FAILED;
-
       // Set failed status based on the request type
       const requestType = action.meta.arg.request;
       switch (requestType) {
@@ -333,7 +327,6 @@ const orders_slice = createSlice({
 
     // Order Accept Start
     builder.addCase(requestOrderAcceptData.pending, (state, action) => {
-      state.ordersSliceStatus = STATUS.LOADING;
       state.orderAcceptStatus = STATUS.LOADING;
 
       // Add order ID to loading list
@@ -344,7 +337,6 @@ const orders_slice = createSlice({
     });
 
     builder.addCase(requestOrderAcceptData.fulfilled, (state, action) => {
-      state.ordersSliceStatus = STATUS.SUCCEEDED;
       state.orderAcceptStatus = STATUS.SUCCEEDED;
       state.orderAcceptData = action.payload;
 
@@ -375,7 +367,6 @@ const orders_slice = createSlice({
     });
 
     builder.addCase(requestOrderAcceptData.rejected, (state, action) => {
-      state.ordersSliceStatus = STATUS.FAILED;
       state.orderAcceptStatus = STATUS.FAILED;
       state.ordersError = action.payload;
 
@@ -389,12 +380,10 @@ const orders_slice = createSlice({
 
     // Order Mark Ready Start
     builder.addCase(requestOrderMarkReadyData.pending, state => {
-      state.ordersSliceStatus = STATUS.LOADING;
       state.orderMarkReadyStatus = STATUS.LOADING;
     });
 
     builder.addCase(requestOrderMarkReadyData.fulfilled, (state, action) => {
-      state.ordersSliceStatus = STATUS.SUCCEEDED;
       state.orderMarkReadyStatus = STATUS.SUCCEEDED;
       state.orderMarkReadyData = action.payload;
     });
@@ -402,7 +391,6 @@ const orders_slice = createSlice({
     builder.addCase(
       requestOrderMarkReadyData.rejected,
       (state, action: any) => {
-        state.ordersSliceStatus = STATUS.FAILED;
         state.orderMarkReadyStatus = STATUS.FAILED;
         state.ordersError = action.payload;
 
@@ -419,14 +407,12 @@ const orders_slice = createSlice({
 
     // Order Mark Preparing Start
     builder.addCase(requestOrderMarkPreparingData.pending, state => {
-      state.ordersSliceStatus = STATUS.LOADING;
       state.orderMarkPreparingStatus = STATUS.LOADING;
     });
 
     builder.addCase(
       requestOrderMarkPreparingData.fulfilled,
       (state, action) => {
-        state.ordersSliceStatus = STATUS.SUCCEEDED;
         state.orderMarkPreparingStatus = STATUS.SUCCEEDED;
         state.orderMarkPreparingData = action.payload;
       },
@@ -435,7 +421,6 @@ const orders_slice = createSlice({
     builder.addCase(
       requestOrderMarkPreparingData.rejected,
       (state, action: any) => {
-        state.ordersSliceStatus = STATUS.FAILED;
         state.orderMarkPreparingStatus = STATUS.FAILED;
         state.ordersError = action.payload;
 
@@ -452,21 +437,18 @@ const orders_slice = createSlice({
 
     // Order Start Delivery Start
     builder.addCase(requestOrderStartDeliveryData.pending, state => {
-      state.ordersSliceStatus = STATUS.LOADING;
       state.orderStartDeliveryStatus = STATUS.LOADING;
     });
 
     builder.addCase(
       requestOrderStartDeliveryData.fulfilled,
       (state, action) => {
-        state.ordersSliceStatus = STATUS.SUCCEEDED;
         state.orderStartDeliveryStatus = STATUS.SUCCEEDED;
         state.orderStartDeliveryData = action.payload;
       },
     );
 
     builder.addCase(requestOrderStartDeliveryData.rejected, (state, action) => {
-      state.ordersSliceStatus = STATUS.FAILED;
       state.orderStartDeliveryStatus = STATUS.FAILED;
       state.ordersError = action.payload;
     });
@@ -474,21 +456,18 @@ const orders_slice = createSlice({
 
     // Order Mark Delivered Start
     builder.addCase(requestOrderMarkDeliveredData.pending, state => {
-      state.ordersSliceStatus = STATUS.LOADING;
       state.orderMarkDeliveredStatus = STATUS.LOADING;
     });
 
     builder.addCase(
       requestOrderMarkDeliveredData.fulfilled,
       (state, action) => {
-        state.ordersSliceStatus = STATUS.SUCCEEDED;
         state.orderMarkDeliveredStatus = STATUS.SUCCEEDED;
         state.orderMarkDeliveredData = action.payload;
       },
     );
 
     builder.addCase(requestOrderMarkDeliveredData.rejected, (state, action) => {
-      state.ordersSliceStatus = STATUS.FAILED;
       state.orderMarkDeliveredStatus = STATUS.FAILED;
       state.ordersError = action.payload;
       ErrorFlash(action.payload?.message);
@@ -497,7 +476,6 @@ const orders_slice = createSlice({
 
     // Order Reject Start
     builder.addCase(requestOrderRejectData.pending, (state, action) => {
-      state.ordersSliceStatus = STATUS.LOADING;
       state.orderRejectStatus = STATUS.LOADING;
 
       // Add order ID to loading list
@@ -508,7 +486,6 @@ const orders_slice = createSlice({
     });
 
     builder.addCase(requestOrderRejectData.fulfilled, (state, action) => {
-      state.ordersSliceStatus = STATUS.SUCCEEDED;
       state.orderRejectStatus = STATUS.SUCCEEDED;
       state.orderRejectData = action.payload;
 
@@ -539,7 +516,6 @@ const orders_slice = createSlice({
     });
 
     builder.addCase(requestOrderRejectData.rejected, (state, action) => {
-      state.ordersSliceStatus = STATUS.FAILED;
       state.orderRejectStatus = STATUS.FAILED;
       state.ordersError = action.payload;
 
@@ -553,18 +529,15 @@ const orders_slice = createSlice({
 
     // Order Summary Start
     builder.addCase(requestOrderSummaryData.pending, state => {
-      state.ordersSliceStatus = STATUS.LOADING;
       state.orderSummaryStatus = STATUS.LOADING;
     });
 
     builder.addCase(requestOrderSummaryData.fulfilled, (state, action) => {
-      state.ordersSliceStatus = STATUS.SUCCEEDED;
       state.orderSummaryStatus = STATUS.SUCCEEDED;
       state.orderSummaryData = action.payload;
     });
 
     builder.addCase(requestOrderSummaryData.rejected, (state, action) => {
-      state.ordersSliceStatus = STATUS.FAILED;
       state.orderSummaryStatus = STATUS.FAILED;
       state.ordersError = action.payload;
     });
