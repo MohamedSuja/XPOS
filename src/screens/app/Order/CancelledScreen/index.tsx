@@ -28,7 +28,6 @@ const CancelledScreen = () => {
   const ordersListData = useAppSelector(selectOrdersCanceledListData);
   const ordersListStatus = useAppSelector(selectOrdersCanceledListStatus);
 
-  const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [hasMoreData, setHasMoreData] = useState(true);
@@ -57,8 +56,8 @@ const CancelledScreen = () => {
       startDateOverride?: string,
       endDateOverride?: string,
     ) => {
+      const currentPerPage = reset ? 10 : perPage;
       if (reset) {
-        setCurrentPage(1);
         setPerPage(10);
         setHasMoreData(true);
       }
@@ -67,7 +66,7 @@ const CancelledScreen = () => {
         await dispatch(
           requestOrdersListData({
             page: 1,
-            per_page: perPage,
+            per_page: currentPerPage,
             request: 'cancelled',
             start_date: (startDateOverride ?? dateRange.startDate) || undefined,
             end_date: (endDateOverride ?? dateRange.endDate) || undefined,
@@ -88,12 +87,11 @@ const CancelledScreen = () => {
     if (isLoadingMore || !hasMoreData || !pagination) return;
 
     const newPerPage = perPage + 10;
-    if (newPerPage <= pagination.total) {
-      setIsLoadingMore(true);
-      setPerPage(newPerPage);
-      await loadOrders(false);
-      setIsLoadingMore(false);
-    }
+
+    setIsLoadingMore(true);
+    setPerPage(newPerPage);
+    await loadOrders(false, dateRange.startDate, dateRange.endDate);
+    setIsLoadingMore(false);
   }, [perPage, isLoadingMore, hasMoreData, pagination, loadOrders]);
 
   // Reload list whenever screen gains focus using navigation listener

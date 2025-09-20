@@ -29,7 +29,6 @@ const OngoingScreen = () => {
   const ordersListData = useAppSelector(selectOrdersOngoingListData);
   const ordersListStatus = useAppSelector(selectOrdersOngoingListStatus);
 
-  const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [hasMoreData, setHasMoreData] = useState(true);
@@ -45,8 +44,9 @@ const OngoingScreen = () => {
 
   const loadOrders = useCallback(
     async (reset: boolean = false, searchOverride?: string) => {
+      const currentPerPage = reset ? 10 : perPage;
+
       if (reset) {
-        setCurrentPage(1);
         setPerPage(10);
         setHasMoreData(true);
       }
@@ -55,14 +55,14 @@ const OngoingScreen = () => {
         await dispatch(
           requestOrdersListData({
             page: 1,
-            per_page: perPage,
+            per_page: currentPerPage,
             search: searchOverride ?? searchQuery,
             request: 'ongoing',
           }),
         ).unwrap();
 
         if (pagination) {
-          setHasMoreData(perPage < pagination.total);
+          setHasMoreData(currentPerPage < pagination.total);
         }
       } catch (error) {
         console.error('Error loading orders:', error);
@@ -75,12 +75,11 @@ const OngoingScreen = () => {
     if (isLoadingMore || !hasMoreData || !pagination) return;
 
     const newPerPage = perPage + 10;
-    if (newPerPage <= pagination.total) {
-      setIsLoadingMore(true);
-      setPerPage(newPerPage);
-      await loadOrders(false);
-      setIsLoadingMore(false);
-    }
+
+    setIsLoadingMore(true);
+    setPerPage(newPerPage);
+    await loadOrders(false, searchQuery);
+    setIsLoadingMore(false);
   }, [perPage, isLoadingMore, hasMoreData, pagination, loadOrders]);
 
   // Reload list whenever screen gains focus using navigation listener

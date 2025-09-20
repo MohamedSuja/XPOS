@@ -30,7 +30,6 @@ const RequestScreen = ({ navigation }: any) => {
   const ordersListData = useAppSelector(selectOrdersRequestListData);
   const ordersListStatus = useAppSelector(selectOrdersRequestListStatus);
 
-  const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [hasMoreData, setHasMoreData] = useState(true);
@@ -82,8 +81,8 @@ const RequestScreen = ({ navigation }: any) => {
 
   const loadOrders = useCallback(
     async (reset: boolean = false) => {
+      const currentPerPage = reset ? 10 : perPage;
       if (reset) {
-        setCurrentPage(1);
         setPerPage(10);
         setHasMoreData(true);
       }
@@ -92,7 +91,7 @@ const RequestScreen = ({ navigation }: any) => {
         await dispatch(
           requestOrdersListData({
             request: 'request',
-            per_page: perPage,
+            per_page: currentPerPage,
             page: 1,
           }),
         ).unwrap();
@@ -111,12 +110,11 @@ const RequestScreen = ({ navigation }: any) => {
     if (isLoadingMore || !hasMoreData || !pagination) return;
 
     const newPerPage = perPage + 10;
-    if (newPerPage <= pagination.total) {
-      setIsLoadingMore(true);
-      setPerPage(newPerPage);
-      await loadOrders(false);
-      setIsLoadingMore(false);
-    }
+
+    setIsLoadingMore(true);
+    setPerPage(newPerPage);
+    await loadOrders(false);
+    setIsLoadingMore(false);
   }, [perPage, isLoadingMore, hasMoreData, pagination, loadOrders]);
 
   const renderOrderItem = useCallback(
