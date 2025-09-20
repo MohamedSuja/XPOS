@@ -31,6 +31,7 @@ const RequestScreen = ({ navigation }: any) => {
   const ordersListStatus = useAppSelector(selectOrdersRequestListStatus);
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [hasMoreData, setHasMoreData] = useState(true);
 
@@ -38,7 +39,7 @@ const RequestScreen = ({ navigation }: any) => {
   const pagination = ordersListData?.data?.pagination_by_status?.request;
 
   useEffect(() => {
-    loadOrders(1, true);
+    loadOrders(true);
   }, []);
 
   // Monitor accept status and clear after success
@@ -80,9 +81,10 @@ const RequestScreen = ({ navigation }: any) => {
   }, [OrderRejectStatus, dispatch]);
 
   const loadOrders = useCallback(
-    async (page: number, reset: boolean = false) => {
+    async (reset: boolean = false) => {
       if (reset) {
         setCurrentPage(1);
+        setPerPage(10);
         setHasMoreData(true);
       }
 
@@ -90,32 +92,32 @@ const RequestScreen = ({ navigation }: any) => {
         await dispatch(
           requestOrdersListData({
             request: 'request',
-            per_page: 10,
-            page: page,
+            per_page: perPage,
+            page: 1,
           }),
         ).unwrap();
 
         if (pagination) {
-          setHasMoreData(page < pagination.last_page);
+          setHasMoreData(perPage < pagination.total);
         }
       } catch (error) {
         console.error('Error loading orders:', error);
       }
     },
-    [dispatch, pagination],
+    [dispatch, pagination, perPage],
   );
 
   const loadMoreOrders = useCallback(async () => {
     if (isLoadingMore || !hasMoreData || !pagination) return;
 
-    const nextPage = currentPage + 1;
-    if (nextPage <= pagination.last_page) {
+    const newPerPage = perPage + 10;
+    if (newPerPage <= pagination.total) {
       setIsLoadingMore(true);
-      await loadOrders(nextPage, false);
-      setCurrentPage(nextPage);
+      setPerPage(newPerPage);
+      await loadOrders(false);
       setIsLoadingMore(false);
     }
-  }, [currentPage, isLoadingMore, hasMoreData, pagination, loadOrders]);
+  }, [perPage, isLoadingMore, hasMoreData, pagination, loadOrders]);
 
   const renderOrderItem = useCallback(
     ({ item }: { item: any }) => {
@@ -178,7 +180,7 @@ const RequestScreen = ({ navigation }: any) => {
   // Reload list whenever screen gains focus using navigation listener
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      loadOrders(1, true);
+      loadOrders(true);
     });
 
     return unsubscribe;
@@ -209,7 +211,7 @@ const RequestScreen = ({ navigation }: any) => {
     );
   }, [ordersListStatus, colors.headerTxt]);
 
-  if (ordersListStatus === STATUS.LOADING && currentPage === 1) {
+  if (ordersListStatus === STATUS.LOADING && perPage === 10) {
     return (
       <View
         style={{
@@ -234,8 +236,8 @@ const RequestScreen = ({ navigation }: any) => {
         onEndReachedThreshold={0.1}
         ListFooterComponent={renderFooter}
         ListEmptyComponent={renderEmpty}
-        refreshing={ordersListStatus === STATUS.LOADING && currentPage === 1}
-        onRefresh={() => loadOrders(1, true)}
+        refreshing={ordersListStatus === STATUS.LOADING && perPage === 10}
+        onRefresh={() => loadOrders(true)}
       />
     </View>
   );

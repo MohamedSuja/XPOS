@@ -35,6 +35,7 @@ import { useUpdateEffect } from '@/utils/useUpdateEffect';
 import { STATUS } from '@/feature/services/status_constants';
 import SecondaryButton from '@/components/Buttons/SecondaryButton';
 import { SuccessFlash } from '@/utils/FlashMessage';
+import InstructionCard from '@/components/Cards/InstructionCard';
 
 const OrderViewScreen = ({
   route,
@@ -122,6 +123,10 @@ const OrderViewScreen = ({
         showsVerticalScrollIndicator={false}
       >
         <Tag type={status} />
+
+        {data?.delivery_instructions && (
+          <InstructionCard title={data?.delivery_instructions} />
+        )}
 
         <View style={styles.customerContainer}>
           <Text style={[globalStyles.h6, styles.customerText]}>

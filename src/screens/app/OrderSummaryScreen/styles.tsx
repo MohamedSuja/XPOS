@@ -78,7 +78,6 @@ export const createStyles = (colors: ColorsType) =>
     paymentSection: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginBottom: hp(2),
     },
     paymentMethodContainer: {
       flexDirection: 'row',
@@ -91,6 +90,7 @@ export const createStyles = (colors: ColorsType) =>
       marginBottom: wp(1),
     },
     itemsSection: {
+      marginTop: hp(2),
       marginBottom: hp(2),
       backgroundColor: colors.searchInput,
       paddingHorizontal: wp(3),

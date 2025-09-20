@@ -23,6 +23,7 @@ import RoomServiceIcon from '@/assets/icons/RoomService.svg';
 import OrderViewCard from '@/components/Cards/OrderViewCard';
 import {
   requestOrderDetailsData,
+  requestOrderMarkDeliveredData,
   requestOrderMarkReadyData,
 } from '@/feature/thunks/orders_thunks';
 import { UserStackScreenProps } from '@/navigation/NavigationModels/UserStack';
@@ -37,6 +38,7 @@ import { STATUS } from '@/feature/services/status_constants';
 import SecondaryButton from '@/components/Buttons/SecondaryButton';
 import { SuccessFlash } from '@/utils/FlashMessage';
 import CashIcon from '@/assets/icons/Cash.svg';
+import InstructionCard from '@/components/Cards/InstructionCard';
 
 const OrderSummaryScreen = ({
   route,
@@ -46,6 +48,17 @@ const OrderSummaryScreen = ({
 
   const dispatch = useAppDispatch();
 
+  const OrderDetailsData = useAppSelector(selectOrderDetailsData);
+  const data = OrderDetailsData?.data.order;
+
+  const onPressPicked = () => {
+    if (route.params?.orderId) {
+      dispatch(requestOrderMarkDeliveredData(String(route.params.orderId)));
+    } else {
+      console.warn('Order ID is missing');
+    }
+  };
+
   return (
     <View style={[styles.root]}>
       <View style={[styles.headerContainer, { paddingTop: hp(2.5) }]}>
@@ -54,11 +67,14 @@ const OrderSummaryScreen = ({
           <Text style={[globalStyles.h4, styles.headerTxt]}>Order Summary</Text>
         </View>
       </View>
-      <View style={styles.deliveryMessageContainer}>
-        <Text style={[globalStyles.h9, styles.deliveryMessage]}>
-          A driver will collect it shortly for delivery
-        </Text>
-      </View>
+      {data?.delivery_type === 'delivery' && (
+        <View style={styles.deliveryMessageContainer}>
+          <Text style={[globalStyles.h9, styles.deliveryMessage]}>
+            A driver will collect it shortly for delivery
+          </Text>
+        </View>
+      )}
+
       <ScrollView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}
@@ -66,30 +82,52 @@ const OrderSummaryScreen = ({
         <View style={styles.orderInfoSection}>
           <View style={styles.orderIdContainer}>
             <Text style={[globalStyles.h6, styles.labelText]}>Order ID : </Text>
-            <Text style={[globalStyles.h2, styles.valueText]}>Order #1235</Text>
-          </View>
-          <View style={styles.orderTypeContainer}>
-            <Text style={[globalStyles.h8, styles.orderTypeText]}>
-              Take a away
+            <Text style={[globalStyles.h2, styles.valueText]}>
+              Order #{route.params?.orderId}
             </Text>
           </View>
+          {data?.delivery_type !== 'delivery' && (
+            <View style={styles.orderTypeContainer}>
+              <Text style={[globalStyles.h8, styles.orderTypeText]}>
+                {data?.delivery_type ?? ''}
+              </Text>
+            </View>
+          )}
         </View>
 
         <View style={styles.dateSection}>
           <View style={styles.dateContainer}>
             <Text style={[globalStyles.h6, styles.labelText]}>Date : </Text>
-            <Text style={[globalStyles.h5, styles.valueText]}>2025.07.10</Text>
+            <Text style={[globalStyles.h5, styles.valueText]}>
+              {data?.created_at
+                ? new Date(data.created_at)
+                    .toLocaleDateString('en-GB', {
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit',
+                    })
+                    .replace(/\//g, '.')
+                : 'N/A'}
+            </Text>
           </View>
           <View style={styles.dateContainer}>
-            <Text style={[globalStyles.h6, styles.labelText]}>Date : </Text>
-            <Text style={[globalStyles.h5, styles.valueText]}>2025.07.10</Text>
+            <Text style={[globalStyles.h6, styles.labelText]}>Time : </Text>
+            <Text style={[globalStyles.h5, styles.valueText]}>
+              {data?.created_at
+                ? new Date(data.created_at).toLocaleTimeString('en-US', {
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true,
+                  })
+                : 'N/A'}
+            </Text>
           </View>
         </View>
 
         <View style={styles.customerSection}>
           <Text style={[globalStyles.h6, styles.labelText]}>Customer : </Text>
           <Text style={[globalStyles.h5, styles.valueText]}>
-            Manikandan Thavaselvam
+            {data?.customer?.name}
           </Text>
         </View>
 
@@ -100,99 +138,93 @@ const OrderSummaryScreen = ({
           <View style={styles.paymentMethodContainer}>
             <CashIcon height={wp(6)} width={wp(6)} />
             <Text style={[globalStyles.h5, styles.paymentMethodText]}>
-              Cash on delivery
+              {data?.payment_method}
             </Text>
           </View>
         </View>
 
+        {data?.delivery_instructions && (
+          <InstructionCard title={data?.delivery_instructions} />
+        )}
+
         <View style={styles.itemsSection}>
-          <View style={styles.itemContainer}>
-            <View style={styles.itemHeader}>
-              <Text style={[globalStyles.h5, styles.itemName]}>
-                Dum Chicken Biriyani
-              </Text>
-              <Text style={[globalStyles.h5, styles.itemPrice]}>Rs. 1,850</Text>
-            </View>
-            <View style={styles.itemVariant}>
-              <Text style={[globalStyles.h6, styles.variantText]}>Large</Text>
-              <Text style={[globalStyles.h6, styles.quantityText]}>
-                Qty : 1
-              </Text>
-            </View>
-            <View style={styles.itemVariant}>
-              <Text style={[globalStyles.h6, styles.variantText]}>
-                Extra Large
-              </Text>
-              <Text style={[globalStyles.h6, styles.quantityText]}>
-                Qty : 1
-              </Text>
-            </View>
+          {data?.items?.map((item, index) => (
+            <View
+              style={[
+                styles.itemContainer,
+                data?.items.length === index + 1 && {
+                  borderBottomWidth: 0,
+                },
+              ]}
+              key={index}
+            >
+              <View style={styles.itemHeader}>
+                <Text style={[globalStyles.h5, styles.itemName]}>
+                  {item?.item_name ?? ''}
+                </Text>
+                <Text style={[globalStyles.h5, styles.itemPrice]}>
+                  Rs. {item.total_price?.toLocaleString()}
+                </Text>
+              </View>
+              {item?.large_quantity && (
+                <View style={styles.itemVariant}>
+                  <Text style={[globalStyles.h6, styles.variantText]}>
+                    Large
+                  </Text>
+                  <Text style={[globalStyles.h6, styles.quantityText]}>
+                    Qty : {item?.large_quantity}
+                  </Text>
+                </View>
+              )}
 
-            <View style={styles.itemInstruction}>
-              <Text style={[globalStyles.h12, styles.instructionText]}>
-                Instruction :
-              </Text>
-              <Text style={[globalStyles.h12, styles.instructionItemText]}>
-                Avoid Onion and Chilly
-              </Text>
-            </View>
-          </View>
+              {item?.extra_large_quantity && (
+                <View style={styles.itemVariant}>
+                  <Text style={[globalStyles.h6, styles.variantText]}>
+                    Large
+                  </Text>
+                  <Text style={[globalStyles.h6, styles.quantityText]}>
+                    Qty : {item?.extra_large_quantity}
+                  </Text>
+                </View>
+              )}
 
-          <View style={styles.itemContainer}>
-            <View style={styles.itemHeader}>
-              <Text style={[globalStyles.h5, styles.itemName]}>
-                Dum Chicken Biriyani
-              </Text>
-              <Text style={[globalStyles.h5, styles.itemPrice]}>Rs. 1,850</Text>
+              {item?.quantity && (
+                <View style={styles.itemVariant}>
+                  <Text style={[globalStyles.h6, styles.variantText]}></Text>
+                  <Text style={[globalStyles.h6, styles.quantityText]}>
+                    Qty : {item?.quantity}
+                  </Text>
+                </View>
+              )}
+              {item?.special_instructions && (
+                <View style={styles.itemInstruction}>
+                  <Text style={[globalStyles.h12, styles.instructionText]}>
+                    Instruction :
+                  </Text>
+                  <Text style={[globalStyles.h12, styles.instructionItemText]}>
+                    {item?.special_instructions}
+                  </Text>
+                </View>
+              )}
             </View>
-            <View style={styles.itemVariant}>
-              <Text style={[globalStyles.h6, styles.variantText]}>Large</Text>
-              <Text style={[globalStyles.h6, styles.quantityText]}>
-                Qty : 1
-              </Text>
-            </View>
-            <View style={styles.itemVariant}>
-              <Text style={[globalStyles.h6, styles.variantText]}>
-                Extra Large
-              </Text>
-              <Text style={[globalStyles.h6, styles.quantityText]}>
-                Qty : 1
-              </Text>
-            </View>
-          </View>
-
-          <View style={styles.itemContainer}>
-            <View style={styles.itemHeader}>
-              <Text style={[globalStyles.h5, styles.itemName]}>
-                Dum Chicken Biriyani
-              </Text>
-              <Text style={[globalStyles.h5, styles.itemPrice]}>Rs. 1,850</Text>
-            </View>
-            <View style={styles.itemVariant}>
-              <Text style={[globalStyles.h6, styles.variantText]}>Large</Text>
-              <Text style={[globalStyles.h6, styles.quantityText]}>
-                Qty : 1
-              </Text>
-            </View>
-            <View style={styles.itemVariant}>
-              <Text style={[globalStyles.h6, styles.variantText]}>
-                Extra Large
-              </Text>
-              <Text style={[globalStyles.h6, styles.quantityText]}>
-                Qty : 1
-              </Text>
-            </View>
-          </View>
+          ))}
         </View>
-
         <View style={styles.totalSection}>
           <Text style={[globalStyles.h5, styles.totalLabel]}>Total Amount</Text>
-          <Text style={[globalStyles.h5, styles.totalAmount]}>Rs. 5,550</Text>
+          <Text style={[globalStyles.h5, styles.totalAmount]}>
+            Rs. {data?.total ? parseFloat(data.total).toLocaleString() : '0'}
+          </Text>
         </View>
       </ScrollView>
-      <View style={styles.footer}>
-        <PrimaryButton style={styles.footerButton} title="Picked" />
-      </View>
+      {data?.delivery_type !== 'delivery' && (
+        <View style={styles.footer}>
+          <PrimaryButton
+            style={styles.footerButton}
+            title="Picked"
+            onPress={onPressPicked}
+          />
+        </View>
+      )}
     </View>
   );
 };
