@@ -67,13 +67,15 @@ const OrderSummaryScreen = ({
           <Text style={[globalStyles.h4, styles.headerTxt]}>Order Summary</Text>
         </View>
       </View>
-      {data?.delivery_type === 'delivery' && (
-        <View style={styles.deliveryMessageContainer}>
-          <Text style={[globalStyles.h9, styles.deliveryMessage]}>
-            A driver will collect it shortly for delivery
-          </Text>
-        </View>
-      )}
+      {data?.delivery_type === 'delivery' &&
+        data?.status !== 'delivered' &&
+        data?.status !== 'cancelled' && (
+          <View style={styles.deliveryMessageContainer}>
+            <Text style={[globalStyles.h9, styles.deliveryMessage]}>
+              A driver will collect it shortly for delivery
+            </Text>
+          </View>
+        )}
 
       <ScrollView
         contentContainerStyle={styles.scrollView}
@@ -90,6 +92,14 @@ const OrderSummaryScreen = ({
             <View style={styles.orderTypeContainer}>
               <Text style={[globalStyles.h8, styles.orderTypeText]}>
                 {data?.delivery_type ?? ''}
+              </Text>
+            </View>
+          )}
+
+          {data?.status === 'cancelled' && (
+            <View style={styles.orderCancelledContainer}>
+              <Text style={[globalStyles.h8, styles.orderCancelledText]}>
+                {data?.status}
               </Text>
             </View>
           )}
@@ -131,19 +141,32 @@ const OrderSummaryScreen = ({
           </Text>
         </View>
 
-        <View style={styles.paymentSection}>
-          <Text style={[globalStyles.h6, styles.labelText]}>
-            Payment Method :{' '}
-          </Text>
-          <View style={styles.paymentMethodContainer}>
-            <CashIcon height={wp(6)} width={wp(6)} />
-            <Text style={[globalStyles.h5, styles.paymentMethodText]}>
-              {data?.payment_method}
+        {data?.payment_method && data?.status !== 'cancelled' && (
+          <View style={styles.paymentSection}>
+            <Text style={[globalStyles.h6, styles.labelText]}>
+              Payment Method :{' '}
+            </Text>
+            <View style={styles.paymentMethodContainer}>
+              <CashIcon height={wp(6)} width={wp(6)} />
+              <Text style={[globalStyles.h5, styles.paymentMethodText]}>
+                {data?.payment_method}
+              </Text>
+            </View>
+          </View>
+        )}
+
+        {data?.status === 'cancelled' && (
+          <View style={styles.reasonCancelContainer}>
+            <Text style={[globalStyles.h12, styles.reasonCancelTitle]}>
+              Reason of Cancel
+            </Text>
+            <Text style={[globalStyles.h9, styles.reasonCancel]}>
+              Lorem ipsum dolor sit amet, consectetur{' '}
             </Text>
           </View>
-        </View>
+        )}
 
-        {data?.delivery_instructions && (
+        {data?.delivery_instructions && data?.status !== 'cancelled' && (
           <InstructionCard title={data?.delivery_instructions} />
         )}
 
@@ -166,27 +189,16 @@ const OrderSummaryScreen = ({
                   Rs. {item.total_price?.toLocaleString()}
                 </Text>
               </View>
-              {item?.large_quantity && (
+              {item?.variants.map((item, index) => (
                 <View style={styles.itemVariant}>
                   <Text style={[globalStyles.h6, styles.variantText]}>
-                    Large
+                    {item.variant_name}
                   </Text>
                   <Text style={[globalStyles.h6, styles.quantityText]}>
-                    Qty : {item?.large_quantity}
+                    Qty : {item?.variant_quantity}
                   </Text>
                 </View>
-              )}
-
-              {item?.extra_large_quantity && (
-                <View style={styles.itemVariant}>
-                  <Text style={[globalStyles.h6, styles.variantText]}>
-                    Large
-                  </Text>
-                  <Text style={[globalStyles.h6, styles.quantityText]}>
-                    Qty : {item?.extra_large_quantity}
-                  </Text>
-                </View>
-              )}
+              ))}
 
               {item?.quantity && (
                 <View style={styles.itemVariant}>
@@ -209,13 +221,22 @@ const OrderSummaryScreen = ({
             </View>
           ))}
         </View>
-        <View style={styles.totalSection}>
-          <Text style={[globalStyles.h5, styles.totalLabel]}>Total Amount</Text>
-          <Text style={[globalStyles.h5, styles.totalAmount]}>
-            Rs. {data?.total ? parseFloat(data.total).toLocaleString() : '0'}
-          </Text>
-        </View>
+        {data?.status !== 'cancelled' && (
+          <View style={styles.totalSection}>
+            <Text style={[globalStyles.h5, styles.totalLabel]}>
+              Total Amount
+            </Text>
+            <Text style={[globalStyles.h5, styles.totalAmount]}>
+              Rs. {data?.total ? parseFloat(data.total).toLocaleString() : '0'}
+            </Text>
+          </View>
+        )}
       </ScrollView>
+
+      {data?.status === 'delivered' && (
+        <PrimaryButton style={styles.footerButton} title="Invoice" />
+      )}
+
       {data?.delivery_type !== 'delivery' && (
         <View style={styles.footer}>
           <PrimaryButton

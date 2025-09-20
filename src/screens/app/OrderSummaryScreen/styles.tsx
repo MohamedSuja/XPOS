@@ -61,6 +61,18 @@ export const createStyles = (colors: ColorsType) =>
     orderTypeText: {
       color: colors.primary,
     },
+
+    orderCancelledContainer: {
+      backgroundColor: colors.cancelledBG,
+      paddingHorizontal: wp(3),
+      paddingVertical: hp(0.3),
+      borderRadius: 5,
+      borderColor: colors.cancelledBorder,
+      borderWidth: 1,
+    },
+    orderCancelledText: {
+      color: colors.subTitle,
+    },
     dateSection: {
       flexDirection: 'row',
       justifyContent: 'space-between',
@@ -89,6 +101,23 @@ export const createStyles = (colors: ColorsType) =>
       marginLeft: wp(1),
       marginBottom: wp(1),
     },
+
+    reasonCancelContainer: {
+      paddingHorizontal: wp(3),
+      paddingVertical: hp(1),
+      borderColor: colors.border3,
+      borderWidth: 1,
+      borderRadius: 10,
+      marginTop: hp(1.5),
+      backgroundColor: colors.acceptedBG,
+    },
+    reasonCancelTitle: {
+      color: colors.primary,
+    },
+    reasonCancel: {
+      color: colors.inputTxt,
+    },
+
     itemsSection: {
       marginTop: hp(2),
       marginBottom: hp(2),

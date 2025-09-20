@@ -9,14 +9,20 @@ import {
   selectOrdersCanceledListData,
   selectOrdersCanceledListStatus,
 } from '@/feature/slices/orders_slice';
-import { requestOrdersListData } from '@/feature/thunks/orders_thunks';
+import {
+  requestOrderDetailsData,
+  requestOrdersListData,
+} from '@/feature/thunks/orders_thunks';
 import { STATUS } from '@/feature/services/status_constants';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { UserStackParamList } from '@/navigation/NavigationModels/UserStack';
 
 const CancelledScreen = () => {
   const { colors }: ThemeContextType = useTheme();
   const styles = createStyles(colors);
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<UserStackParamList>>();
 
   const dispatch = useAppDispatch();
   const ordersListData = useAppSelector(selectOrdersCanceledListData);
@@ -150,6 +156,12 @@ const CancelledScreen = () => {
             borderWidth: 0.5,
           }}
           complete={completeDate}
+          onPress={() => {
+            dispatch(requestOrderDetailsData(item?.id));
+            navigation.navigate('OrderSummaryScreen', {
+              orderId: item?.id,
+            });
+          }}
         />
       );
     },
