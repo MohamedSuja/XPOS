@@ -491,6 +491,7 @@ const orders_slice = createSlice({
       state.ordersSliceStatus = STATUS.FAILED;
       state.orderMarkDeliveredStatus = STATUS.FAILED;
       state.ordersError = action.payload;
+      ErrorFlash(action.payload?.message);
     });
     // Order Mark Delivered End
 
