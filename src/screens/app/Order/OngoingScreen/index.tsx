@@ -29,10 +29,7 @@ const OngoingScreen = () => {
   const ordersListData = useAppSelector(selectOrdersOngoingListData);
   const ordersListStatus = useAppSelector(selectOrdersOngoingListStatus);
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [hasMoreData, setHasMoreData] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchLoading, setIsSearchLoading] = useState(false);
 
@@ -44,44 +41,36 @@ const OngoingScreen = () => {
   }, []);
 
   const loadOrders = useCallback(
-    async (reset: boolean = false, searchOverride?: string) => {
-      if (reset) {
-        setCurrentPage(1);
-        setPerPage(10);
-        setHasMoreData(true);
-      }
-
+    async (
+      reset: boolean = false,
+      searchOverride?: string,
+      per_page?: number,
+    ) => {
       try {
         await dispatch(
           requestOrdersListData({
             page: 1,
-            per_page: perPage,
+            per_page: per_page ?? 10,
             search: searchOverride ?? searchQuery,
             request: 'ongoing',
           }),
         ).unwrap();
-
-        if (pagination) {
-          setHasMoreData(perPage < pagination.total);
-        }
       } catch (error) {
         console.error('Error loading orders:', error);
       }
     },
-    [dispatch, searchQuery, pagination, perPage],
+    [dispatch, searchQuery, pagination],
   );
 
   const loadMoreOrders = useCallback(async () => {
-    if (isLoadingMore || !hasMoreData || !pagination) return;
+    if (isLoadingMore || !pagination) return;
 
-    const newPerPage = perPage + 10;
-    if (newPerPage <= pagination.total) {
+    if (pagination.per_page < pagination.total) {
       setIsLoadingMore(true);
-      setPerPage(newPerPage);
-      await loadOrders(false);
+      await loadOrders(false, searchQuery, pagination.per_page + 10);
       setIsLoadingMore(false);
     }
-  }, [perPage, isLoadingMore, hasMoreData, pagination, loadOrders]);
+  }, [isLoadingMore, pagination, loadOrders, searchQuery]);
 
   // Reload list whenever screen gains focus using navigation listener
   useEffect(() => {
@@ -194,11 +183,7 @@ const OngoingScreen = () => {
     );
   }, [ordersListStatus, colors.headerTxt]);
 
-  if (
-    ordersListStatus === STATUS.LOADING &&
-    perPage === 10 &&
-    !isSearchLoading
-  ) {
+  if (ordersListStatus === STATUS.LOADING && !pagination && !isSearchLoading) {
     return (
       <View
         style={{
@@ -230,9 +215,7 @@ const OngoingScreen = () => {
         ListFooterComponent={renderFooter}
         ListEmptyComponent={renderEmpty}
         refreshing={
-          ordersListStatus === STATUS.LOADING &&
-          perPage === 10 &&
-          !isSearchLoading
+          ordersListStatus === STATUS.LOADING && !pagination && !isSearchLoading
         }
         onRefresh={() => loadOrders(true, searchQuery)}
       />

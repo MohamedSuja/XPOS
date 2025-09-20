@@ -30,10 +30,7 @@ const RequestScreen = ({ navigation }: any) => {
   const ordersListData = useAppSelector(selectOrdersRequestListData);
   const ordersListStatus = useAppSelector(selectOrdersRequestListStatus);
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [hasMoreData, setHasMoreData] = useState(true);
 
   const orders = ordersListData?.data?.orders || [];
   const pagination = ordersListData?.data?.pagination_by_status?.request;
@@ -81,43 +78,36 @@ const RequestScreen = ({ navigation }: any) => {
   }, [OrderRejectStatus, dispatch]);
 
   const loadOrders = useCallback(
-    async (reset: boolean = false) => {
-      if (reset) {
-        setCurrentPage(1);
-        setPerPage(10);
-        setHasMoreData(true);
-      }
-
+    async (
+      reset: boolean = false,
+      searchOverride?: string,
+      per_page?: number,
+    ) => {
       try {
         await dispatch(
           requestOrdersListData({
-            request: 'request',
-            per_page: perPage,
             page: 1,
+            per_page: per_page ?? 10,
+            search: searchOverride,
+            request: 'request',
           }),
         ).unwrap();
-
-        if (pagination) {
-          setHasMoreData(perPage < pagination.total);
-        }
       } catch (error) {
         console.error('Error loading orders:', error);
       }
     },
-    [dispatch, pagination, perPage],
+    [dispatch, pagination],
   );
 
   const loadMoreOrders = useCallback(async () => {
-    if (isLoadingMore || !hasMoreData || !pagination) return;
+    if (isLoadingMore || !pagination) return;
 
-    const newPerPage = perPage + 10;
-    if (newPerPage <= pagination.total) {
+    if (pagination.per_page < pagination.total) {
       setIsLoadingMore(true);
-      setPerPage(newPerPage);
-      await loadOrders(false);
+      await loadOrders(false, undefined, pagination.per_page + 10);
       setIsLoadingMore(false);
     }
-  }, [perPage, isLoadingMore, hasMoreData, pagination, loadOrders]);
+  }, [isLoadingMore, pagination, loadOrders]);
 
   const renderOrderItem = useCallback(
     ({ item }: { item: any }) => {
@@ -211,7 +201,7 @@ const RequestScreen = ({ navigation }: any) => {
     );
   }, [ordersListStatus, colors.headerTxt]);
 
-  if (ordersListStatus === STATUS.LOADING && perPage === 10) {
+  if (ordersListStatus === STATUS.LOADING && !pagination) {
     return (
       <View
         style={{
@@ -236,7 +226,7 @@ const RequestScreen = ({ navigation }: any) => {
         onEndReachedThreshold={0.1}
         ListFooterComponent={renderFooter}
         ListEmptyComponent={renderEmpty}
-        refreshing={ordersListStatus === STATUS.LOADING && perPage === 10}
+        refreshing={ordersListStatus === STATUS.LOADING && !pagination}
         onRefresh={() => loadOrders(true)}
       />
     </View>
