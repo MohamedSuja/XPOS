@@ -22,4 +22,7 @@ export const createStyles = (colors: ColorsType) =>
       paddingHorizontal: wp('4%'),
       justifyContent: 'space-between',
     },
+    listContainer: {
+      paddingBottom: hp('2%'),
+    },
   });
