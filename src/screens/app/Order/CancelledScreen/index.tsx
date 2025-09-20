@@ -28,9 +28,7 @@ const CancelledScreen = () => {
   const ordersListData = useAppSelector(selectOrdersCanceledListData);
   const ordersListStatus = useAppSelector(selectOrdersCanceledListStatus);
 
-  const [perPage, setPerPage] = useState(10);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [hasMoreData, setHasMoreData] = useState(true);
 
   const [dateRange, setDateRange] = useState<{
     startDate: string | undefined;
@@ -55,44 +53,45 @@ const CancelledScreen = () => {
       reset: boolean = false,
       startDateOverride?: string,
       endDateOverride?: string,
+      per_page?: number,
     ) => {
-      const currentPerPage = reset ? 10 : perPage;
-      if (reset) {
-        setPerPage(10);
-        setHasMoreData(true);
-      }
-
       try {
         await dispatch(
           requestOrdersListData({
             page: 1,
-            per_page: currentPerPage,
+            per_page: per_page ?? 10,
             request: 'cancelled',
             start_date: (startDateOverride ?? dateRange.startDate) || undefined,
             end_date: (endDateOverride ?? dateRange.endDate) || undefined,
           }),
         ).unwrap();
-
-        if (pagination) {
-          setHasMoreData(perPage < pagination.total);
-        }
       } catch (error) {
         console.error('Error loading cancelled orders:', error);
       }
     },
-    [dispatch, dateRange.startDate, dateRange.endDate, pagination, perPage],
+    [dispatch, dateRange.startDate, dateRange.endDate, pagination],
   );
 
   const loadMoreOrders = useCallback(async () => {
-    if (isLoadingMore || !hasMoreData || !pagination) return;
+    if (isLoadingMore || !pagination) return;
 
-    const newPerPage = perPage + 10;
-
-    setIsLoadingMore(true);
-    setPerPage(newPerPage);
-    await loadOrders(false, dateRange.startDate, dateRange.endDate);
-    setIsLoadingMore(false);
-  }, [perPage, isLoadingMore, hasMoreData, pagination, loadOrders]);
+    if (pagination.per_page < pagination.total) {
+      setIsLoadingMore(true);
+      await loadOrders(
+        false,
+        dateRange.startDate,
+        dateRange.endDate,
+        pagination.per_page + 10,
+      );
+      setIsLoadingMore(false);
+    }
+  }, [
+    isLoadingMore,
+    pagination,
+    loadOrders,
+    dateRange.startDate,
+    dateRange.endDate,
+  ]);
 
   // Reload list whenever screen gains focus using navigation listener
   useEffect(() => {
@@ -201,7 +200,7 @@ const CancelledScreen = () => {
     );
   }, [ordersListStatus, colors.headerTxt]);
 
-  if (ordersListStatus === STATUS.LOADING && perPage === 10) {
+  if (ordersListStatus === STATUS.LOADING && !pagination) {
     return (
       <View
         style={{
@@ -232,7 +231,7 @@ const CancelledScreen = () => {
         onEndReachedThreshold={0.1}
         ListFooterComponent={renderFooter}
         ListEmptyComponent={renderEmpty}
-        refreshing={ordersListStatus === STATUS.LOADING && perPage === 10}
+        refreshing={ordersListStatus === STATUS.LOADING && !pagination}
         onRefresh={onRefresh}
       />
     </View>
