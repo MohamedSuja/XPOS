@@ -26,6 +26,7 @@ const CompletedScreen = () => {
   const ordersListStatus = useAppSelector(selectOrdersCompletedListStatus);
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [hasMoreData, setHasMoreData] = useState(true);
 
@@ -38,33 +39,33 @@ const CompletedScreen = () => {
   const pagination = ordersListData?.data?.pagination_by_status?.completed;
 
   useEffect(() => {
-    loadOrders(1, true);
+    loadOrders(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     // When date range changes, reload from page 1
-    loadOrders(1, true, dateRange.startDate, dateRange.endDate);
+    loadOrders(true, dateRange.startDate, dateRange.endDate);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateRange.startDate, dateRange.endDate]);
 
   const loadOrders = useCallback(
     async (
-      page: number,
       reset: boolean = false,
       startDateOverride?: string,
       endDateOverride?: string,
     ) => {
       if (reset) {
         setCurrentPage(1);
+        setPerPage(10);
         setHasMoreData(true);
       }
 
       try {
         await dispatch(
           requestOrdersListData({
-            page: page,
-            per_page: 10,
+            page: 1,
+            per_page: perPage,
             request: 'completed',
             start_date: (startDateOverride ?? dateRange.startDate) || undefined,
             end_date: (endDateOverride ?? dateRange.endDate) || undefined,
@@ -72,31 +73,31 @@ const CompletedScreen = () => {
         ).unwrap();
 
         if (pagination) {
-          setHasMoreData(page < pagination.last_page);
+          setHasMoreData(perPage < pagination.total);
         }
       } catch (error) {
         console.error('Error loading completed orders:', error);
       }
     },
-    [dispatch, dateRange.startDate, dateRange.endDate, pagination],
+    [dispatch, dateRange.startDate, dateRange.endDate, pagination, perPage],
   );
 
   const loadMoreOrders = useCallback(async () => {
     if (isLoadingMore || !hasMoreData || !pagination) return;
 
-    const nextPage = currentPage + 1;
-    if (nextPage <= pagination.last_page) {
+    const newPerPage = perPage + 10;
+    if (newPerPage <= pagination.total) {
       setIsLoadingMore(true);
-      await loadOrders(nextPage, false);
-      setCurrentPage(nextPage);
+      setPerPage(newPerPage);
+      await loadOrders(false);
       setIsLoadingMore(false);
     }
-  }, [currentPage, isLoadingMore, hasMoreData, pagination, loadOrders]);
+  }, [perPage, isLoadingMore, hasMoreData, pagination, loadOrders]);
 
   // Reload list whenever screen gains focus using navigation listener
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      loadOrders(1, true);
+      loadOrders(true);
     });
 
     return unsubscribe;
@@ -105,7 +106,7 @@ const CompletedScreen = () => {
   const onRefresh = useCallback(async () => {
     // Clear date filter then reload first page without dates
     setDateRange({ startDate: '', endDate: '' });
-    await loadOrders(1, true, '', '');
+    await loadOrders(true, '', '');
   }, [loadOrders]);
 
   const getOrderType = useCallback((status: string) => {
@@ -199,7 +200,7 @@ const CompletedScreen = () => {
     );
   }, [ordersListStatus, colors.headerTxt]);
 
-  if (ordersListStatus === STATUS.LOADING && currentPage === 1) {
+  if (ordersListStatus === STATUS.LOADING && perPage === 10) {
     return (
       <View
         style={{
@@ -230,7 +231,7 @@ const CompletedScreen = () => {
         onEndReachedThreshold={0.1}
         ListFooterComponent={renderFooter}
         ListEmptyComponent={renderEmpty}
-        refreshing={ordersListStatus === STATUS.LOADING && currentPage === 1}
+        refreshing={ordersListStatus === STATUS.LOADING && perPage === 10}
         onRefresh={onRefresh}
       />
     </View>

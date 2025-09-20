@@ -24,6 +24,7 @@ const ScheduledScreen = () => {
   const ordersListStatus = useAppSelector(selectOrdersScheduledListStatus);
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [hasMoreData, setHasMoreData] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -33,52 +34,53 @@ const ScheduledScreen = () => {
   const pagination = ordersListData?.data?.pagination_by_status?.scheduled;
 
   useEffect(() => {
-    loadOrders(1, true);
+    loadOrders(true);
   }, []);
 
   const loadOrders = useCallback(
-    async (page: number, reset: boolean = false, searchOverride?: string) => {
+    async (reset: boolean = false, searchOverride?: string) => {
       if (reset) {
         setCurrentPage(1);
+        setPerPage(10);
         setHasMoreData(true);
       }
 
       try {
         await dispatch(
           requestOrdersListData({
-            page: page,
-            per_page: 10,
+            page: 1,
+            per_page: perPage,
             search: searchOverride ?? searchQuery,
             request: 'scheduled',
           }),
         ).unwrap();
 
         if (pagination) {
-          setHasMoreData(page < pagination.last_page);
+          setHasMoreData(perPage < pagination.total);
         }
       } catch (error) {
         console.error('Error loading scheduled orders:', error);
       }
     },
-    [dispatch, searchQuery, pagination],
+    [dispatch, searchQuery, pagination, perPage],
   );
 
   const loadMoreOrders = useCallback(async () => {
     if (isLoadingMore || !hasMoreData || !pagination) return;
 
-    const nextPage = currentPage + 1;
-    if (nextPage <= pagination.last_page) {
+    const newPerPage = perPage + 10;
+    if (newPerPage <= pagination.total) {
       setIsLoadingMore(true);
-      await loadOrders(nextPage, false);
-      setCurrentPage(nextPage);
+      setPerPage(newPerPage);
+      await loadOrders(false);
       setIsLoadingMore(false);
     }
-  }, [currentPage, isLoadingMore, hasMoreData, pagination, loadOrders]);
+  }, [perPage, isLoadingMore, hasMoreData, pagination, loadOrders]);
 
   // Reload list whenever screen gains focus using navigation listener
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      loadOrders(1, true);
+      loadOrders(true);
     });
 
     return unsubscribe;
@@ -88,7 +90,7 @@ const ScheduledScreen = () => {
     async (query: string) => {
       setSearchQuery(query);
       setIsSearchLoading(true);
-      await loadOrders(1, true, query);
+      await loadOrders(true, query);
       setIsSearchLoading(false);
     },
     [loadOrders],
@@ -180,7 +182,7 @@ const ScheduledScreen = () => {
 
   if (
     ordersListStatus === STATUS.LOADING &&
-    currentPage === 1 &&
+    perPage === 10 &&
     !isSearchLoading
   ) {
     return (
@@ -215,10 +217,10 @@ const ScheduledScreen = () => {
         ListEmptyComponent={renderEmpty}
         refreshing={
           ordersListStatus === STATUS.LOADING &&
-          currentPage === 1 &&
+          perPage === 10 &&
           !isSearchLoading
         }
-        onRefresh={() => loadOrders(1, true, searchQuery)}
+        onRefresh={() => loadOrders(true, searchQuery)}
       />
     </View>
   );
