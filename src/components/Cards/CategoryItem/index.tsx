@@ -36,7 +36,11 @@ const CategoryItem = ({ item, onPress }: CategoryItemProps) => {
         style={styles.image}
         defaultSource={{ uri: defaultImage }}
       />
-      <Text style={[globalStyles.h8, styles.name]}>{item.name}</Text>
+      <Text style={[globalStyles.h8, styles.name]}>
+        {item.name?.length > 10
+          ? item.name.substring(0, 10) + '...'
+          : item.name}
+      </Text>
     </TouchableOpacity>
   );
 };
