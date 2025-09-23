@@ -83,8 +83,7 @@ const CategoryScreen = ({
         item={{
           id: item.id,
           name: item.name,
-          image:
-            item.image || 'https://via.placeholder.com/150x150?text=No+Image',
+          image: item.image,
         }}
         onPress={() => {
           navigation.navigate('CategoryViewScreen', {

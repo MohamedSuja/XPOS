@@ -6,6 +6,7 @@ import { createButtonStyles } from './styles';
 import { globalStyles } from '@/utils/globalStyles';
 import { ErrorFlash } from '@/utils/FlashMessage';
 import { requests } from '@/feature/services/api';
+import Food from '@/assets/images/Food.png';
 
 interface ItemCardProps {
   id: string;
@@ -77,10 +78,10 @@ const ItemCard = (props: ItemCardProps) => {
     >
       <Image
         style={styles.image}
-        source={{
-          uri: image,
-        }}
+        source={!image ? (Food as number) : { uri: image }}
+        defaultSource={Food as number}
       />
+
       <View style={styles.infoContainer}>
         <Text style={[globalStyles.h8, styles.title]}>{title}</Text>
         <Text
