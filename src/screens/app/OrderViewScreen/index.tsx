@@ -109,6 +109,7 @@ const OrderViewScreen = ({
     }
   }, [OrderMarkReadyStatus]);
 
+  console.log('ssss', data);
   return (
     <View style={[styles.root]}>
       <View style={[styles.headerContainer, { paddingTop: hp(2.5) }]}>
