@@ -1,5 +1,11 @@
-import { View, Text, FlatList, ScrollView } from 'react-native';
-import React, { useRef, useEffect } from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import { createStyles } from './styles';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -11,6 +17,19 @@ import { globalStyles } from '@/utils/globalStyles';
 import { hp } from '@/utils/Scaling';
 import CategoryButton from '@/components/Buttons/CategoryButton';
 import ItemCard from '@/components/Cards/ItemCard';
+import Subcategories from './Subcategories';
+import { useAppDispatch, useAppSelector } from '@/feature/stateHooks';
+import {
+  selectMenuCategoriesData,
+  selectMenuCategoriesStatus,
+  selectMenuItemsData,
+  selectMenuItemsStatus,
+} from '@/feature/slices/menu_slice';
+import {
+  requestMenuCategories,
+  requestMenuItems,
+} from '@/feature/thunks/menu_thunks';
+import { STATUS } from '@/feature/services/status_constants';
 
 const CategoryViewScreen = ({
   navigation,
@@ -18,26 +37,129 @@ const CategoryViewScreen = ({
 }: MenuStackScreenProps<'CategoryViewScreen'>) => {
   const { colors }: ThemeContextType = useTheme();
   const styles = createStyles(colors);
-  const flatListRef = useRef<FlatList>(null);
   const insets = useSafeAreaInsets();
 
-  // Auto scroll to selected category
+  const dispatch = useAppDispatch();
+
+  const MenuItemsData = useAppSelector(selectMenuItemsData);
+  const MenuItemsStatus = useAppSelector(selectMenuItemsStatus);
+
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchLoading, setIsSearchLoading] = useState(false);
+
+  const menu = MenuItemsData?.data?.menu_items || [];
+  const pagination = MenuItemsData?.data?.pagination;
+  const [subcategoryId, setSubcategoryId] = useState('');
+
   useEffect(() => {
-    if (route.params?.item?.id) {
-      const selectedIndex = categoryData.findIndex(
-        item => item.id === route.params?.item?.id,
-      );
-      if (selectedIndex !== -1) {
-        setTimeout(() => {
-          flatListRef.current?.scrollToIndex({
-            index: selectedIndex,
-            animated: true,
-            viewPosition: 0.5, // Center the item
-          });
-        }, 100); // Small delay to ensure FlatList is rendered
+    loadMenu();
+  }, []);
+
+  const loadMenu = useCallback(
+    async (
+      searchOverride?: string,
+      per_page?: number,
+      subcategoryId?: string,
+    ) => {
+      try {
+        await dispatch(
+          requestMenuItems({
+            page: 1,
+            per_page: per_page ?? 10,
+            search: searchOverride ?? searchQuery,
+            status: 'approved',
+            category_id: route.params?.item?.id ?? '',
+            subcategory_id: subcategoryId ?? '',
+          }),
+        ).unwrap();
+      } catch (error) {
+        console.error('Error loading categories:', error);
       }
+    },
+    [dispatch, searchQuery, pagination],
+  );
+
+  const loadMoreMenu = useCallback(async () => {
+    if (isLoadingMore || !pagination) return;
+
+    if (pagination.per_page < pagination.total) {
+      setIsLoadingMore(true);
+      await loadMenu(searchQuery, pagination.per_page + 10, subcategoryId);
+      setIsLoadingMore(false);
     }
-  }, [route.params?.item?.id]);
+  }, [isLoadingMore, pagination, loadMenu, searchQuery]);
+
+  const handleSearch = useCallback(
+    async (query: string) => {
+      setSearchQuery(query);
+      setIsSearchLoading(true);
+      await loadMenu(query, undefined, subcategoryId);
+      setIsSearchLoading(false);
+    },
+    [loadMenu],
+  );
+
+  const renderFooter = useCallback(() => {
+    if (!isLoadingMore) return null;
+
+    return (
+      <View style={{ paddingVertical: 20 }}>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
+  }, [isLoadingMore, colors.primary]);
+
+  const renderEmpty = useCallback(() => {
+    if (MenuItemsStatus === STATUS.LOADING) return null;
+
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          paddingVertical: 50,
+        }}
+      >
+        <Text
+          style={{
+            color: colors.headerTxt,
+            fontSize: 16,
+            textAlign: 'center',
+          }}
+        >
+          No Items found
+        </Text>
+      </View>
+    );
+  }, [MenuItemsStatus, colors.headerTxt]);
+
+  if (MenuItemsStatus === STATUS.LOADING && !pagination && !isSearchLoading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
+  }
+
+  const renderCategoryItem = useCallback(
+    ({ item }: { item: any }) => (
+      <ItemCard
+        id={item.id.toString()}
+        image={item.image ?? ''}
+        title={item.name}
+        available={item.is_available}
+      />
+    ),
+    [navigation, MenuItemsStatus],
+  );
 
   return (
     <View style={[styles.root]}>
@@ -49,206 +171,42 @@ const CategoryViewScreen = ({
           </Text>
         </View>
 
-        <ScrollView>
-          <FlatList
-            ref={flatListRef}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.categoryList}
-            data={categoryData}
-            keyExtractor={item => item.id.toString()}
-            renderItem={({ item }) => (
-              <CategoryButton
-                title={item.name}
-                active={item.id === route.params?.item?.id}
-              />
-            )}
-            onScrollToIndexFailed={() => {
-              // Handle scroll failure gracefully
-              console.log('Scroll to index failed');
-            }}
-          />
-        </ScrollView>
+        <Subcategories
+          id={route.params?.item?.id ?? ''}
+          onPress={(subcategoryId: string) => {
+            setSubcategoryId(subcategoryId);
+            if (subcategoryId === '') {
+              loadMenu(undefined, 10, undefined);
+            } else {
+              loadMenu(undefined, 10, subcategoryId);
+            }
+          }}
+        />
       </View>
 
-      <SearchInput placeholder="Search Item" style={styles.searchInput} />
+      <SearchInput
+        placeholder="Search Item"
+        style={styles.searchInput}
+        onChangeText={handleSearch}
+        value={searchQuery}
+      />
       <FlatList
         contentContainerStyle={styles.itemList}
-        data={itemData}
+        data={menu}
         keyExtractor={item => item.id.toString()}
         showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => <ItemCard {...item} />}
+        renderItem={renderCategoryItem}
+        onEndReached={loadMoreMenu}
+        onEndReachedThreshold={0.1}
+        ListFooterComponent={renderFooter}
+        ListEmptyComponent={renderEmpty}
+        refreshing={
+          MenuItemsStatus === STATUS.LOADING && !pagination && !isSearchLoading
+        }
+        onRefresh={() => loadMenu(searchQuery)}
       />
     </View>
   );
 };
 
 export default CategoryViewScreen;
-const categoryData = [
-  {
-    id: 1,
-    name: 'Pizza',
-    image:
-      'https://www.shutterstock.com/image-photo/fried-salmon-steak-cooked-green-600nw-2489026949.jpg',
-  },
-  {
-    id: 2,
-    name: 'Burger',
-    image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5k7T60odhyrtndKnNo0Ef-GmdAQTIdl22jg&s',
-  },
-  {
-    id: 3,
-    name: 'Salad',
-    image:
-      'https://img.freepik.com/free-photo/top-view-fast-food-mix-mozzarella-sticks-club-sandwich-hamburger-mushroom-pizza-caesar-shrimp-salad-french-fries-ketchup-mayo-cheese-sauces-table_141793-3998.jpg?semt=ais_hybrid&w=740',
-  },
-  {
-    id: 4,
-    name: 'Dessert',
-    image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8_kCgEQn9yIXh1QSwPJcN6QYJVceekyMXxQ&s',
-  },
-  {
-    id: 5,
-    name: 'Drink',
-    image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRoJ0RCxNrOLvYxHj8NSYEOBKgNLef73dF9A&s',
-  },
-  {
-    id: 6,
-    name: 'Soup',
-    image:
-      'https://bakewithshivesh.com/wp-content/uploads/2018/05/RASPBERRY-APPLE-CRISP.jpg',
-  },
-  {
-    id: 7,
-    name: 'Pasta',
-    image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjrvUCM4F6qU2P-gskxXTMQjn9jPhRPT5BZQ&s',
-  },
-  {
-    id: 8,
-    name: 'Fish',
-    image:
-      'https://i0.wp.com/digital-photography-school.com/wp-content/uploads/2019/10/MG_3869.jpg?fit=1500%2C1011&ssl=1',
-  },
-  {
-    id: 9,
-    name: 'Chicken',
-    image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3WF7SFm5a1kterAAcz-4ZxNDw6oglgIJHKA&s',
-  },
-  {
-    id: 10,
-    name: 'Beef',
-    image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjRHIfneW-xeaNFH91s9iLCN0w5fww9NPfEQ&s',
-  },
-  {
-    id: 11,
-    name: 'Vegetarian',
-    image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7Ovgxx5xzyfkobvR99fY1YWgoqso0zr_hdg&s',
-  },
-  {
-    id: 12,
-    name: 'Vegan',
-    image:
-      'https://clicklovegrow.com/wp-content/uploads/2020/03/Naomi-Sherman-Advanced-Graduate4.jpg',
-  },
-];
-
-const itemData = [
-  {
-    id: 1,
-    title: 'Chicken Rice & Curry',
-    image:
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
-    available: true,
-  },
-  {
-    id: 2,
-    title: 'Chicken Rice & Curry',
-    image:
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
-    available: true,
-  },
-  {
-    id: 3,
-    title: 'Chicken Rice & Curry',
-    image:
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
-    available: false,
-  },
-  {
-    id: 4,
-    title: 'Chicken Rice & Curry',
-    image:
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
-    available: true,
-  },
-  {
-    id: 5,
-    title: 'Chicken Rice & Curry',
-    image:
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
-    available: false,
-  },
-  {
-    id: 6,
-    title: 'Chicken Rice & Curry',
-    image:
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
-    available: false,
-  },
-  {
-    id: 7,
-    title: 'Chicken Rice & Curry',
-    image:
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
-    available: false,
-  },
-  {
-    id: 8,
-    title: 'Chicken Rice & Curry',
-    image:
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
-    available: true,
-  },
-  {
-    id: 9,
-    title: 'Chicken Rice & Curry',
-    image:
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
-    available: false,
-  },
-  {
-    id: 10,
-    title: 'Chicken Rice & Curry',
-    image:
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
-    available: true,
-  },
-  {
-    id: 11,
-    title: 'Chicken Rice & Curry',
-    image:
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
-    available: true,
-  },
-  {
-    id: 12,
-    title: 'Chicken Rice & Curry',
-    image:
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
-    available: false,
-  },
-  {
-    id: 13,
-    title: 'Chicken Rice & Curry',
-    image:
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
-    available: false,
-  },
-];

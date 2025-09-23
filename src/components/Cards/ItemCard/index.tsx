@@ -1,11 +1,15 @@
-import { View, Text, Image } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import { View, Text, Image, ActivityIndicator } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
 import CustomSwitch from '@/components/CustomSwitch';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import { createButtonStyles } from './styles';
 import { globalStyles } from '@/utils/globalStyles';
+import { ErrorFlash } from '@/utils/FlashMessage';
+import { requests } from '@/feature/services/api';
+import Food from '@/assets/images/Food.png';
 
 interface ItemCardProps {
+  id: string;
   image: string;
   title: string;
   available: boolean;
@@ -13,19 +17,50 @@ interface ItemCardProps {
 }
 
 const ItemCard = (props: ItemCardProps) => {
-  const { image, title, available, onSwitchChange } = props;
+  const { id, image, title, available, onSwitchChange } = props;
   const { colors }: ThemeContextType = useTheme();
   const styles = createButtonStyles(colors);
   const [isSwitching, setIsSwitching] = useState(available);
+  const [updateLoading, setUpdateLoading] = useState(false);
 
-  const handleSwitchChange = (value: boolean) => {
-    setIsSwitching(value);
-    onSwitchChange?.(value);
-  };
+  const handleSwitchChange = useCallback(
+    (value: boolean) => {
+      setIsSwitching(value);
+      onSwitchChange?.(value);
+      updateAvailability();
+    },
+    [available],
+  );
 
   useEffect(() => {
     setIsSwitching(available);
   }, [available]);
+
+  const updateAvailability = () => {
+    try {
+      setUpdateLoading(true);
+      requests
+        .put(`/api/pos/menu-items/${props.id}/availability`, {
+          is_available: !isSwitching,
+        })
+        .then(res => {
+          console.log(res.data);
+          setIsSwitching(!isSwitching);
+          setUpdateLoading(false);
+        })
+        .catch(error => {
+          ErrorFlash(error?.message || 'Something went wrong!');
+          setIsSwitching(isSwitching);
+        })
+        .finally(() => {
+          setUpdateLoading(false);
+        });
+    } catch (error) {
+      setUpdateLoading(false);
+      setIsSwitching(isSwitching);
+      ErrorFlash('Something went wrong!');
+    }
+  };
 
   return (
     <View
@@ -43,10 +78,10 @@ const ItemCard = (props: ItemCardProps) => {
     >
       <Image
         style={styles.image}
-        source={{
-          uri: image,
-        }}
+        source={!image ? (Food as number) : { uri: image }}
+        defaultSource={Food as number}
       />
+
       <View style={styles.infoContainer}>
         <Text style={[globalStyles.h8, styles.title]}>{title}</Text>
         <Text
@@ -59,7 +94,18 @@ const ItemCard = (props: ItemCardProps) => {
           {isSwitching ? 'Available' : 'Unavailable'}
         </Text>
       </View>
-      <CustomSwitch value={isSwitching} onChange={handleSwitchChange} />
+      {updateLoading ? (
+        <ActivityIndicator
+          size="large"
+          color={colors.primary}
+          style={styles.loader}
+        />
+      ) : (
+        <CustomSwitch
+          value={isSwitching ? true : false}
+          onChange={handleSwitchChange}
+        />
+      )}
     </View>
   );
 };

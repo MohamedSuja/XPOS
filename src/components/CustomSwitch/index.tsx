@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   TouchableWithoutFeedback,
@@ -46,8 +46,19 @@ const CustomSwitch = (props: CustomSwitchProps) => {
 
   const [isSwitching, setIsSwitching] = useState(value ?? false);
   const translateX = useSharedValue(
-    isSwitching ? switchWidth - thumbSize - 2.5 : 2.5,
+    value ?? false ? switchWidth - thumbSize - 2.5 : 2.5,
   );
+
+  // Sync internal state and thumb position when `value` or size props change
+  useEffect(() => {
+    const next = value ?? false;
+    setIsSwitching(next);
+    // Update position without visible animation on external changes
+    translateX.value = withTiming(next ? switchWidth - thumbSize - 2.5 : 2.5, {
+      duration: 0,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value, switchWidth, thumbSize]);
 
   const animatedThumbStyle = useAnimatedStyle(() => {
     return {
