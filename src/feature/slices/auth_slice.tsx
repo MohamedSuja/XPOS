@@ -25,6 +25,7 @@ const DEFAULT_STATE: IAuthState = {
   userName: undefined,
   address: undefined,
   image: undefined,
+  contactNo: undefined,
   token: undefined,
 };
 
@@ -64,6 +65,7 @@ const auth_slice = createSlice({
           action.payload.data?.branch?.address_line_2;
         state.image = action.payload.data?.user?.image;
         state.token = action.payload.data?.token;
+        state.contactNo = action.payload.data?.user?.contact;
         requestRegisterDevice();
       },
     );

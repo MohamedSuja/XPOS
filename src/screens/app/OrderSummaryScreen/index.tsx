@@ -83,7 +83,7 @@ const OrderSummaryScreen = ({
           <View style={styles.orderIdContainer}>
             <Text style={[globalStyles.h6, styles.labelText]}>Order ID : </Text>
             <Text style={[globalStyles.h2, styles.valueText]}>
-              Order #{route.params?.orderId}
+              Order {data?.unique_id}
             </Text>
           </View>
           {data?.delivery_type !== 'delivery' && (
@@ -143,8 +143,8 @@ const OrderSummaryScreen = ({
           </View>
         </View>
 
-        {data?.delivery_instructions && (
-          <InstructionCard title={data?.delivery_instructions} />
+        {data?.preparation_instructions && (
+          <InstructionCard title={data?.preparation_instructions} />
         )}
 
         <View style={styles.itemsSection}>
@@ -166,29 +166,21 @@ const OrderSummaryScreen = ({
                   Rs. {item.total_price?.toLocaleString()}
                 </Text>
               </View>
-              {item?.large_quantity && (
-                <View style={styles.itemVariant}>
-                  <Text style={[globalStyles.h6, styles.variantText]}>
-                    Large
-                  </Text>
-                  <Text style={[globalStyles.h6, styles.quantityText]}>
-                    Qty : {item?.large_quantity}
-                  </Text>
-                </View>
-              )}
 
-              {item?.extra_large_quantity && (
-                <View style={styles.itemVariant}>
-                  <Text style={[globalStyles.h6, styles.variantText]}>
-                    Large
-                  </Text>
-                  <Text style={[globalStyles.h6, styles.quantityText]}>
-                    Qty : {item?.extra_large_quantity}
-                  </Text>
-                </View>
-              )}
-
-              {item?.quantity && (
+              {item?.variants ? (
+                <>
+                  {item?.variants?.map((variant, index) => (
+                    <View key={index} style={styles.itemVariant}>
+                      <Text style={[globalStyles.h6, styles.variantText]}>
+                        {variant?.variant_name}
+                      </Text>
+                      <Text style={[globalStyles.h6, styles.quantityText]}>
+                        Qty : {variant?.variant_quantity}
+                      </Text>
+                    </View>
+                  ))}
+                </>
+              ) : (
                 <View style={styles.itemVariant}>
                   <Text style={[globalStyles.h6, styles.variantText]}></Text>
                   <Text style={[globalStyles.h6, styles.quantityText]}>
@@ -196,6 +188,7 @@ const OrderSummaryScreen = ({
                   </Text>
                 </View>
               )}
+
               {item?.special_instructions && (
                 <View style={styles.itemInstruction}>
                   <Text style={[globalStyles.h12, styles.instructionText]}>

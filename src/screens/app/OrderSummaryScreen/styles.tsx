@@ -99,7 +99,7 @@ export const createStyles = (colors: ColorsType) =>
     },
     itemContainer: {
       marginBottom: hp(1),
-      borderColor: colors.border2,
+      borderColor: colors.stroke,
       borderBottomWidth: 1,
       paddingVertical: hp(1),
     },
