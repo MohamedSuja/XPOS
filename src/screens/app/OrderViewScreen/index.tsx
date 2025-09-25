@@ -98,7 +98,7 @@ const OrderViewScreen = ({
   useUpdateEffect(() => {
     if (OrderMarkReadyStatus == STATUS.SUCCEEDED) {
       setStatus(getOrderType(data?.status));
-      navigation.navigate('OrderSummaryScreen', { orderId: data?.id });
+      navigation.replace('OrderSummaryScreen', { orderId: data?.id });
     }
   }, [OrderMarkReadyStatus]);
 
