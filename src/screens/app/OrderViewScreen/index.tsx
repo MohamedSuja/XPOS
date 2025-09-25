@@ -61,12 +61,6 @@ const OrderViewScreen = ({
 
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    if (route.params?.orderId) {
-      dispatch(requestOrderDetailsData(route.params?.orderId));
-    }
-  }, [dispatch, route.params?.orderId]);
-
   const getOrderType = useCallback((status: string | undefined) => {
     switch (status) {
       case 'accepted':
@@ -175,6 +169,7 @@ const OrderViewScreen = ({
             style={styles.footerButton}
             title="Mark as preparing"
             onPress={onPressPreparing}
+            loading={OrderMarkPreparingStatus === STATUS.LOADING}
           />
         ) : status == 'preparing' ? (
           <>
@@ -182,6 +177,7 @@ const OrderViewScreen = ({
               onPress={onPressReady}
               style={styles.footerButton}
               title="Mark as Ready"
+              loading={OrderMarkReadyStatus === STATUS.LOADING}
             />
             <SecondaryButton
               style={styles.footerButton}
