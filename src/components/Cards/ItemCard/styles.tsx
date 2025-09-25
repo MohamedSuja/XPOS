@@ -32,4 +32,7 @@ export const createButtonStyles = (colors: ColorsType) =>
     description: {
       color: colors.subTitle,
     },
+    loader: {
+      marginRight: wp(3),
+    },
   });

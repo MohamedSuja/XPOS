@@ -118,7 +118,7 @@ export interface IMenuSubcategoriesResponseBody {
 
 // Menu Subcategories Request Parameters
 export interface IMenuSubcategoriesRequestParams {
-  categoryId: number;
+  categoryId: string;
   search?: string;
   featured?: boolean;
   status?: string;
@@ -189,8 +189,8 @@ export interface IMenuItemsResponseBody {
 // Menu Items Request Parameters
 export interface IMenuItemsRequestParams {
   search?: string;
-  category_id?: number;
-  subcategory_id?: number;
+  category_id?: string;
+  subcategory_id?: string;
   available?: boolean;
   status?: string;
   per_page: number;

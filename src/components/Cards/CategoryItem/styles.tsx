@@ -20,5 +20,6 @@ export const createButtonStyles = (colors: ColorsType) =>
     name: {
       alignSelf: 'center',
       marginVertical: hp('1%'),
+      textAlign: 'center',
     },
   });
