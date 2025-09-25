@@ -39,6 +39,7 @@ import SecondaryButton from '@/components/Buttons/SecondaryButton';
 import { SuccessFlash } from '@/utils/FlashMessage';
 import CashIcon from '@/assets/icons/Cash.svg';
 import InstructionCard from '@/components/Cards/InstructionCard';
+import { pdfOrderChit } from '@/utils/pdfOrderChit';
 
 const OrderSummaryScreen = ({
   route,
@@ -85,7 +86,7 @@ const OrderSummaryScreen = ({
           <View style={styles.orderIdContainer}>
             <Text style={[globalStyles.h6, styles.labelText]}>Order ID : </Text>
             <Text style={[globalStyles.h2, styles.valueText]}>
-              Order {data?.unique_id}
+              # {data?.unique_id}
             </Text>
           </View>
           {data?.delivery_type !== 'delivery' && (
@@ -149,7 +150,9 @@ const OrderSummaryScreen = ({
             <View style={styles.paymentMethodContainer}>
               <CashIcon height={wp(6)} width={wp(6)} />
               <Text style={[globalStyles.h5, styles.paymentMethodText]}>
-                {data?.payment_method}
+                {data?.payment_method == 'cod'
+                  ? 'Cash on delivery'
+                  : 'Card payment'}
               </Text>
             </View>
           </View>
@@ -161,13 +164,13 @@ const OrderSummaryScreen = ({
               Reason of Cancel
             </Text>
             <Text style={[globalStyles.h9, styles.reasonCancel]}>
-              Lorem ipsum dolor sit amet, consectetur{' '}
+              {data?.cancel_reason}
             </Text>
           </View>
         )}
 
-        {data?.delivery_instructions && data?.status !== 'cancelled' && (
-          <InstructionCard title={data?.delivery_instructions} />
+        {data?.preparation_instructions && data?.status !== 'cancelled' && (
+          <InstructionCard title={data?.preparation_instructions} />
         )}
 
         <View style={styles.itemsSection}>
@@ -198,7 +201,7 @@ const OrderSummaryScreen = ({
                         {variant?.variant_name}
                       </Text>
                       <Text style={[globalStyles.h6, styles.quantityText]}>
-                        Qty : {variant?.variant_quantity}
+                        Qty : {variant?.quantity}
                       </Text>
                     </View>
                   ))}
@@ -238,7 +241,13 @@ const OrderSummaryScreen = ({
       </ScrollView>
 
       {data?.status === 'delivered' && (
-        <PrimaryButton style={styles.footerButton} title="Invoice" />
+        <PrimaryButton
+          style={styles.footerButton}
+          title="Invoice"
+          onPress={() => {
+            pdfOrderChit(data);
+          }}
+        />
       )}
 
       {data?.delivery_type !== 'delivery' && (

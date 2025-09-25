@@ -1,8 +1,5 @@
-import { IOrderDetailsResponseBody } from '@/feature/redux_models/orders_model';
-import { useAppSelector } from '@/feature/stateHooks';
 import Share from 'react-native-share';
 import { generatePDF } from 'react-native-html-to-pdf';
-import RNFS from 'react-native-fs';
 import store from '@/feature/store';
 import { formatDate, formatTime } from './formatTime';
 import { logoImg } from './logoImage';
@@ -59,9 +56,9 @@ export const pdfOrderChit = async (data: any) => {
         <!-- Order Items -->
         <div style="margin-bottom: 30px;">
         ${
-          data?.items
-            ? data?.items.map(
-                (item: any) => `
+          data?.items &&
+          data?.items.map(
+            (item: any) => `
    <div style="margin-bottom: 20px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
                     <span style="font-size: 16px; font-weight: bold;">${
@@ -83,17 +80,11 @@ export const pdfOrderChit = async (data: any) => {
     <div style="display: flex; justify-content: flex-end; color: #666; font-size: 14px;">
                     <span>Qty : ${item?.quantity}</span>
                 </div>
-
     `
                }
-               
-              
-            </div>
-          `,
-              )
-            : null
-        }
-           
+     </div>`,
+          )
+        }  
         </div>
 
         <!-- Divider -->
@@ -155,6 +146,7 @@ export const pdfOrderChit = async (data: any) => {
     </div>
 </body>
   `;
+
   const options = {
     html: htmlContent,
     fileName: 'invoice',
@@ -163,21 +155,12 @@ export const pdfOrderChit = async (data: any) => {
 
   const file = await generatePDF(options);
 
-  console.log('eee', file.filePath);
-
-  const pdfBase64 = await RNFS.readFile(file.filePath, 'base64');
-
   const pdfUri = `file://${file.filePath}`;
 
-  console.log('sswww', pdfBase64);
   try {
-    // await Share.open({
-    //   urls: [`data:application/pdf;base64,` + pdfBase64],
-    // });
     await Share.open({
       title: 'Share PDF',
-      url: pdfUri, // 🔥 must include file://
-      //   type: 'application/pdf',
+      url: pdfUri,
     });
   } catch (err) {
     console.log('Error =>', err);

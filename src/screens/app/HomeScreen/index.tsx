@@ -114,7 +114,7 @@ const HomeScreen = ({ navigation }: any) => {
       requests
         .get('/api/pos/online-status')
         .then(res => {
-          setOnlineStatus(res.data?.data?.online_status == 'online');
+          setOnlineStatus(res.data?.data?.is_available_for_orders);
         })
         .catch(error => {
           console.log(error);

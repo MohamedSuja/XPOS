@@ -99,11 +99,10 @@ const OrderViewScreen = ({
   useUpdateEffect(() => {
     if (OrderMarkReadyStatus == STATUS.SUCCEEDED) {
       setStatus(getOrderType(data?.status));
-      navigation.navigate('OrderSummaryScreen', { orderId: data?.id });
+      navigation.replace('OrderSummaryScreen', { orderId: data?.id });
     }
   }, [OrderMarkReadyStatus]);
 
-  console.log('ssss', data);
   return (
     <View style={[styles.root]}>
       <View style={[styles.headerContainer, { paddingTop: hp(2.5) }]}>

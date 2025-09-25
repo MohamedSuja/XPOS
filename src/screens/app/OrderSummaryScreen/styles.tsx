@@ -191,6 +191,7 @@ export const createStyles = (colors: ColorsType) =>
     },
     valueText: {
       color: colors.headerTxt,
+      fontSize: RFValue(16),
     },
     footer: {
       backgroundColor: colors.background,

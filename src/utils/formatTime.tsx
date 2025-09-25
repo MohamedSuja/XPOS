@@ -1,4 +1,5 @@
 export const formatTimeto12 = (time: string) => {
+  if (!time) return '';
   const [hours, minutes] = time.split(':').map(Number);
 
   let period = hours >= 12 ? 'pm' : 'am';
