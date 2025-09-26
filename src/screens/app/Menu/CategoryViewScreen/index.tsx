@@ -72,7 +72,7 @@ const CategoryViewScreen = ({
             category_id: route.params?.item?.id ?? '',
             subcategory_id: subcategoryId ?? '',
           }),
-        ).unwrap();
+        );
       } catch (error) {
         console.error('Error loading categories:', error);
       }
@@ -135,33 +135,19 @@ const CategoryViewScreen = ({
     );
   }, [MenuItemsStatus, colors.headerTxt]);
 
-  if (MenuItemsStatus === STATUS.LOADING && !pagination && !isSearchLoading) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <ActivityIndicator size="large" color={colors.primary} />
-      </View>
-    );
-  }
-
-  const renderCategoryItem = useCallback(
-    ({ item }: { item: any }) => (
-      <ItemCard
-        id={item.id.toString()}
-        image={item.image ?? ''}
-        title={item.name}
-        available={item.is_available}
-      />
-    ),
-    [navigation, MenuItemsStatus],
-  );
-
-  return (
+  return MenuItemsStatus === STATUS.LOADING &&
+    !pagination &&
+    !isSearchLoading ? (
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <ActivityIndicator size="large" color={colors.primary} />
+    </View>
+  ) : (
     <View style={[styles.root]}>
       <View style={[styles.headerContainer, { paddingTop: hp(2.5) }]}>
         <View style={styles.headerContent}>
@@ -195,7 +181,14 @@ const CategoryViewScreen = ({
         data={menu}
         keyExtractor={item => item.id.toString()}
         showsVerticalScrollIndicator={false}
-        renderItem={renderCategoryItem}
+        renderItem={({ item, index }) => (
+          <ItemCard
+            id={item.id.toString()}
+            image={item.image ?? ''}
+            title={item.name}
+            available={item.is_available}
+          />
+        )}
         onEndReached={loadMoreMenu}
         onEndReachedThreshold={0.1}
         ListFooterComponent={renderFooter}

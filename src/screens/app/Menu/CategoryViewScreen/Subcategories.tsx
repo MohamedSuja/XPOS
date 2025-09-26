@@ -64,8 +64,15 @@ const Subcategories = (props: SubcategoriesProps) => {
     if (!isLoadingMore) return null;
 
     return (
-      <View style={{ paddingVertical: 20 }}>
-        <ActivityIndicator size="large" color={colors.primary} />
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: 50,
+        }}
+      >
+        <ActivityIndicator size="small" color={colors.primary} />
       </View>
     );
   }, [isLoadingMore, colors.primary]);
