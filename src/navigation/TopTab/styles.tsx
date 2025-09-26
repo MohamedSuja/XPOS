@@ -7,16 +7,17 @@ export const createStyles = (colors: ColorsType) =>
   StyleSheet.create({
     container: {
       flexDirection: 'row',
-      borderBottomWidth: 1,
-      borderBottomColor: colors.tab,
-      paddingBottom: hp(1),
-      marginHorizontal: wp(2),
+      marginHorizontal: wp('4%'),
+      backgroundColor: colors.searchInput,
+      marginBottom: hp(1),
+      borderRadius: 10,
+      padding: wp(1),
     },
     buttonContainer: {
       paddingHorizontal: wp(5),
       paddingVertical: hp(1),
       borderRadius: 10,
-      margin: wp(1),
+      // margin: wp(1),
       alignItems: 'center',
       justifyContent: 'center',
       flexDirection: 'row',

@@ -53,7 +53,7 @@ export const createButtonStyles = (colors: ColorsType) =>
     itemName: {
       color: colors.inputTxt,
       borderRightWidth: 1,
-      width: '88%',
+      width: wp('70%'),
       borderColor: colors.divider3,
     },
     quantityText: {

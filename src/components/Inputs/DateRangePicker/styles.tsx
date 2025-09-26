@@ -11,7 +11,7 @@ export const createInputStyles = (colors: ColorsType) =>
       justifyContent: 'space-between',
       backgroundColor: colors.background,
       paddingHorizontal: wp(3),
-      paddingVertical: hp(1.5),
+      height: hp('6%'),
       borderRadius: 10,
     },
     inputContainer: {

@@ -17,6 +17,9 @@ import { STATUS } from '@/feature/services/status_constants';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { UserStackParamList } from '@/navigation/NavigationModels/UserStack';
+import EmptyValue from '@/assets/icons/EmptyValue.svg';
+import { globalStyles } from '@/utils/globalStyles';
+import { hp, wp } from '@/utils/Scaling';
 
 const CancelledScreen = () => {
   const { colors }: ThemeContextType = useTheme();
@@ -149,8 +152,8 @@ const CancelledScreen = () => {
           type={orderType}
           cardStyle={{
             backgroundColor: colors.background,
-            borderColor: colors.cancelledBorder,
-            borderWidth: 0.5,
+            borderColor: colors.border1,
+            borderWidth: 1,
           }}
           complete={completeDate}
           onPress={() => {
@@ -184,17 +187,20 @@ const CancelledScreen = () => {
           flex: 1,
           justifyContent: 'center',
           alignItems: 'center',
-          paddingVertical: 50,
+          marginTop: hp('20%'),
         }}
       >
+        <EmptyValue height={wp('40%')} width={wp('40%')} />
         <Text
-          style={{
-            color: colors.headerTxt,
-            fontSize: 16,
-            textAlign: 'center',
-          }}
+          style={[
+            globalStyles.h6,
+            {
+              color: colors.dropDownIcon,
+              textAlign: 'center',
+            },
+          ]}
         >
-          No cancelled orders found
+          No any cancelled orders found
         </Text>
       </View>
     );
@@ -215,11 +221,14 @@ const CancelledScreen = () => {
   }
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.root}>
       <DateRangePicker
         onChange={setDateRange}
         value={dateRange}
         style={styles.datePicker}
+        onClear={() => {
+          setDateRange({ startDate: '', endDate: '' });
+        }}
       />
 
       <FlatList

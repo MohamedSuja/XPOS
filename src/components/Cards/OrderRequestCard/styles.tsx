@@ -10,7 +10,8 @@ export const createButtonStyles = (colors: ColorsType) =>
       marginHorizontal: wp('4%'),
       marginVertical: hp('1%'),
       borderWidth: 1,
-      borderColor: colors.border,
+      borderColor: colors.border1,
+      backgroundColor: colors.background,
     },
     header: {
       marginBottom: hp('2%'),

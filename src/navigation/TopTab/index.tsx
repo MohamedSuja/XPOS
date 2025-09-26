@@ -11,8 +11,12 @@ import CompletedScreen from '@/screens/app/Order/CompletedScreen';
 import CancelledScreen from '@/screens/app/Order/CancelledScreen';
 import { View } from 'react-native';
 import TabButton from './Tab';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 import { hp } from '@/utils/Scaling';
+import { CustomStatusBar } from '@/components/customStatusBar';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -26,13 +30,18 @@ const TopTabNavigator: React.FC<TopTabNavigatorProps> = () => {
   const insets = useSafeAreaInsets();
 
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
-        paddingTop: hp(2.5),
+        paddingTop: hp(1.5),
         backgroundColor: colors.background,
       }}
     >
+      <CustomStatusBar
+        backgroundColor={colors.background}
+        barStyle="dark-content"
+        translucent={false}
+      />
       <Tab.Navigator tabBar={props => <TabButton {...props} />}>
         <Tab.Screen name="Request" component={RequestScreen} />
         <Tab.Screen name="Ongoing" component={OngoingScreen} />
@@ -40,7 +49,7 @@ const TopTabNavigator: React.FC<TopTabNavigatorProps> = () => {
         <Tab.Screen name="Completed" component={CompletedScreen} />
         <Tab.Screen name="Cancelled" component={CancelledScreen} />
       </Tab.Navigator>
-    </View>
+    </SafeAreaView>
   );
 };
 

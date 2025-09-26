@@ -5,8 +5,13 @@ import { hp, wp } from '@/utils/Scaling';
 
 export const createStyles = (colors: ColorsType) =>
   StyleSheet.create({
+    root: {
+      flex: 1,
+      backgroundColor: colors.inputField,
+    },
     datePicker: {
-      marginHorizontal: wp(4),
-      marginTop: hp(1),
+      marginHorizontal: wp('4%'),
+      marginTop: hp('2%'),
+      marginBottom: hp('2%'),
     },
   });

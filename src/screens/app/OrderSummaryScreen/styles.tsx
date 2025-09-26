@@ -12,9 +12,9 @@ export const createStyles = (colors: ColorsType) =>
     headerContainer: {
       backgroundColor: colors.background,
       paddingHorizontal: wp('5%'),
-      paddingBottom: hp(2.5),
+      paddingVertical: hp('2%'),
       borderBottomWidth: 1,
-      borderBottomColor: colors.border,
+      borderBottomColor: colors.stroke,
     },
     headerContent: {
       flexDirection: 'row',
@@ -22,13 +22,14 @@ export const createStyles = (colors: ColorsType) =>
       justifyContent: 'center',
       paddingVertical: hp(0.5),
     },
+    headerTxt: {
+      fontSize: RFValue(16),
+      color: colors.headerTxt,
+      textAlign: 'center',
+    },
     backBtn: {
       position: 'absolute',
       left: 0,
-    },
-    headerTxt: {
-      color: colors.headerTxt,
-      textAlign: 'center',
     },
     scrollView: {
       paddingHorizontal: wp(4),
@@ -128,8 +129,8 @@ export const createStyles = (colors: ColorsType) =>
     },
     itemContainer: {
       marginBottom: hp(1),
-      borderColor: colors.stroke,
-      borderBottomWidth: 1,
+      borderColor: colors.border2,
+      borderBottomWidth: 0.5,
       paddingVertical: hp(1),
     },
     itemHeader: {
@@ -139,11 +140,11 @@ export const createStyles = (colors: ColorsType) =>
       marginBottom: hp(0.5),
     },
     itemName: {
-      color: colors.headerTxt,
+      color: colors.inputTxt,
       flex: 1,
     },
     itemPrice: {
-      color: colors.headerTxt,
+      color: colors.inputTxt,
     },
     itemVariant: {
       flexDirection: 'row',

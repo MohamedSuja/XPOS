@@ -5,6 +5,11 @@ import { hp, wp } from '@/utils/Scaling';
 
 export const createStyles = (colors: ColorsType) =>
   StyleSheet.create({
+    root: {
+      flex: 1,
+      backgroundColor: colors.inputField,
+      paddingTop: hp('1%'),
+    },
     searchInput: {
       marginHorizontal: wp(4),
       marginTop: hp(1),

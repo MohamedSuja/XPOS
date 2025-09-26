@@ -1,9 +1,7 @@
 import { View, Text, FlatList, ActivityIndicator } from 'react-native';
 import React, { useEffect, useState, useCallback } from 'react';
-import SearchInput from '@/components/Inputs/SearchInput';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import { createStyles } from './styles';
-import OrderRequestCard from '@/components/Cards/OrderRequestCard';
 import { useAppDispatch, useAppSelector } from '@/feature/stateHooks';
 import {
   selectOrdersScheduledListData,
@@ -13,6 +11,10 @@ import { requestOrdersListData } from '@/feature/thunks/orders_thunks';
 import { STATUS } from '@/feature/services/status_constants';
 import { useNavigation } from '@react-navigation/native';
 import OrderScheduledCard from '@/components/Cards/OrderScheduledCard';
+import { hp, wp } from '@/utils/Scaling';
+import SearchBar from '@/components/searchBar';
+import EmptyValue from '@/assets/icons/EmptyValue.svg';
+import { globalStyles } from '@/utils/globalStyles';
 
 const ScheduledScreen = () => {
   const { colors }: ThemeContextType = useTheme();
@@ -153,17 +155,20 @@ const ScheduledScreen = () => {
           flex: 1,
           justifyContent: 'center',
           alignItems: 'center',
-          paddingVertical: 50,
+          marginTop: hp('20%'),
         }}
       >
+        <EmptyValue height={wp('40%')} width={wp('40%')} />
         <Text
-          style={{
-            color: colors.headerTxt,
-            fontSize: 16,
-            textAlign: 'center',
-          }}
+          style={[
+            globalStyles.h6,
+            {
+              color: colors.dropDownIcon,
+              textAlign: 'center',
+            },
+          ]}
         >
-          No scheduled orders found
+          No any scheduled orders request found
         </Text>
       </View>
     );
@@ -184,13 +189,25 @@ const ScheduledScreen = () => {
   }
 
   return (
-    <View style={{ flex: 1 }}>
-      <SearchInput
-        placeholder="Search Order ID"
-        style={styles.searchInput}
-        value={searchQuery}
-        onChangeText={handleSearch}
-      />
+    <View style={styles.root}>
+      <View
+        style={{
+          marginHorizontal: wp('4%'),
+          marginTop: hp('2%'),
+          marginBottom: hp('1%'),
+        }}
+      >
+        <SearchBar
+          onChange={(value: string) => {
+            handleSearch(value);
+          }}
+          onClear={() => {
+            handleSearch('');
+          }}
+          value={searchQuery}
+          placeHolder="Search"
+        />
+      </View>
       <FlatList
         data={orders}
         renderItem={renderOrderItem}

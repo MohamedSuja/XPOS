@@ -112,7 +112,7 @@ const OrderRequestCard: React.FC<OrderRequstCardProps> = ({
   return (
     <TouchableOpacity
       activeOpacity={onPress ? 0.5 : 1}
-      style={[styles.container, { backgroundColor: colors.background }, style]}
+      style={[styles.container, style]}
       onPress={onPress}
     >
       {/* Header */}

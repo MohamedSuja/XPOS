@@ -6,4 +6,11 @@ import {
 } from 'react-native-responsive-screen';
 import { RFValue } from 'react-native-responsive-fontsize';
 
-export const createStyles = (colors: ColorsType) => StyleSheet.create({});
+export const createStyles = (colors: ColorsType) =>
+  StyleSheet.create({
+    root: {
+      flex: 1,
+      backgroundColor: colors.inputField,
+      paddingTop: hp('1%'),
+    },
+  });

@@ -40,6 +40,8 @@ import { SuccessFlash } from '@/utils/FlashMessage';
 import CashIcon from '@/assets/icons/Cash.svg';
 import InstructionCard from '@/components/Cards/InstructionCard';
 import { pdfOrderChit } from '@/utils/pdfOrderChit';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { CustomStatusBar } from '@/components/customStatusBar';
 
 const OrderSummaryScreen = ({
   route,
@@ -61,13 +63,21 @@ const OrderSummaryScreen = ({
   };
 
   return (
-    <View style={[styles.root]}>
-      <View style={[styles.headerContainer, { paddingTop: hp(2.5) }]}>
+    <SafeAreaView style={[styles.root]}>
+      <CustomStatusBar
+        backgroundColor={colors.background}
+        barStyle="dark-content"
+        translucent={false}
+      />
+      <View style={[styles.headerContainer]}>
         <View style={styles.headerContent}>
           <BackButton style={[styles.backBtn]} />
-          <Text style={[globalStyles.h4, styles.headerTxt]}>Order Summary</Text>
+          <Text style={[globalStyles.h5, styles.headerTxt]}>
+            Bank Account details
+          </Text>
         </View>
       </View>
+
       {data?.delivery_type === 'delivery' &&
         data?.status !== 'delivered' &&
         data?.status !== 'cancelled' && (
@@ -158,7 +168,7 @@ const OrderSummaryScreen = ({
           </View>
         )}
 
-        {data?.status === 'cancelled' && (
+        {data?.status === 'cancelled' && data?.cancel_reason && (
           <View style={styles.reasonCancelContainer}>
             <Text style={[globalStyles.h12, styles.reasonCancelTitle]}>
               Reason of Cancel
@@ -197,10 +207,10 @@ const OrderSummaryScreen = ({
                 <>
                   {item?.variants?.map((variant, index) => (
                     <View key={index} style={styles.itemVariant}>
-                      <Text style={[globalStyles.h6, styles.variantText]}>
+                      <Text style={[globalStyles.h9, styles.variantText]}>
                         {variant?.variant_name}
                       </Text>
-                      <Text style={[globalStyles.h6, styles.quantityText]}>
+                      <Text style={[globalStyles.h9, styles.quantityText]}>
                         Qty : {variant?.quantity}
                       </Text>
                     </View>
@@ -259,7 +269,7 @@ const OrderSummaryScreen = ({
           />
         </View>
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 

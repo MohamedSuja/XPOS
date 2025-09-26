@@ -12,6 +12,8 @@ import { createInputStyles } from './styles';
 import { globalStyles } from '@/utils/globalStyles';
 import DateRangePickerDialog from '@/components/Dialogs/DateRangePickerDialog';
 import moment from 'moment';
+import { RFValue } from 'react-native-responsive-fontsize';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
 
 interface DateRangePickerProps {
   style?: StyleProp<ViewStyle>;
@@ -20,6 +22,7 @@ interface DateRangePickerProps {
     startDate: string | undefined;
     endDate: string | undefined;
   }) => void;
+  onClear: any;
   minDate?: string | undefined;
   maxDate?: string | undefined;
 }
@@ -69,8 +72,21 @@ const DateRangePicker = (props: DateRangePickerProps) => {
           </Text>
         </View>
 
-        <CalendarIcon fill={'#7D7D7D'} height={25} width={25} />
-
+        {startDate || endDate ? (
+          <TouchableOpacity
+            onPress={() => {
+              props.onClear();
+            }}
+          >
+            <EvilIcons
+              name="close"
+              size={RFValue(18)}
+              color={colors.itemCardTxt}
+            />
+          </TouchableOpacity>
+        ) : (
+          <CalendarIcon height={25} width={25} />
+        )}
         <DateRangePickerDialog
           visible={visible}
           onClose={onClose}

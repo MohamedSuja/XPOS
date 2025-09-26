@@ -9,23 +9,24 @@ import {
   requestOrdersListData,
 } from '@/feature/thunks/orders_thunks';
 import {
-  selectOrderAcceptData,
   selectOrderAcceptStatus,
-  selectOrderRejectData,
   selectOrderRejectStatus,
   selectOrdersRequestListData,
   selectOrdersRequestListStatus,
   resetOrderAccept,
   resetOrderReject,
-  selectIsOrderAcceptLoading,
-  selectIsOrderRejectLoading,
   selectOrderAcceptLoadingIds,
   selectOrderRejectLoadingIds,
 } from '@/feature/slices/orders_slice';
 import { STATUS } from '@/feature/services/status_constants';
+import { createStyles } from './styles';
+import EmptyValue from '@/assets/icons/EmptyValue.svg';
+import { globalStyles } from '@/utils/globalStyles';
+import { hp, wp } from '@/utils/Scaling';
 
 const RequestScreen = ({ navigation }: any) => {
   const { colors }: ThemeContextType = useTheme();
+  const styles = createStyles(colors);
   const dispatch = useAppDispatch();
   const ordersListData = useAppSelector(selectOrdersRequestListData);
   const ordersListStatus = useAppSelector(selectOrdersRequestListStatus);
@@ -41,7 +42,6 @@ const RequestScreen = ({ navigation }: any) => {
 
   // Monitor accept status and clear after success
   const OrderAcceptStatus = useAppSelector(selectOrderAcceptStatus);
-  const OrderAcceptData = useAppSelector(selectOrderAcceptData);
 
   const acceptLoadingIds = useAppSelector(selectOrderAcceptLoadingIds);
   const rejectLoadingIds = useAppSelector(selectOrderRejectLoadingIds);
@@ -66,7 +66,6 @@ const RequestScreen = ({ navigation }: any) => {
 
   // Monitor reject status and clear after success
   const OrderRejectStatus = useAppSelector(selectOrderRejectStatus);
-  const OrderRejectData = useAppSelector(selectOrderRejectData);
 
   useEffect(() => {
     if (OrderRejectStatus === STATUS.SUCCEEDED) {
@@ -133,14 +132,6 @@ const RequestScreen = ({ navigation }: any) => {
           quantity: item.quantity || 1,
         })) || [];
 
-      // Format date and time
-      const orderDate = new Date(order.created_at);
-      const dateStr = orderDate.toLocaleDateString();
-      const timeStr = orderDate.toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit',
-      });
-
       return (
         <OrderRequestCard
           orderNumber={order.unique_id}
@@ -149,8 +140,6 @@ const RequestScreen = ({ navigation }: any) => {
           onDecline={onSelectDecline}
           loadingAccept={isAcceptLoading}
           loadingDecline={isRejectLoading}
-          date={dateStr}
-          time={timeStr}
         />
       );
     },
@@ -185,17 +174,20 @@ const RequestScreen = ({ navigation }: any) => {
           flex: 1,
           justifyContent: 'center',
           alignItems: 'center',
-          paddingVertical: 50,
+          marginTop: hp('20%'),
         }}
       >
+        <EmptyValue height={wp('40%')} width={wp('40%')} />
         <Text
-          style={{
-            color: colors.headerTxt,
-            fontSize: 16,
-            textAlign: 'center',
-          }}
+          style={[
+            globalStyles.h6,
+            {
+              color: colors.dropDownIcon,
+              textAlign: 'center',
+            },
+          ]}
         >
-          No pending orders found
+          No any orders request found
         </Text>
       </View>
     );
@@ -216,7 +208,7 @@ const RequestScreen = ({ navigation }: any) => {
   }
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.root}>
       <FlatList
         data={orders}
         renderItem={renderOrderItem}

@@ -9,6 +9,7 @@ export const createStyles = (colors: ColorsType) =>
       flex: 1,
       paddingTop: hp(2.5),
       paddingHorizontal: wp('5%'),
+      backgroundColor: colors.inputField,
     },
 
     dateCard: {
@@ -25,11 +26,11 @@ export const createStyles = (colors: ColorsType) =>
       alignItems: 'center',
     },
     date: {
-      color: colors.headerTxt,
+      color: colors.inputTxt,
       marginLeft: wp('2%'),
     },
     dateText: {
-      color: colors.headerTxt,
+      color: colors.inputTxt,
       marginLeft: wp('2%'),
     },
     container1: {
