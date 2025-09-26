@@ -28,6 +28,7 @@ import {
 import {
   requestMenuCategories,
   requestMenuItems,
+  requestMenuSubcategories,
 } from '@/feature/thunks/menu_thunks';
 import { STATUS } from '@/feature/services/status_constants';
 
@@ -55,6 +56,17 @@ const CategoryViewScreen = ({
   useEffect(() => {
     loadMenu();
   }, []);
+
+  const loadSubcategories = () => {
+    dispatch(
+      requestMenuSubcategories({
+        categoryId: route.params?.item?.id ?? '',
+        status: 'approved',
+        per_page: 10,
+        page: 1,
+      }),
+    );
+  };
 
   const loadMenu = useCallback(
     async (
@@ -196,7 +208,10 @@ const CategoryViewScreen = ({
         refreshing={
           MenuItemsStatus === STATUS.LOADING && !pagination && !isSearchLoading
         }
-        onRefresh={() => loadMenu(searchQuery)}
+        onRefresh={() => {
+          loadMenu(searchQuery);
+          loadSubcategories();
+        }}
       />
     </View>
   );
