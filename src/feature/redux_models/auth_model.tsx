@@ -14,6 +14,7 @@ export default interface IAuthState {
   userName: string | undefined;
   address: string | undefined;
   image: string | undefined;
+  contactNo: string | undefined;
   token: string | undefined;
 }
 

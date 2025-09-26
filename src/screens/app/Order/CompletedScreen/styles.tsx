@@ -8,6 +8,10 @@ import { RFValue } from 'react-native-responsive-fontsize';
 
 export const createStyles = (colors: ColorsType) =>
   StyleSheet.create({
+    root: {
+      flex: 1,
+      backgroundColor: colors.inputField,
+    },
     datePicker: {
       marginHorizontal: wp(4),
       marginTop: hp(1),

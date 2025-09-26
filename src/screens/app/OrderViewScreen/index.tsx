@@ -36,6 +36,7 @@ import { STATUS } from '@/feature/services/status_constants';
 import SecondaryButton from '@/components/Buttons/SecondaryButton';
 import { SuccessFlash } from '@/utils/FlashMessage';
 import InstructionCard from '@/components/Cards/InstructionCard';
+import { pdfOrderChit } from '@/utils/pdfOrderChit';
 
 const OrderViewScreen = ({
   route,
@@ -108,7 +109,7 @@ const OrderViewScreen = ({
         <View style={styles.headerContent}>
           <BackButton style={[styles.backBtn]} />
           <Text style={[globalStyles.h4, styles.headerTxt]}>
-            Order #{route.params?.orderId}
+            Order #{data?.unique_id}
           </Text>
         </View>
       </View>
@@ -118,8 +119,8 @@ const OrderViewScreen = ({
       >
         <Tag type={status} />
 
-        {data?.delivery_instructions && (
-          <InstructionCard title={data?.delivery_instructions} />
+        {data?.preparation_instructions && (
+          <InstructionCard title={data?.preparation_instructions} />
         )}
 
         <View style={styles.customerContainer}>
@@ -177,7 +178,11 @@ const OrderViewScreen = ({
               title="Mark as Ready"
               loading={OrderMarkReadyStatus === STATUS.LOADING}
             />
-            <SecondaryButton style={styles.footerButton} title="Export" />
+            <SecondaryButton
+              style={styles.footerButton}
+              title="Export"
+              onPress={() => pdfOrderChit(data)}
+            />
           </>
         ) : null}
       </View>

@@ -9,6 +9,8 @@ import com.facebook.react.ReactNativeHost
 import com.facebook.react.ReactPackage
 import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
+import com.rnfs.RNFSPackage
+import cl.json.ShareApplication
 
 class MainApplication : Application(), ReactApplication {
 
@@ -17,7 +19,7 @@ class MainApplication : Application(), ReactApplication {
         override fun getPackages(): List<ReactPackage> =
             PackageList(this).packages.apply {
               // Packages that cannot be autolinked yet can be added manually here, for example:
-              // add(MyReactNativePackage())
+              add(RNFSPackage())
             }
 
         override fun getJSMainModuleName(): String = "index"
@@ -30,6 +32,10 @@ class MainApplication : Application(), ReactApplication {
 
   override val reactHost: ReactHost
     get() = getDefaultReactHost(applicationContext, reactNativeHost)
+    
+ fun getFileProviderAuthority(): String {
+        return "com.food.xrest.provider"
+    }
 
   override fun onCreate() {
     super.onCreate()

@@ -1,12 +1,5 @@
-import {
-  View,
-  TouchableOpacity,
-  Platform,
-  Text,
-  ScrollView,
-} from 'react-native';
-import { useLinkBuilder } from '@react-navigation/native';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { View, TouchableOpacity, Text, ScrollView } from 'react-native';
+import React, { useRef, useState } from 'react';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import { createStyles } from './styles';
 import { useUpdateEffect } from '@/utils/useUpdateEffect';
@@ -19,6 +12,7 @@ import {
 } from '@/feature/slices/orders_slice';
 import { useAppSelector } from '@/feature/stateHooks';
 import { globalStyles } from '@/utils/globalStyles';
+import { hp, wp } from '@/utils/Scaling';
 
 interface TabButtonProps {
   state: {
@@ -101,81 +95,95 @@ const TabButton = ({ state, descriptors, navigation }: TabButtonProps) => {
 
   return (
     <View style={styles.container}>
-      <ScrollView
-        ref={scrollViewRef}
-        horizontal
-        showsHorizontalScrollIndicator={false}
+      <View
+        style={{
+          width: '100%',
+          borderRadius: 12,
+          height: '100%',
+          overflow: 'hidden',
+          borderWidth: 1,
+          borderColor: 'transparent',
+        }}
       >
-        {state.routes.map((route: any, index: number) => {
-          const { options } = descriptors[route.key];
-          const label =
-            options.tabBarLabel !== undefined
-              ? options.tabBarLabel
-              : options.title !== undefined
-              ? options.title
-              : route.name;
+        <ScrollView
+          ref={scrollViewRef}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ gap: wp(1) }}
+        >
+          {state.routes.map((route: any, index: number) => {
+            const { options } = descriptors[route.key];
+            const label =
+              options.tabBarLabel !== undefined
+                ? options.tabBarLabel
+                : options.title !== undefined
+                ? options.title
+                : route.name;
 
-          const isFocused = state.index === index;
+            const isFocused = state.index === index;
 
-          const onPress = () => {
-            const event = navigation.emit({
-              type: 'tabPress',
-              target: route.key,
-              canPreventDefault: true,
-            });
+            const onPress = () => {
+              const event = navigation.emit({
+                type: 'tabPress',
+                target: route.key,
+                canPreventDefault: true,
+              });
 
-            if (!isFocused && !event.defaultPrevented) {
-              navigation.navigate(route.name, route.params);
-            }
-          };
+              if (!isFocused && !event.defaultPrevented) {
+                navigation.navigate(route.name, route.params);
+              }
+            };
 
-          return (
-            <TouchableOpacity
-              onPress={onPress}
-              style={[
-                styles.buttonContainer,
-                {
-                  backgroundColor: isFocused
-                    ? colors.primary
-                    : colors.cancelledBG,
-                },
-              ]}
-            >
-              <Text
-                style={{
-                  color: isFocused ? colors.background : colors.dropDownIcon,
-                }}
+            return (
+              <TouchableOpacity
+                onPress={onPress}
+                style={[
+                  styles.buttonContainer,
+                  {
+                    backgroundColor: isFocused
+                      ? colors.primary
+                      : colors.cancelledBG,
+                  },
+                ]}
               >
-                {label}
-              </Text>
-              {(index === 0 || index === 1 || index === 2) && (
-                <View
-                  style={[
-                    styles.badgeContainer,
-                    {
-                      backgroundColor: isFocused
-                        ? colors.background
-                        : colors.tab,
-                    },
-                  ]}
+                <Text
+                  style={{
+                    color: isFocused ? colors.background : colors.dropDownIcon,
+                  }}
                 >
-                  <Text
+                  {label}
+                </Text>
+                {(index === 0 || index === 1 || index === 2) && (
+                  <View
                     style={[
-                      globalStyles.h10,
-                      styles.badgeText,
+                      styles.badgeContainer,
                       {
-                        color: isFocused ? colors.primary : colors.dropDownIcon,
+                        backgroundColor: isFocused
+                          ? colors.background
+                          : colors.tab,
                       },
                     ]}
                   >
-                    {dataCount(index)}
-                  </Text>
-                </View>
-              )}
-            </TouchableOpacity>
-          );
-        })}
-      </ScrollView>
+                    <Text
+                      style={[
+                        globalStyles.h10,
+                        styles.badgeText,
+                        {
+                          color: isFocused
+                            ? colors.primary
+                            : colors.dropDownIcon,
+                        },
+                      ]}
+                    >
+                      {dataCount(index)}
+                    </Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+      </View>
     </View>
   );
 };

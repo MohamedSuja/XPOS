@@ -15,6 +15,7 @@ export const createButtonStyles = (colors: ColorsType) =>
     titleContainer: {
       flexDirection: 'row',
       alignItems: 'center',
+      gap: wp('1%'),
     },
 
     title: {

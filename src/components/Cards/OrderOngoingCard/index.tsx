@@ -65,7 +65,7 @@ const OrderOngoingCard: React.FC<OrderRequstCardProps> = ({
         {/* Header */}
         <View style={styles.header}>
           <View>
-            <Text style={[globalStyles.h4, { color: colors.inputTxt }]}>
+            <Text style={[globalStyles.h9, { color: colors.inputTxt }]}>
               Order #{orderNumber}
             </Text>
             {title && (

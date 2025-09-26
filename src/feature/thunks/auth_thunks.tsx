@@ -16,7 +16,6 @@ export const requestAuthenticateLoginData = createAsyncThunk(
   async (body: IAuthenticationLoginDataRequestBody, { rejectWithValue }) => {
     try {
       const response = await requestAuthenticateLoginDataService(body);
-      console.log(response?.data);
       return response?.data;
     } catch (err: any) {
       const error: AxiosError<IAuthError> = err; // cast the error for access

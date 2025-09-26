@@ -130,10 +130,10 @@ const ProfileScreen = ({ navigation }: any) => {
               style={[
                 styles.statusContainer,
                 {
-                  backgroundColor:
-                    profileData?.branch?.online_status == 'online'
-                      ? colors.readyBG
-                      : colors.closeBG,
+                  backgroundColor: profileData?.branch?.opening_hours
+                    ?.current_status?.is_available_for_orders
+                    ? colors.readyBG
+                    : colors.closeBG,
                 },
               ]}
             >
@@ -141,14 +141,15 @@ const ProfileScreen = ({ navigation }: any) => {
                 style={[
                   globalStyles.h12,
                   {
-                    color:
-                      profileData?.branch?.online_status == 'online'
-                        ? colors.readyTxt
-                        : colors.currentStatus,
+                    color: profileData?.branch?.opening_hours?.current_status
+                      ?.is_available_for_orders
+                      ? colors.readyTxt
+                      : colors.currentStatus,
                   },
                 ]}
               >
-                {profileData?.branch?.online_status == 'online'
+                {profileData?.branch?.opening_hours?.current_status
+                  ?.is_available_for_orders
                   ? 'Opened'
                   : 'Closed'}
               </Text>

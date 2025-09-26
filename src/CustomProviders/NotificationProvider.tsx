@@ -1,12 +1,4 @@
-import { View, Text } from 'react-native';
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { createContext, useContext, useEffect, useRef } from 'react';
 import {
   getMessaging,
   onMessage,
@@ -15,7 +7,6 @@ import {
 import notifee, {
   AndroidCategory,
   AndroidImportance,
-  AndroidStyle,
   AndroidVisibility,
   Event,
 } from '@notifee/react-native';

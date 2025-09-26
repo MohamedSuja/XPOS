@@ -13,18 +13,26 @@ import CalendarIcon from '@/assets/icons/Calendar2.svg';
 import Invoice from '@/assets/icons/Invoice.svg';
 import Share from '@/assets/icons/Share.svg';
 import { globalStyles } from '@/utils/globalStyles';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { CustomStatusBar } from '@/components/customStatusBar';
 
 const ReportScreen = () => {
   const { colors }: ThemeContextType = useTheme();
   const styles = createStyles(colors);
 
   return (
-    <View style={styles.root}>
+    <SafeAreaView style={styles.root}>
+      <CustomStatusBar
+        backgroundColor={colors.inputField}
+        barStyle="dark-content"
+        translucent={false}
+      />
+
       <DateRangePicker />
 
       <View style={styles.dateCard}>
         <View style={styles.dateContainer}>
-          <CalendarIcon height={25} width={25} />
+          <CalendarIcon fill={colors.headerTxt} height={25} width={25} />
           <Text style={[styles.date, globalStyles.h8]}>27/ 07/ 2025</Text>
           <Text style={[styles.dateText, globalStyles.h12]}>(Today)</Text>
         </View>
@@ -96,7 +104,7 @@ const ReportScreen = () => {
         </Text>
         <Text style={[styles.totalAmount, globalStyles.h5]}>Rs. 10,000</Text>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

@@ -1,8 +1,7 @@
 import { View, Text, FlatList, ActivityIndicator } from 'react-native';
 import React, { useEffect, useState, useCallback } from 'react';
-import OrderRequestCard from '@/components/Cards/OrderRequestCard';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
-import SearchInput from '@/components/Inputs/SearchInput';
+import { hp, wp } from '@/utils/Scaling';
 import { createStyles } from './styles';
 import { useAppDispatch, useAppSelector } from '@/feature/stateHooks';
 import {
@@ -18,6 +17,9 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { UserStackParamList } from '@/navigation/NavigationModels/UserStack';
 import OrderOngoingCard from '@/components/Cards/OrderOngoingCard';
+import SearchBar from '@/components/searchBar';
+import EmptyValue from '@/assets/icons/EmptyValue.svg';
+import { globalStyles } from '@/utils/globalStyles';
 
 const OngoingScreen = () => {
   const { colors }: ThemeContextType = useTheme();
@@ -110,14 +112,6 @@ const OngoingScreen = () => {
     ({ item }: { item: any }) => {
       const order = item;
 
-      // Format date and time
-      const orderDate = new Date(order.created_at);
-      const dateStr = orderDate.toLocaleDateString();
-      const timeStr = orderDate.toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit',
-      });
-
       const orderType = getOrderType(order.status);
 
       return (
@@ -167,15 +161,18 @@ const OngoingScreen = () => {
           flex: 1,
           justifyContent: 'center',
           alignItems: 'center',
-          paddingVertical: 50,
+          marginTop: hp('20%'),
         }}
       >
+        <EmptyValue height={wp('40%')} width={wp('40%')} />
         <Text
-          style={{
-            color: colors.headerTxt,
-            fontSize: 16,
-            textAlign: 'center',
-          }}
+          style={[
+            globalStyles.h6,
+            {
+              color: colors.dropDownIcon,
+              textAlign: 'center',
+            },
+          ]}
         >
           No ongoing orders found
         </Text>
@@ -198,13 +195,25 @@ const OngoingScreen = () => {
   }
 
   return (
-    <View style={{ flex: 1 }}>
-      <SearchInput
-        placeholder="Search Order ID"
-        style={styles.searchInput}
-        value={searchQuery}
-        onChangeText={handleSearch}
-      />
+    <View style={styles.root}>
+      <View
+        style={{
+          marginHorizontal: wp('4%'),
+          marginTop: hp('2%'),
+          marginBottom: hp('1%'),
+        }}
+      >
+        <SearchBar
+          onChange={(value: string) => {
+            handleSearch(value);
+          }}
+          onClear={() => {
+            handleSearch('');
+          }}
+          value={searchQuery}
+          placeHolder="Search"
+        />
+      </View>
       <FlatList
         data={orders}
         renderItem={renderOrderItem}

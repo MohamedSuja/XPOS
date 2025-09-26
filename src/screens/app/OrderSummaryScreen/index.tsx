@@ -39,6 +39,9 @@ import SecondaryButton from '@/components/Buttons/SecondaryButton';
 import { SuccessFlash } from '@/utils/FlashMessage';
 import CashIcon from '@/assets/icons/Cash.svg';
 import InstructionCard from '@/components/Cards/InstructionCard';
+import { pdfOrderChit } from '@/utils/pdfOrderChit';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { CustomStatusBar } from '@/components/customStatusBar';
 
 const OrderSummaryScreen = ({
   route,
@@ -60,13 +63,21 @@ const OrderSummaryScreen = ({
   };
 
   return (
-    <View style={[styles.root]}>
-      <View style={[styles.headerContainer, { paddingTop: hp(2.5) }]}>
+    <SafeAreaView style={[styles.root]}>
+      <CustomStatusBar
+        backgroundColor={colors.background}
+        barStyle="dark-content"
+        translucent={false}
+      />
+      <View style={[styles.headerContainer]}>
         <View style={styles.headerContent}>
           <BackButton style={[styles.backBtn]} />
-          <Text style={[globalStyles.h4, styles.headerTxt]}>Order Summary</Text>
+          <Text style={[globalStyles.h5, styles.headerTxt]}>
+            Bank Account details
+          </Text>
         </View>
       </View>
+
       {data?.delivery_type === 'delivery' &&
         data?.status !== 'delivered' &&
         data?.status !== 'cancelled' && (
@@ -85,7 +96,7 @@ const OrderSummaryScreen = ({
           <View style={styles.orderIdContainer}>
             <Text style={[globalStyles.h6, styles.labelText]}>Order ID : </Text>
             <Text style={[globalStyles.h2, styles.valueText]}>
-              Order #{route.params?.orderId}
+              # {data?.unique_id}
             </Text>
           </View>
           {data?.delivery_type !== 'delivery' && (
@@ -149,25 +160,27 @@ const OrderSummaryScreen = ({
             <View style={styles.paymentMethodContainer}>
               <CashIcon height={wp(6)} width={wp(6)} />
               <Text style={[globalStyles.h5, styles.paymentMethodText]}>
-                {data?.payment_method}
+                {data?.payment_method == 'cod'
+                  ? 'Cash on delivery'
+                  : 'Card payment'}
               </Text>
             </View>
           </View>
         )}
 
-        {data?.status === 'cancelled' && (
+        {data?.status === 'cancelled' && data?.cancel_reason && (
           <View style={styles.reasonCancelContainer}>
             <Text style={[globalStyles.h12, styles.reasonCancelTitle]}>
               Reason of Cancel
             </Text>
             <Text style={[globalStyles.h9, styles.reasonCancel]}>
-              Lorem ipsum dolor sit amet, consectetur{' '}
+              {data?.cancel_reason}
             </Text>
           </View>
         )}
 
-        {data?.delivery_instructions && data?.status !== 'cancelled' && (
-          <InstructionCard title={data?.delivery_instructions} />
+        {data?.preparation_instructions && data?.status !== 'cancelled' && (
+          <InstructionCard title={data?.preparation_instructions} />
         )}
 
         <View style={styles.itemsSection}>
@@ -189,18 +202,21 @@ const OrderSummaryScreen = ({
                   Rs. {item.total_price?.toLocaleString()}
                 </Text>
               </View>
-              {item?.variants.map((item, index) => (
-                <View style={styles.itemVariant}>
-                  <Text style={[globalStyles.h6, styles.variantText]}>
-                    {item.variant_name}
-                  </Text>
-                  <Text style={[globalStyles.h6, styles.quantityText]}>
-                    Qty : {item?.variant_quantity}
-                  </Text>
-                </View>
-              ))}
 
-              {item?.quantity && (
+              {item?.variants ? (
+                <>
+                  {item?.variants?.map((variant, index) => (
+                    <View key={index} style={styles.itemVariant}>
+                      <Text style={[globalStyles.h9, styles.variantText]}>
+                        {variant?.variant_name}
+                      </Text>
+                      <Text style={[globalStyles.h9, styles.quantityText]}>
+                        Qty : {variant?.quantity}
+                      </Text>
+                    </View>
+                  ))}
+                </>
+              ) : (
                 <View style={styles.itemVariant}>
                   <Text style={[globalStyles.h6, styles.variantText]}></Text>
                   <Text style={[globalStyles.h6, styles.quantityText]}>
@@ -208,6 +224,7 @@ const OrderSummaryScreen = ({
                   </Text>
                 </View>
               )}
+
               {item?.special_instructions && (
                 <View style={styles.itemInstruction}>
                   <Text style={[globalStyles.h12, styles.instructionText]}>
@@ -234,7 +251,13 @@ const OrderSummaryScreen = ({
       </ScrollView>
 
       {data?.status === 'delivered' && (
-        <PrimaryButton style={styles.footerButton} title="Invoice" />
+        <PrimaryButton
+          style={styles.footerButton}
+          title="Invoice"
+          onPress={() => {
+            pdfOrderChit(data);
+          }}
+        />
       )}
 
       {data?.delivery_type !== 'delivery' && (
@@ -246,7 +269,7 @@ const OrderSummaryScreen = ({
           />
         </View>
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 

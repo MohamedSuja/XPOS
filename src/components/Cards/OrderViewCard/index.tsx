@@ -15,7 +15,7 @@ interface OrderItemProps {
   special_instructions: string | null;
   variants: Array<{
     variant_name: string;
-    variant_value: string | null;
+    quantity: number;
   }>;
   add_ons: any[];
 }
@@ -40,7 +40,7 @@ const OrderViewCard = (props: OrderItemProps) => {
                     {variant.variant_name}:{' '}
                   </Text>
                   <Text style={[globalStyles.h5, styles.subtitleNumber]}>
-                    {variant.variant_value}
+                    {variant.quantity}
                   </Text>
                   {index < props.variants.length - 1 && (
                     <Text style={[globalStyles.h9, styles.subtitle]}> | </Text>
