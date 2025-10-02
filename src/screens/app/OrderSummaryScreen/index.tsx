@@ -72,9 +72,7 @@ const OrderSummaryScreen = ({
       <View style={[styles.headerContainer]}>
         <View style={styles.headerContent}>
           <BackButton style={[styles.backBtn]} />
-          <Text style={[globalStyles.h5, styles.headerTxt]}>
-            Bank Account details
-          </Text>
+          <Text style={[globalStyles.h5, styles.headerTxt]}>Order Summary</Text>
         </View>
       </View>
 

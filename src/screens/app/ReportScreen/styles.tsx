@@ -66,7 +66,7 @@ export const createStyles = (colors: ColorsType) =>
     },
     actionContainer: {
       flexDirection: 'row',
-      justifyContent: 'space-around',
+      justifyContent: 'center',
       marginTop: hp(2),
     },
     invoiceButton: {
@@ -74,7 +74,7 @@ export const createStyles = (colors: ColorsType) =>
       borderRadius: 10,
       flexDirection: 'row',
       alignItems: 'center',
-      width: '45%',
+      width: '100%',
       height: hp(5),
       justifyContent: 'center',
     },

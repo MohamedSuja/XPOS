@@ -29,6 +29,8 @@ import { ErrorFlash } from '@/utils/FlashMessage';
 import { useFocusEffect } from '@react-navigation/native';
 import DeviceInfo from 'react-native-device-info';
 import { formatTimeto12 } from '@/utils/formatTime';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { CustomStatusBar } from '@/components/customStatusBar';
 
 const ProfileScreen = ({ navigation }: any) => {
   const { colors }: ThemeContextType = useTheme();
@@ -85,7 +87,12 @@ const ProfileScreen = ({ navigation }: any) => {
     getVersion();
   }, []);
   return (
-    <View style={[styles.root]}>
+    <SafeAreaView style={[styles.root]}>
+      <CustomStatusBar
+        backgroundColor={colors.background}
+        barStyle="dark-content"
+        translucent={false}
+      />
       <View style={[styles.headerContainer]}>
         <View style={styles.headerContent}>
           <BackButton style={[styles.backBtn]} />
@@ -169,7 +176,12 @@ const ProfileScreen = ({ navigation }: any) => {
 
             <View style={styles.profileButtonSeparator} />
 
-            <TouchableOpacity style={styles.profileButton}>
+            <TouchableOpacity
+              style={styles.profileButton}
+              onPress={() => {
+                navigation.navigate('WalletScreen');
+              }}
+            >
               <View style={styles.profileButtonContent}>
                 <WalletIcon width={hp(3)} height={hp(3)} />
                 <Text style={[globalStyles.h8, styles.profileButtonText]}>
@@ -245,7 +257,7 @@ const ProfileScreen = ({ navigation }: any) => {
           Version {version} ({versionName})
         </Text>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };
 

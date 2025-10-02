@@ -9,6 +9,7 @@ import LoadingProvider from '@/CustomProviders/LoadingProvider';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import BootSplash from 'react-native-bootsplash';
 import { NotificationProvider } from '@/CustomProviders/NotificationProvider';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 
 const App = () => {
   useEffect(() => {
@@ -28,11 +29,13 @@ const App = () => {
         <Provider store={store}>
           <GestureHandlerRootView style={{ flex: 1 }}>
             <SafeAreaProvider>
-              <LoadingProvider>
-                <NotificationProvider>
-                  <AppRoutes />
-                </NotificationProvider>
-              </LoadingProvider>
+              <BottomSheetModalProvider>
+                <LoadingProvider>
+                  <NotificationProvider>
+                    <AppRoutes />
+                  </NotificationProvider>
+                </LoadingProvider>
+              </BottomSheetModalProvider>
             </SafeAreaProvider>
           </GestureHandlerRootView>
         </Provider>
