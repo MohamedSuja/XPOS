@@ -22,7 +22,8 @@ const createConfig = (body: any): AxiosRequestConfig => ({
 });
 
 export const requests = {
-  get: (url: string) => instance.get(url).then(responseBody),
+  get: (url: string, params?: any) =>
+    instance.get(url, { params }).then(responseBody),
   post: (url: string, body?: any) =>
     instance.post(url, body, createConfig(body)).then(responseBody),
   patch: (url: string, body: any) =>

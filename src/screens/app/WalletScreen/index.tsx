@@ -1,344 +1,397 @@
 import {
   View,
   Text,
-  FlatList,
-  ScrollView,
-  Image,
+  Pressable,
   TouchableOpacity,
+  FlatList,
+  RefreshControl,
+  ActivityIndicator,
 } from 'react-native';
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import { createStyles } from './styles';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AppStackScreenProps } from '@/navigation/NavigationModels/MenuStack';
-import BackButton from '@/components/Buttons/BackButton';
+import { requests } from '@/feature/services/api';
+import { ErrorFlash } from '@/utils/FlashMessage';
+import { useFocusEffect } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { CustomStatusBar } from '@/components/customStatusBar';
 import { globalStyles } from '@/utils/globalStyles';
-import { hp } from '@/utils/Scaling';
-import EditIcon from '@/assets/icons/fe_edit.svg';
-import MapMarkerIcon from '@/assets/icons/MapMarker.svg';
-import ToggleButton from '@/components/Buttons/ToggleButton';
-import PrimaryButton from '@/components/Buttons/PrimaryButton';
-import EditProfileIcon from '@/assets/icons/EditProfile.svg';
-import ChangePasswordIcon from '@/assets/icons/ChangePassword.svg';
-import DriverIcon from '@/assets/icons/Driver.svg';
-import SupportIcon from '@/assets/icons/Support.svg';
-import PrivacyIcon from '@/assets/icons/Privacy.svg';
-import Right from '@/assets/icons/Right.svg';
-import { useAppDispatch, useAppSelector } from '@/feature/stateHooks';
-import {
-  resetAuth,
-  selectAuthenticationLogoutDataStatus,
-  selectPassword,
-  selectUsername,
-} from '@/feature/slices/auth_slice';
-import { useUpdateEffect } from '@/utils/useUpdateEffect';
-import { STATUS } from '@/feature/services/status_constants';
-import { requestAuthenticateLogoutData } from '@/feature/thunks/auth_thunks';
+import BackButton from '@/components/Buttons/BackButton';
+import { RFValue } from 'react-native-responsive-fontsize';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { hp, wp } from '@/utils/Scaling';
+import DateRangePicker from '@/components/Inputs/DateRangePicker';
+import EmptyValue from '@/assets/icons/EmptyValue.svg';
+import { formatDate, formatTime } from '@/utils/formatTime';
+import { toTwoDigit } from '@/utils/formatCurrency';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import GetAmountModal from '@/components/getAmountModal';
+import WithdrawRequestModal from '@/components/withdrawRequestModal';
 
-const WalletScreen = () => {
+const WalletScreen = ({ navigation }: any) => {
   const { colors }: ThemeContextType = useTheme();
   const styles = createStyles(colors);
 
-  const dispatch = useAppDispatch();
-  const logoutStatus = useAppSelector(selectAuthenticationLogoutDataStatus);
+  const [loading, setLoading] = useState(true);
+  const [functionLoading, setFunctionLoading] = useState(false);
+  const [walletDetails, setWalletDetails] = useState<any>(null);
+  const [listLoading, setListLoading] = useState(true);
+  const [transactionList, setTransactionList] = useState<any[]>([]);
+  const [lastPage, setLastPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [dateRange, setDateRange] = useState<{
+    startDate: string | undefined;
+    endDate: string | undefined;
+  }>({ startDate: '', endDate: '' });
 
-  const username = useAppSelector(selectUsername);
-  const password = useAppSelector(selectPassword);
+  const withdrawModalRef: any = useRef<BottomSheetModal>(null);
+  const withdrawSuccessModalRef: any = useRef<BottomSheetModal>(null);
 
-  useUpdateEffect(() => {
-    if (logoutStatus == STATUS.SUCCEEDED) {
-      dispatch(resetAuth());
+  const handleOpenWithdrawModalModal = useCallback(() => {
+    withdrawModalRef.current?.present();
+  }, []);
+
+  const handleOpenWithdrawSuccessModalModal = useCallback(() => {
+    withdrawSuccessModalRef.current?.present();
+  }, []);
+
+  const handleCloseWithdrawModalModal = useCallback(() => {
+    withdrawModalRef.current?.dismiss();
+  }, []);
+
+  const handleCloseWithdrawSuccessModalModal = useCallback(() => {
+    withdrawSuccessModalRef.current?.dismiss();
+  }, []);
+
+  // get wallet balance
+  const getWalletDetails = () => {
+    try {
+      requests
+        .get('/api/pos/wallet/balance')
+        .then(res => {
+          setWalletDetails(res.data?.data);
+        })
+        .catch(error => {
+          console.log(error);
+          ErrorFlash(error?.message || 'Something went wrong!');
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } catch (error) {
+      console.log(error);
+      ErrorFlash('Something went wrong!');
+      setLoading(false);
     }
-  }, [logoutStatus]);
-
-  const handleLogout = () => {
-    dispatch(
-      requestAuthenticateLogoutData({
-        user_name: username,
-        password: password,
-      }),
-    );
   };
 
-  const insets = useSafeAreaInsets();
-  const [profileImage, setProfileImage] = useState('');
+  // get transcation list
 
+  const getTransactions = (
+    refreshState: boolean,
+    page?: number,
+    dateRange?: any,
+  ) => {
+    try {
+      if (refreshState) {
+        setListLoading(true);
+      }
+      let parameters: any = {
+        page: page || currentPage,
+        per_page: 10,
+      };
+      if (dateRange?.start && dateRange?.end) {
+        parameters.start_date = dateRange.start;
+        parameters.end_date = dateRange.end;
+      }
+
+      requests
+        .get('/api/pos/wallet/withdrawal-transactions', parameters)
+        .then(res => {
+          if (!refreshState) {
+            if (currentPage <= lastPage) {
+              setTransactionList(prev => [
+                ...prev,
+                ...res.data?.data?.withdrawal_transactions,
+              ]);
+              setCurrentPage(currentPage + 1);
+            }
+          } else {
+            setIsRefreshing(false);
+            setTransactionList(res.data?.data?.withdrawal_transactions);
+            setCurrentPage(2);
+          }
+          setLastPage(res.data.data?.pagination?.last_page);
+        })
+        .catch(error => {
+          console.log(error);
+          ErrorFlash(error.message || 'Something went wrong!');
+        })
+        .finally(() => {
+          setListLoading(false);
+        });
+    } catch (error) {
+      console.log(error);
+      ErrorFlash('Something went wrong!');
+      setListLoading(false);
+    }
+  };
+
+  // send withdraw request
+  const sendWithdrawRequest = async (amount: number) => {
+    try {
+      setFunctionLoading(true);
+      const transcationBody = {
+        amount: amount,
+      };
+
+      await requests
+        .post('/api/pos/wallet/withdraw', transcationBody)
+        .then(async res => {
+          setFunctionLoading(false);
+          handleCloseWithdrawModalModal();
+          handleOpenWithdrawSuccessModalModal();
+          getTransactions(true, 1, null);
+        })
+        .catch(error => {
+          let errorMessage = '';
+          console.log(error);
+          if (error.status == 422) {
+            let alertDescription = '';
+            const errors = error.data?.errors;
+
+            if (errors) {
+              for (const key in errors) {
+                const errorMessagesArray = errors[key];
+                errorMessagesArray.forEach((message: string) => {
+                  alertDescription += `${message}\n`;
+                });
+              }
+            }
+            errorMessage = alertDescription.trim();
+          } else {
+            errorMessage = error.data?.message;
+          }
+
+          ErrorFlash(errorMessage || 'Something went wrong!');
+          setFunctionLoading(false);
+          handleCloseWithdrawModalModal();
+        });
+    } catch (error) {
+      console.log(error);
+      ErrorFlash('Something went wrong!');
+      setFunctionLoading(false);
+      handleCloseWithdrawModalModal();
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      getWalletDetails();
+      getTransactions(true, 1, null);
+    }, []),
+  );
   return (
-    <View style={[styles.root]}>
-      <View style={[styles.headerContainer, { paddingTop: hp(2.5) }]}>
-        <View style={styles.headerContent}>
-          <BackButton style={[styles.backBtn]} />
-          <Text style={[globalStyles.h4, styles.headerTxt]}>Profile</Text>
-        </View>
-      </View>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.profileContainer}>
-          <View style={styles.profileHeader}>
-            <View style={styles.profileImageContainer}>
-              <Image
-                source={{ uri: profileImage }}
-                style={styles.profileImage}
-              />
-              <TouchableOpacity style={styles.editIcon}>
-                <EditIcon width={hp(2)} height={hp(2)} />
-              </TouchableOpacity>
-            </View>
+    <SafeAreaView style={styles.container}>
+      <CustomStatusBar
+        backgroundColor={colors.currentStatus}
+        barStyle="dark-content"
+        translucent={false}
+      />
 
-            <Text style={[globalStyles.h4, styles.profileName]}>
-              The Valampuri
-            </Text>
-            <View style={styles.locationContainer}>
-              <MapMarkerIcon width={hp(2)} height={hp(2)} />
-              <Text style={[globalStyles.h8, styles.locationText]}>
-                No. 123, KKS Road, Kopay, Jaffna
+      <View style={[styles.box]}>
+        <View style={styles.header}>
+          <BackButton style={styles.backBtn} />
+          <Text style={[globalStyles.h5, { color: colors.background }]}>
+            My Wallet
+          </Text>
+          <Pressable
+            style={styles.icon}
+            onPress={() => {
+              navigation.navigate('BankDetailsScreen');
+            }}
+          >
+            <FontAwesome
+              name="bank"
+              size={RFValue(18)}
+              color={colors.primary}
+            />
+          </Pressable>
+        </View>
+        {loading ? (
+          <View
+            style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+          >
+            <ActivityIndicator size="small" color={colors.background} />
+          </View>
+        ) : (
+          <>
+            <View>
+              <Text
+                style={[
+                  globalStyles.h1,
+                  {
+                    color: colors.background,
+                    textAlign: 'center',
+                    fontSize: RFValue(22),
+                    marginBottom: hp('1%'),
+                  },
+                ]}
+              >
+                Rs. {walletDetails?.current_balance}
+              </Text>
+              <Text
+                style={[
+                  globalStyles.h9,
+                  { color: colors.background, textAlign: 'center' },
+                ]}
+              >
+                Total Balance
               </Text>
             </View>
-            <ToggleButton
-              leftLabel="Closed"
-              rightLabel="Open"
-              onToggle={() => {}}
-              initialValue={true}
-              isLoading={false}
-            />
-          </View>
 
-          <View style={styles.profileButtonContainer}>
-            <TouchableOpacity style={styles.profileButton}>
-              <View style={styles.profileButtonContent}>
-                <EditProfileIcon width={hp(3)} height={hp(3)} />
-                <Text style={[globalStyles.h7, styles.profileButtonText]}>
-                  Edit Profile
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '100%',
+              }}
+            >
+              <TouchableOpacity
+                style={styles.withdrawBtn}
+                onPress={() => {
+                  handleOpenWithdrawModalModal();
+                }}
+              >
+                <Text style={[globalStyles.h4, { color: colors.btnBorder }]}>
+                  Withdraw
                 </Text>
-              </View>
-              <Right width={hp(2)} height={hp(2)} />
-            </TouchableOpacity>
+              </TouchableOpacity>
+            </View>
+          </>
+        )}
+      </View>
+      {/* transcation conatiner */}
 
-            <View style={styles.profileButtonSeparator} />
-
-            <TouchableOpacity style={styles.profileButton}>
-              <View style={styles.profileButtonContent}>
-                <ChangePasswordIcon width={hp(3)} height={hp(3)} />
-                <Text style={[globalStyles.h7, styles.profileButtonText]}>
-                  Change Password
-                </Text>
-              </View>
-              <Right width={hp(2)} height={hp(2)} />
-            </TouchableOpacity>
-
-            <View style={styles.profileButtonSeparator} />
-
-            <TouchableOpacity style={styles.profileButton}>
-              <View style={styles.profileButtonContent}>
-                <DriverIcon width={hp(3)} height={hp(3)} />
-                <Text style={[globalStyles.h7, styles.profileButtonText]}>
-                  Driver Request
-                </Text>
-              </View>
-              <Right width={hp(2)} height={hp(2)} />
-            </TouchableOpacity>
-
-            <View style={styles.profileButtonSeparator} />
-
-            <TouchableOpacity style={styles.profileButton}>
-              <View style={styles.profileButtonContent}>
-                <SupportIcon width={hp(3)} height={hp(3)} />
-                <Text style={[globalStyles.h7, styles.profileButtonText]}>
-                  Support Center
-                </Text>
-              </View>
-              <Right width={hp(2)} height={hp(2)} />
-            </TouchableOpacity>
-
-            <View style={styles.profileButtonSeparator} />
-
-            <TouchableOpacity style={styles.profileButton}>
-              <View style={styles.profileButtonContent}>
-                <PrivacyIcon width={hp(3)} height={hp(3)} />
-                <Text style={[globalStyles.h7, styles.profileButtonText]}>
-                  Privacy Policy
-                </Text>
-              </View>
-              <Right width={hp(2)} height={hp(2)} />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        <PrimaryButton
-          style={styles.logoutButton}
-          title="Log Out"
-          onPress={handleLogout}
+      <View style={styles.bottomContainer}>
+        <DateRangePicker
+          onChange={range => {
+            setDateRange(range);
+            getTransactions(true, 1, {
+              start: range?.startDate,
+              end: range?.endDate,
+            });
+          }}
+          value={dateRange}
+          style={styles.datePicker}
+          onClear={() => {
+            setDateRange({ startDate: '', endDate: '' });
+            getTransactions(true, 1, null);
+          }}
         />
-      </ScrollView>
-    </View>
+        <Text style={[globalStyles.h5, styles.title]}>Transactions</Text>
+
+        {listLoading ? (
+          <View
+            style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+          >
+            <ActivityIndicator size="small" color={colors.primary} />
+          </View>
+        ) : transactionList.length > 0 ? (
+          <FlatList
+            data={transactionList}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ gap: hp('1%') }}
+            refreshControl={
+              <RefreshControl
+                refreshing={isRefreshing}
+                onRefresh={() => {
+                  getTransactions(true, 1, null);
+                  setDateRange({ startDate: '', endDate: '' });
+                }}
+              />
+            }
+            onEndReached={() => {
+              getTransactions(false, currentPage, {
+                start: dateRange?.startDate,
+                end: dateRange?.endDate,
+              });
+            }}
+            onEndReachedThreshold={1}
+            renderItem={({ item }) => (
+              <View style={styles.earningsCard}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <View
+                    style={{ justifyContent: 'space-between', gap: hp('0.5%') }}
+                  >
+                    <Text style={[globalStyles.h5, { color: colors.inputTxt }]}>
+                      Ref. {item?.id}
+                    </Text>
+                    <Text
+                      style={[globalStyles.h12, { color: colors.inputTxt }]}
+                    >
+                      {formatDate(item?.created_at)} |{' '}
+                      {formatTime(item?.created_at)}
+                    </Text>
+                  </View>
+                </View>
+                <View
+                  style={{
+                    justifyContent: 'space-between',
+                    gap: hp('0.5%'),
+                    alignItems: 'flex-end',
+                  }}
+                >
+                  <Text style={[globalStyles.h4, { color: colors.greenBG }]}>
+                    Rs. {toTwoDigit(item?.amount)}
+                  </Text>
+                  <Text style={[globalStyles.h12, { color: colors.inputTxt }]}>
+                    {item?.status}
+                  </Text>
+                </View>
+              </View>
+            )}
+          />
+        ) : (
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginVertical: hp('2%'),
+            }}
+          >
+            <EmptyValue height={wp('40%')} width={wp('40%')} />
+            <Text style={[globalStyles.h6, { color: colors.dropDownIcon }]}>
+              No any transcations yet!
+            </Text>
+          </View>
+        )}
+      </View>
+
+      <GetAmountModal
+        bottomSheetModalRef={withdrawModalRef}
+        loading={functionLoading}
+        onPress={(amount: any) => {
+          sendWithdrawRequest(amount);
+        }}
+        onCancel={() => {
+          handleCloseWithdrawModalModal();
+        }}
+      />
+      <WithdrawRequestModal
+        bottomSheetModalRef={withdrawSuccessModalRef}
+        onCancel={() => handleCloseWithdrawSuccessModalModal()}
+      />
+    </SafeAreaView>
   );
 };
 
 export default WalletScreen;
-const categoryData = [
-  {
-    id: 1,
-    name: 'Pizza',
-    image:
-      'https://www.shutterstock.com/image-photo/fried-salmon-steak-cooked-green-600nw-2489026949.jpg',
-  },
-  {
-    id: 2,
-    name: 'Burger',
-    image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5k7T60odhyrtndKnNo0Ef-GmdAQTIdl22jg&s',
-  },
-  {
-    id: 3,
-    name: 'Salad',
-    image:
-      'https://img.freepik.com/free-photo/top-view-fast-food-mix-mozzarella-sticks-club-sandwich-hamburger-mushroom-pizza-caesar-shrimp-salad-french-fries-ketchup-mayo-cheese-sauces-table_141793-3998.jpg?semt=ais_hybrid&w=740',
-  },
-  {
-    id: 4,
-    name: 'Dessert',
-    image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8_kCgEQn9yIXh1QSwPJcN6QYJVceekyMXxQ&s',
-  },
-  {
-    id: 5,
-    name: 'Drink',
-    image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRoJ0RCxNrOLvYxHj8NSYEOBKgNLef73dF9A&s',
-  },
-  {
-    id: 6,
-    name: 'Soup',
-    image:
-      'https://bakewithshivesh.com/wp-content/uploads/2018/05/RASPBERRY-APPLE-CRISP.jpg',
-  },
-  {
-    id: 7,
-    name: 'Pasta',
-    image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjrvUCM4F6qU2P-gskxXTMQjn9jPhRPT5BZQ&s',
-  },
-  {
-    id: 8,
-    name: 'Fish',
-    image:
-      'https://i0.wp.com/digital-photography-school.com/wp-content/uploads/2019/10/MG_3869.jpg?fit=1500%2C1011&ssl=1',
-  },
-  {
-    id: 9,
-    name: 'Chicken',
-    image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3WF7SFm5a1kterAAcz-4ZxNDw6oglgIJHKA&s',
-  },
-  {
-    id: 10,
-    name: 'Beef',
-    image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjRHIfneW-xeaNFH91s9iLCN0w5fww9NPfEQ&s',
-  },
-  {
-    id: 11,
-    name: 'Vegetarian',
-    image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7Ovgxx5xzyfkobvR99fY1YWgoqso0zr_hdg&s',
-  },
-  {
-    id: 12,
-    name: 'Vegan',
-    image:
-      'https://clicklovegrow.com/wp-content/uploads/2020/03/Naomi-Sherman-Advanced-Graduate4.jpg',
-  },
-];
-
-const itemData = [
-  {
-    id: 1,
-    title: 'Chicken Rice & Curry',
-    image:
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
-    available: true,
-  },
-  {
-    id: 2,
-    title: 'Chicken Rice & Curry',
-    image:
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
-    available: true,
-  },
-  {
-    id: 3,
-    title: 'Chicken Rice & Curry',
-    image:
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
-    available: false,
-  },
-  {
-    id: 4,
-    title: 'Chicken Rice & Curry',
-    image:
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
-    available: true,
-  },
-  {
-    id: 5,
-    title: 'Chicken Rice & Curry',
-    image:
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
-    available: false,
-  },
-  {
-    id: 6,
-    title: 'Chicken Rice & Curry',
-    image:
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
-    available: false,
-  },
-  {
-    id: 7,
-    title: 'Chicken Rice & Curry',
-    image:
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
-    available: false,
-  },
-  {
-    id: 8,
-    title: 'Chicken Rice & Curry',
-    image:
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
-    available: true,
-  },
-  {
-    id: 9,
-    title: 'Chicken Rice & Curry',
-    image:
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
-    available: false,
-  },
-  {
-    id: 10,
-    title: 'Chicken Rice & Curry',
-    image:
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
-    available: true,
-  },
-  {
-    id: 11,
-    title: 'Chicken Rice & Curry',
-    image:
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
-    available: true,
-  },
-  {
-    id: 12,
-    title: 'Chicken Rice & Curry',
-    image:
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
-    available: false,
-  },
-  {
-    id: 13,
-    title: 'Chicken Rice & Curry',
-    image:
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg',
-    available: false,
-  },
-];

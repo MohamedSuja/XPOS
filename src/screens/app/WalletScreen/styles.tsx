@@ -5,97 +5,73 @@ import { hp, wp } from '@/utils/Scaling';
 
 export const createStyles = (colors: ColorsType) =>
   StyleSheet.create({
-    root: {
+    container: {
       flex: 1,
-    },
-    headerContainer: {
-      backgroundColor: colors.background,
-      paddingHorizontal: wp('5%'),
-      paddingBottom: hp(2.5),
-      borderBottomWidth: 1,
-      borderBottomColor: colors.border,
-    },
-    headerContent: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingVertical: hp(0.5),
+      backgroundColor: colors.inputField,
+      width: '100%',
+      height: '100%',
     },
     backBtn: {
-      position: 'absolute',
-      left: 0,
+      backgroundColor: colors.background,
     },
-    headerTxt: {
-      color: colors.headerTxt,
-      textAlign: 'center',
-    },
-    profileContainer: {
-      paddingHorizontal: wp('5%'),
-      paddingVertical: hp(2.5),
-    },
-    profileHeader: {
-      alignItems: 'center',
+    header: {
+      flexDirection: 'row',
       justifyContent: 'space-between',
+      alignItems: 'center',
     },
-    profileImageContainer: {},
-
-    profileImage: {
-      width: hp(12),
-      height: hp(12),
+    box: {
+      backgroundColor: colors.currentStatus,
+      height: hp('40%'),
+      justifyContent: 'space-between',
+      paddingHorizontal: wp('4%'),
+      paddingBottom: hp('8%'),
+      paddingTop: hp('1%'),
+    },
+    icon: {
       backgroundColor: colors.background,
       borderRadius: 100,
-    },
-    editIcon: {
-      backgroundColor: colors.primary,
-      borderRadius: 100,
-      alignItems: 'center',
+      width: wp('12%'),
+      height: wp('12%'),
       justifyContent: 'center',
-      width: hp(4),
-      height: hp(4),
-      borderWidth: 3,
-      borderColor: colors.background,
-      position: 'absolute',
-      right: 0,
-      bottom: 0,
-    },
-    profileName: {
-      marginTop: hp(2),
-    },
-    locationContainer: {
-      flexDirection: 'row',
       alignItems: 'center',
-      gap: wp(2),
-      marginTop: hp(1),
     },
-    locationText: {
+    withdrawBtn: {
+      height: hp('6%'),
+      borderRadius: 8,
+      backgroundColor: colors.background,
+      justifyContent: 'center',
+      alignItems: 'center',
+      flexDirection: 'row',
+      flex: 1,
+    },
+    bottomContainer: {
+      borderTopLeftRadius: 40,
+      borderTopRightRadius: 40,
+      backgroundColor: colors.inputField,
+      paddingHorizontal: wp('4%'),
+      paddingTop: hp('3%'),
+      marginBottom: hp('2%'),
+      marginTop: -hp('5%'),
+      flex: 1,
+    },
+    datePicker: {
+      marginTop: hp(0.5),
+    },
+    title: {
+      marginTop: hp('2%'),
+      marginBottom: hp('1%'),
       color: colors.headerTxt,
     },
-    profileButtonContainer: {
-      marginTop: hp(2),
-      backgroundColor: colors.background,
-      padding: hp(2),
-      borderRadius: 10,
-    },
-    profileButton: {
+    earningsCard: {
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 8,
+      paddingVertical: wp('2%'),
+      paddingHorizontal: wp('3%'),
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-    },
-    profileButtonContent: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: wp(2),
-    },
-    profileButtonText: {
-      color: colors.headerTxt,
-    },
-    profileButtonSeparator: {
-      height: 1,
-      backgroundColor: colors.profileSeparator,
-      marginVertical: hp(2),
-    },
-    logoutButton: {
-      marginHorizontal: wp('5%'),
-      marginTop: hp(3),
+      backgroundColor: colors.background,
+      width: '100%',
     },
   });

@@ -8,13 +8,11 @@ import {
   ScrollView,
   FlatList,
 } from 'react-native';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import { createStyles } from './styles';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { globalStyles } from '../../../utils/globalStyles';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -22,8 +20,6 @@ import {
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CustomStatusBar } from '../../../components/customStatusBar';
-import { SvgUri } from 'react-native-svg';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import { ErrorFlash } from '@/utils/FlashMessage';
 import { requests } from '@/feature/services/api';
 import BackButton from '@/components/Buttons/BackButton';
@@ -37,9 +33,9 @@ const BankDetailsScreen = ({ navigation }: any) => {
   const getBankDetails = () => {
     try {
       requests
-        .get('/driver/wallet/bank-details')
+        .get('/api/pos/wallet/primary-payout-account')
         .then(res => {
-          setBankDetails(res.data?.data?.bank_details);
+          setBankDetails(res.data?.data?.primary_account);
         })
         .catch(error => {
           console.log(error);
@@ -112,13 +108,11 @@ const BankDetailsScreen = ({ navigation }: any) => {
                 { fontSize: RFValue(16), color: colors.headerTxt },
               ]}
             >
-              {/* {bankDetails?.account_holder_name} */}
-              John Doe
+              {bankDetails?.account_holder_name}
             </Text>
           </View>
           <Text style={[globalStyles.h5, { color: colors.primary }]}>
-            {/* {bankDetails?.account_number} */}
-            233 55 123 4567
+            {bankDetails?.account_number}
           </Text>
 
           <View
@@ -135,8 +129,7 @@ const BankDetailsScreen = ({ navigation }: any) => {
               color={colors.inputTxt}
             />
             <Text style={[globalStyles.h8, { color: colors.inputTxt }]}>
-              {/* {bankDetails?.bank_name} */}
-              Bank of Ceylon
+              {bankDetails?.bank?.name}
             </Text>
           </View>
           <Text
@@ -145,8 +138,7 @@ const BankDetailsScreen = ({ navigation }: any) => {
               { color: colors.subTitle, paddingTop: hp('1%') },
             ]}
           >
-            {/* {bankDetails?.bank_branch} */}
-            Colombo
+            {bankDetails?.bank_branch}
           </Text>
         </View>
       </View>
