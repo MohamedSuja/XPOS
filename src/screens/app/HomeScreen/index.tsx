@@ -26,11 +26,12 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import PrimaryButton from '@/components/Buttons/PrimaryButton';
 import { useNotification } from '@/CustomProviders/NotificationProvider';
-import { useAppSelector } from '@/feature/stateHooks';
+import { useAppDispatch, useAppSelector } from '@/feature/stateHooks';
 import { requests } from '@/feature/services/api';
 import { ErrorFlash } from '@/utils/FlashMessage';
 import { useFocusEffect } from '@react-navigation/native';
 import OrderOngoingCard from '@/components/Cards/OrderOngoingCard';
+import { requestOrderDetailsData } from '@/feature/thunks/orders_thunks';
 
 const HomeScreen = ({ navigation }: any) => {
   const { colors }: ThemeContextType = useTheme();
@@ -40,6 +41,8 @@ const HomeScreen = ({ navigation }: any) => {
   const [earningData, setEarningData] = useState<any>(null);
   const [lastOrder, setLastOrder] = useState<any>(null);
   const [onlineStatus, setOnlineStatus] = useState(false);
+
+  const dispatch = useAppDispatch();
 
   const { setNavigator } = useNotification();
 
@@ -307,16 +310,26 @@ const HomeScreen = ({ navigation }: any) => {
             />
           </Pressable>
         </View>
-
         <OrderOngoingCard
           orderNumber={lastOrder?.order?.unique_id}
           items={lastOrder?.order?.items}
           type={getOrderType(lastOrder?.order?.status)}
           title={lastOrder?.order?.customer?.name}
           onPress={() => {
-            navigation.navigate('OrderViewScreen', {
-              orderId: lastOrder?.order?.id,
-            });
+            dispatch(requestOrderDetailsData(lastOrder?.order?.id));
+            if (getOrderType(lastOrder?.order?.status) === 'preparing') {
+              navigation.navigate('OrderViewScreen', {
+                orderId: lastOrder?.order?.id,
+              });
+            } else if (getOrderType(lastOrder?.order?.status) === 'accepted') {
+              navigation.navigate('OrderViewScreen', {
+                orderId: lastOrder?.order?.id,
+              });
+            } else if (getOrderType(lastOrder?.order?.status) === 'ready') {
+              navigation.navigate('OrderSummaryScreen', {
+                orderId: lastOrder?.order?.id,
+              });
+            }
           }}
         />
 

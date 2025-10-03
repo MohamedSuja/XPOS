@@ -26,15 +26,12 @@ import { UserStackScreenProps } from '@/navigation/NavigationModels/UserStack';
 import {
   selectOrderDetailsData,
   selectOrderDetailsStatus,
-  selectOrderMarkPreparingData,
   selectOrderMarkPreparingStatus,
-  selectOrderMarkReadyData,
   selectOrderMarkReadyStatus,
 } from '@/feature/slices/orders_slice';
 import { useUpdateEffect } from '@/utils/useUpdateEffect';
 import { STATUS } from '@/feature/services/status_constants';
 import SecondaryButton from '@/components/Buttons/SecondaryButton';
-import { SuccessFlash } from '@/utils/FlashMessage';
 import InstructionCard from '@/components/Cards/InstructionCard';
 import { pdfOrderChit } from '@/utils/pdfOrderChit';
 
@@ -48,10 +45,8 @@ const OrderViewScreen = ({
   const OrderDetailsData = useAppSelector(selectOrderDetailsData);
   const OrderDetailsStatus = useAppSelector(selectOrderDetailsStatus);
 
-  const OrderMarkReadyData = useAppSelector(selectOrderMarkReadyData);
   const OrderMarkReadyStatus = useAppSelector(selectOrderMarkReadyStatus);
 
-  const OrderMarkPreparingData = useAppSelector(selectOrderMarkPreparingData);
   const OrderMarkPreparingStatus = useAppSelector(
     selectOrderMarkPreparingStatus,
   );
