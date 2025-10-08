@@ -23,6 +23,7 @@ import { CustomStatusBar } from '../../../components/customStatusBar';
 import { ErrorFlash } from '@/utils/FlashMessage';
 import { requests } from '@/feature/services/api';
 import BackButton from '@/components/Buttons/BackButton';
+import EmptyValue from '@/assets/icons/EmptyValue.svg';
 
 const BankDetailsScreen = ({ navigation }: any) => {
   const { colors }: ThemeContextType = useTheme();
@@ -95,51 +96,77 @@ const BankDetailsScreen = ({ navigation }: any) => {
         }}
       >
         <View style={styles.box}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}
-          >
-            <Text
-              style={[
-                globalStyles.h5,
-                { fontSize: RFValue(16), color: colors.headerTxt },
-              ]}
-            >
-              {bankDetails?.account_holder_name}
-            </Text>
-          </View>
-          <Text style={[globalStyles.h5, { color: colors.primary }]}>
-            {bankDetails?.account_number}
-          </Text>
+          {bankDetails ? (
+            <>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <Text
+                  style={[
+                    globalStyles.h5,
+                    { fontSize: RFValue(16), color: colors.headerTxt },
+                  ]}
+                >
+                  {bankDetails?.account_holder_name}
+                </Text>
+              </View>
+              <Text style={[globalStyles.h5, { color: colors.primary }]}>
+                {bankDetails?.account_number}
+              </Text>
 
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: wp('2%'),
-              marginTop: hp('2%'),
-            }}
-          >
-            <FontAwesome
-              name="bank"
-              size={RFValue(16)}
-              color={colors.inputTxt}
-            />
-            <Text style={[globalStyles.h8, { color: colors.inputTxt }]}>
-              {bankDetails?.bank?.name}
-            </Text>
-          </View>
-          <Text
-            style={[
-              globalStyles.h9,
-              { color: colors.subTitle, paddingTop: hp('1%') },
-            ]}
-          >
-            {bankDetails?.bank_branch}
-          </Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: wp('2%'),
+                  marginTop: hp('2%'),
+                }}
+              >
+                <FontAwesome
+                  name="bank"
+                  size={RFValue(16)}
+                  color={colors.inputTxt}
+                />
+                <Text style={[globalStyles.h8, { color: colors.inputTxt }]}>
+                  {bankDetails?.bank?.name}
+                </Text>
+              </View>
+              <Text
+                style={[
+                  globalStyles.h9,
+                  { color: colors.subTitle, paddingTop: hp('1%') },
+                ]}
+              >
+                {bankDetails?.bank_branch}
+              </Text>
+            </>
+          ) : (
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                paddingVertical: hp('2%'),
+              }}
+            >
+              <EmptyValue height={wp('30%')} width={wp('30%')} />
+              <Text
+                style={[
+                  globalStyles.h6,
+                  {
+                    color: colors.dropDownIcon,
+                    width: wp('70%'),
+                    textAlign: 'center',
+                  },
+                ]}
+              >
+                Please add bank details on admin panel
+              </Text>
+            </View>
+          )}
         </View>
       </View>
     </SafeAreaView>

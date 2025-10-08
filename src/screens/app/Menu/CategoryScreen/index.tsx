@@ -14,6 +14,9 @@ import {
 } from '@/feature/slices/menu_slice';
 import { requestMenuCategories } from '@/feature/thunks/menu_thunks';
 import { STATUS } from '@/feature/services/status_constants';
+import SearchBar from '@/components/searchBar';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { CustomStatusBar } from '@/components/customStatusBar';
 
 const CategoryScreen = ({
   navigation,
@@ -149,13 +152,23 @@ const CategoryScreen = ({
   }
 
   return (
-    <View style={[styles.root]}>
+    <SafeAreaView style={[styles.root]}>
+      <CustomStatusBar
+        backgroundColor={colors.background}
+        barStyle="dark-content"
+        translucent={false}
+      />
       <View style={[styles.headerContainer, { paddingTop: hp(2.5) }]}>
-        <SearchInput
-          placeholder="Search main category"
-          style={styles.searchInput}
+        <SearchBar
+          backgroundColor={colors.searchInputBG}
+          onChange={(value: string) => {
+            handleSearch(value);
+          }}
+          onClear={() => {
+            handleSearch('');
+          }}
           value={searchQuery}
-          onChangeText={handleSearch}
+          placeHolder="Search main category"
         />
       </View>
 
@@ -178,7 +191,7 @@ const CategoryScreen = ({
         }
         onRefresh={() => loadCategories(true, searchQuery)}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 

@@ -32,6 +32,7 @@ import { ErrorFlash } from '@/utils/FlashMessage';
 import { useFocusEffect } from '@react-navigation/native';
 import OrderOngoingCard from '@/components/Cards/OrderOngoingCard';
 import { requestOrderDetailsData } from '@/feature/thunks/orders_thunks';
+import EmptyValue from '@/assets/icons/EmptyValue.svg';
 
 const HomeScreen = ({ navigation }: any) => {
   const { colors }: ThemeContextType = useTheme();
@@ -310,28 +311,47 @@ const HomeScreen = ({ navigation }: any) => {
             />
           </Pressable>
         </View>
-        <OrderOngoingCard
-          orderNumber={lastOrder?.order?.unique_id}
-          items={lastOrder?.order?.items}
-          type={getOrderType(lastOrder?.order?.status)}
-          title={lastOrder?.order?.customer?.name}
-          onPress={() => {
-            dispatch(requestOrderDetailsData(lastOrder?.order?.id));
-            if (getOrderType(lastOrder?.order?.status) === 'preparing') {
-              navigation.navigate('OrderViewScreen', {
-                orderId: lastOrder?.order?.id,
-              });
-            } else if (getOrderType(lastOrder?.order?.status) === 'accepted') {
-              navigation.navigate('OrderViewScreen', {
-                orderId: lastOrder?.order?.id,
-              });
-            } else if (getOrderType(lastOrder?.order?.status) === 'ready') {
-              navigation.navigate('OrderSummaryScreen', {
-                orderId: lastOrder?.order?.id,
-              });
-            }
-          }}
-        />
+        {lastOrder?.order ? (
+          <OrderOngoingCard
+            orderNumber={lastOrder?.order?.unique_id}
+            items={lastOrder?.order?.items}
+            type={getOrderType(lastOrder?.order?.status)}
+            title={lastOrder?.order?.customer?.name}
+            onPress={() => {
+              dispatch(requestOrderDetailsData(lastOrder?.order?.id));
+              if (getOrderType(lastOrder?.order?.status) === 'preparing') {
+                navigation.navigate('OrderViewScreen', {
+                  orderId: lastOrder?.order?.id,
+                });
+              } else if (
+                getOrderType(lastOrder?.order?.status) === 'accepted'
+              ) {
+                navigation.navigate('OrderViewScreen', {
+                  orderId: lastOrder?.order?.id,
+                });
+              } else if (getOrderType(lastOrder?.order?.status) === 'ready') {
+                navigation.navigate('OrderSummaryScreen', {
+                  orderId: lastOrder?.order?.id,
+                });
+              }
+            }}
+          />
+        ) : (
+          <View style={styles.noJobBox}>
+            <EmptyValue height={wp('40%')} width={wp('40%')} />
+            <Text
+              style={[
+                globalStyles.h6,
+                {
+                  color: colors.dropDownIcon,
+                  textAlign: 'center',
+                },
+              ]}
+            >
+              No any latest order found
+            </Text>
+          </View>
+        )}
 
         {/* send request */}
 

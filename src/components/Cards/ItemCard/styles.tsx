@@ -27,7 +27,7 @@ export const createButtonStyles = (colors: ColorsType) =>
       gap: hp(0.5),
     },
     title: {
-      color: colors.headerTxt,
+      color: colors.inputTxt,
     },
     description: {
       color: colors.subTitle,

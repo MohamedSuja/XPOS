@@ -9,8 +9,8 @@ export const createButtonStyles = (colors: ColorsType) =>
       borderRadius: 8,
       alignItems: 'center',
       justifyContent: 'center',
-      paddingVertical: hp(1.5),
-      paddingHorizontal: wp(4),
+      paddingVertical: hp(1),
+      paddingHorizontal: wp(5),
       marginHorizontal: wp(1),
     },
     title: {

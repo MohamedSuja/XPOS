@@ -133,4 +133,15 @@ export const createStyles = (colors: ColorsType) =>
       height: hp(5),
       width: wp('40%'),
     },
+    noJobBox: {
+      width: wp('92%'),
+      height: hp('30%'),
+      borderRadius: 12,
+      backgroundColor: colors.background,
+      padding: wp('4%'),
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginHorizontal: wp('4%'),
+      marginBottom: hp('1%'),
+    },
   });

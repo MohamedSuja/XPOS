@@ -1,36 +1,28 @@
-import {
-  View,
-  Text,
-  FlatList,
-  ScrollView,
-  ActivityIndicator,
-} from 'react-native';
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { View, Text, FlatList, ActivityIndicator } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import { createStyles } from './styles';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import SearchInput from '@/components/Inputs/SearchInput';
-import CategoryItem from '@/components/Cards/CategoryItem';
 import { MenuStackScreenProps } from '@/navigation/NavigationModels/MenuStack';
 import BackButton from '@/components/Buttons/BackButton';
 import { globalStyles } from '@/utils/globalStyles';
-import { hp } from '@/utils/Scaling';
-import CategoryButton from '@/components/Buttons/CategoryButton';
+import { hp, wp } from '@/utils/Scaling';
 import ItemCard from '@/components/Cards/ItemCard';
 import Subcategories from './Subcategories';
 import { useAppDispatch, useAppSelector } from '@/feature/stateHooks';
 import {
-  selectMenuCategoriesData,
-  selectMenuCategoriesStatus,
   selectMenuItemsData,
   selectMenuItemsStatus,
 } from '@/feature/slices/menu_slice';
 import {
-  requestMenuCategories,
   requestMenuItems,
   requestMenuSubcategories,
 } from '@/feature/thunks/menu_thunks';
 import { STATUS } from '@/feature/services/status_constants';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { CustomStatusBar } from '@/components/customStatusBar';
+import SearchBar from '@/components/searchBar';
+import EmptyValue from '@/assets/icons/EmptyValue.svg';
 
 const CategoryViewScreen = ({
   navigation,
@@ -38,7 +30,6 @@ const CategoryViewScreen = ({
 }: MenuStackScreenProps<'CategoryViewScreen'>) => {
   const { colors }: ThemeContextType = useTheme();
   const styles = createStyles(colors);
-  const insets = useSafeAreaInsets();
 
   const dispatch = useAppDispatch();
 
@@ -131,21 +122,24 @@ const CategoryViewScreen = ({
           flex: 1,
           justifyContent: 'center',
           alignItems: 'center',
-          paddingVertical: 50,
+          marginTop: hp('20%'),
         }}
       >
+        <EmptyValue height={wp('40%')} width={wp('40%')} />
         <Text
-          style={{
-            color: colors.headerTxt,
-            fontSize: 16,
-            textAlign: 'center',
-          }}
+          style={[
+            globalStyles.h6,
+            {
+              color: colors.dropDownIcon,
+              textAlign: 'center',
+            },
+          ]}
         >
           No Items found
         </Text>
       </View>
     );
-  }, [MenuItemsStatus, colors.headerTxt]);
+  }, [MenuItemsStatus, colors.dropDownIcon]);
 
   return MenuItemsStatus === STATUS.LOADING &&
     !pagination &&
@@ -160,8 +154,13 @@ const CategoryViewScreen = ({
       <ActivityIndicator size="large" color={colors.primary} />
     </View>
   ) : (
-    <View style={[styles.root]}>
-      <View style={[styles.headerContainer, { paddingTop: hp(2.5) }]}>
+    <SafeAreaView style={[styles.root]}>
+      <CustomStatusBar
+        backgroundColor={colors.background}
+        barStyle="dark-content"
+        translucent={false}
+      />
+      <View style={[styles.headerContainer]}>
         <View style={styles.headerContent}>
           <BackButton style={[styles.backBtn]} />
           <Text style={[globalStyles.h2, styles.headerTxt]}>
@@ -181,13 +180,19 @@ const CategoryViewScreen = ({
           }}
         />
       </View>
+      <View style={styles.searchInput}>
+        <SearchBar
+          onChange={(value: string) => {
+            handleSearch(value);
+          }}
+          onClear={() => {
+            handleSearch('');
+          }}
+          value={searchQuery}
+          placeHolder="Search Item"
+        />
+      </View>
 
-      <SearchInput
-        placeholder="Search Item"
-        style={styles.searchInput}
-        onChangeText={handleSearch}
-        value={searchQuery}
-      />
       <FlatList
         contentContainerStyle={styles.itemList}
         data={menu}
@@ -213,7 +218,7 @@ const CategoryViewScreen = ({
           loadSubcategories();
         }}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 

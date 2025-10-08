@@ -15,7 +15,7 @@ interface searchBarProps {
   onChange: any;
   onClear?: any;
   value?: string;
-  borderColor?: string;
+  backgroundColor?: string;
   maxWidth?: any;
   placeHolder: string;
   isAutoFocus?: boolean;
@@ -27,7 +27,16 @@ const SearchBar = (props: searchBarProps) => {
   const { colors }: ThemeContextType = useTheme();
   const styles = createStyles(colors);
   return (
-    <View style={[styles.container]}>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: props.backgroundColor
+            ? props.backgroundColor
+            : colors.background,
+        },
+      ]}
+    >
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <Feather name="search" size={RFValue(18)} color={colors.dateText} />
         <TextInput
