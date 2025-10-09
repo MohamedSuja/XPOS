@@ -21,5 +21,6 @@ export const createButtonStyles = (colors: ColorsType) =>
       alignSelf: 'center',
       marginVertical: hp('1%'),
       textAlign: 'center',
+      color: colors.inputTxt,
     },
   });

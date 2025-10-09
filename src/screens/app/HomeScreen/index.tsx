@@ -9,7 +9,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import { createStyles } from './styles';
@@ -32,6 +32,9 @@ import { ErrorFlash } from '@/utils/FlashMessage';
 import { useFocusEffect } from '@react-navigation/native';
 import OrderOngoingCard from '@/components/Cards/OrderOngoingCard';
 import { requestOrderDetailsData } from '@/feature/thunks/orders_thunks';
+import EmptyValue from '@/assets/icons/EmptyValue.svg';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import CommingSoonModal from '@/components/CommingSoonModal';
 
 const HomeScreen = ({ navigation }: any) => {
   const { colors }: ThemeContextType = useTheme();
@@ -41,12 +44,23 @@ const HomeScreen = ({ navigation }: any) => {
   const [earningData, setEarningData] = useState<any>(null);
   const [lastOrder, setLastOrder] = useState<any>(null);
   const [onlineStatus, setOnlineStatus] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(0);
 
   const dispatch = useAppDispatch();
 
   const { setNavigator } = useNotification();
 
   const userData = useAppSelector(state => state.auth);
+
+  const commingSoonModalRef: any = useRef<BottomSheetModal>(null);
+
+  const handleOpenCommingSoonModalModal = useCallback(() => {
+    commingSoonModalRef.current?.present();
+  }, []);
+
+  const handleCloseCommingSoonModalModal = useCallback(() => {
+    commingSoonModalRef.current?.dismiss();
+  }, []);
 
   // handle admin call
   const handleAdminCall = () => {
@@ -127,6 +141,25 @@ const HomeScreen = ({ navigation }: any) => {
       ErrorFlash('Something went wrong!');
     }
   };
+
+  // get notificatiomn count
+  const getNotificationCount = () => {
+    try {
+      requests
+        .get('api/pos/notifications/unread-count')
+        .then(res => {
+          setNotificationCount(res.data?.data?.unread_count);
+        })
+        .catch(error => {
+          console.log(error);
+          ErrorFlash(error?.message || 'Something went wrong!');
+        });
+    } catch (error) {
+      console.log(error);
+      ErrorFlash('Something went wrong!');
+    }
+  };
+
   useEffect(() => {
     if (navigation) {
       setNavigator(navigation);
@@ -138,6 +171,7 @@ const HomeScreen = ({ navigation }: any) => {
       getEarnings();
       getLatestOrder();
       getOnlineStatus();
+      getNotificationCount();
     }, []),
   );
 
@@ -206,7 +240,7 @@ const HomeScreen = ({ navigation }: any) => {
         <Pressable
           style={styles.notificationBG}
           onPress={() => {
-            // navigation.navigate('NotificationScreen');
+            navigation.navigate('NotificationScreen');
           }}
         >
           <Octicons
@@ -214,16 +248,18 @@ const HomeScreen = ({ navigation }: any) => {
             size={RFValue(18)}
             color={colors.primary}
           />
-          <View style={styles.notificationCount}>
-            <Text
-              style={[
-                globalStyles.h12,
-                { color: colors.primary, fontSize: RFValue(8) },
-              ]}
-            >
-              10
-            </Text>
-          </View>
+          {notificationCount > 0 && (
+            <View style={styles.notificationCount}>
+              <Text
+                style={[
+                  globalStyles.h12,
+                  { color: colors.primary, fontSize: RFValue(8) },
+                ]}
+              >
+                {notificationCount}
+              </Text>
+            </View>
+          )}
         </Pressable>
       </View>
 
@@ -310,28 +346,47 @@ const HomeScreen = ({ navigation }: any) => {
             />
           </Pressable>
         </View>
-        <OrderOngoingCard
-          orderNumber={lastOrder?.order?.unique_id}
-          items={lastOrder?.order?.items}
-          type={getOrderType(lastOrder?.order?.status)}
-          title={lastOrder?.order?.customer?.name}
-          onPress={() => {
-            dispatch(requestOrderDetailsData(lastOrder?.order?.id));
-            if (getOrderType(lastOrder?.order?.status) === 'preparing') {
-              navigation.navigate('OrderViewScreen', {
-                orderId: lastOrder?.order?.id,
-              });
-            } else if (getOrderType(lastOrder?.order?.status) === 'accepted') {
-              navigation.navigate('OrderViewScreen', {
-                orderId: lastOrder?.order?.id,
-              });
-            } else if (getOrderType(lastOrder?.order?.status) === 'ready') {
-              navigation.navigate('OrderSummaryScreen', {
-                orderId: lastOrder?.order?.id,
-              });
-            }
-          }}
-        />
+        {lastOrder?.order ? (
+          <OrderOngoingCard
+            orderNumber={lastOrder?.order?.unique_id}
+            items={lastOrder?.order?.items}
+            type={getOrderType(lastOrder?.order?.status)}
+            title={lastOrder?.order?.customer?.name}
+            onPress={() => {
+              dispatch(requestOrderDetailsData(lastOrder?.order?.id));
+              if (getOrderType(lastOrder?.order?.status) === 'preparing') {
+                navigation.navigate('OrderViewScreen', {
+                  orderId: lastOrder?.order?.id,
+                });
+              } else if (
+                getOrderType(lastOrder?.order?.status) === 'accepted'
+              ) {
+                navigation.navigate('OrderViewScreen', {
+                  orderId: lastOrder?.order?.id,
+                });
+              } else if (getOrderType(lastOrder?.order?.status) === 'ready') {
+                navigation.navigate('OrderSummaryScreen', {
+                  orderId: lastOrder?.order?.id,
+                });
+              }
+            }}
+          />
+        ) : (
+          <View style={styles.noJobBox}>
+            <EmptyValue height={wp('40%')} width={wp('40%')} />
+            <Text
+              style={[
+                globalStyles.h6,
+                {
+                  color: colors.dropDownIcon,
+                  textAlign: 'center',
+                },
+              ]}
+            >
+              No any latest order found
+            </Text>
+          </View>
+        )}
 
         {/* send request */}
 
@@ -343,7 +398,10 @@ const HomeScreen = ({ navigation }: any) => {
             <Text style={[globalStyles.h12, { color: colors.inputTxt }]}>
               Send a quick request and we'll assign a driver for your order.
             </Text>
-            <TouchableOpacity style={styles.sendRequestButton}>
+            <TouchableOpacity
+              style={styles.sendRequestButton}
+              onPress={handleOpenCommingSoonModalModal}
+            >
               <Text style={[globalStyles.h7, { color: colors.background }]}>
                 Send Request
               </Text>
@@ -371,6 +429,11 @@ const HomeScreen = ({ navigation }: any) => {
           </Pressable>
         </View>
       </ScrollView>
+
+      <CommingSoonModal
+        bottomSheetModalRef={commingSoonModalRef}
+        onCancel={handleCloseCommingSoonModalModal}
+      />
     </SafeAreaView>
   );
 };

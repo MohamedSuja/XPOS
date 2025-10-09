@@ -7,13 +7,14 @@ export const createStyles = (colors: ColorsType) =>
   StyleSheet.create({
     root: {
       flex: 1,
+      backgroundColor: colors.inputField,
     },
     headerContainer: {
       backgroundColor: colors.background,
       paddingHorizontal: wp('5%'),
-
+      paddingVertical: hp('1%'),
       borderBottomWidth: 1,
-      borderBottomColor: colors.border,
+      borderBottomColor: colors.stroke,
     },
     headerContent: {
       flexDirection: 'row',
@@ -31,10 +32,8 @@ export const createStyles = (colors: ColorsType) =>
     },
     categoryList: {
       paddingVertical: hp(1),
-      marginVertical: hp(1),
     },
     searchInput: {
-      backgroundColor: colors.background,
       marginHorizontal: wp(4),
       marginVertical: hp(1.5),
     },

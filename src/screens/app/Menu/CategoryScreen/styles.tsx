@@ -7,13 +7,14 @@ export const createStyles = (colors: ColorsType) =>
   StyleSheet.create({
     root: {
       flex: 1,
+      backgroundColor: colors.inputField,
     },
     headerContainer: {
       backgroundColor: colors.background,
-      paddingHorizontal: wp('5%'),
+      paddingHorizontal: wp('4%'),
       paddingVertical: hp('2%'),
       borderBottomWidth: 1,
-      borderBottomColor: colors.border,
+      borderBottomColor: colors.stroke,
     },
     searchInput: {
       backgroundColor: colors.searchInput,
@@ -24,5 +25,6 @@ export const createStyles = (colors: ColorsType) =>
     },
     listContainer: {
       paddingBottom: hp('2%'),
+      paddingTop: hp('1%'),
     },
   });

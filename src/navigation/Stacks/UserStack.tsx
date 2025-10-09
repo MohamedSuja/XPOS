@@ -11,6 +11,7 @@ import OrderSummaryScreen from '@/screens/app/OrderSummaryScreen';
 import SupportCenterScreen from '@/screens/app/SupportCenterScreen';
 import BankDetailsScreen from '@/screens/app/BankDetailsScreen';
 import PrivacyPolicyScreen from '@/screens/app/PrivacyPolicyScreen';
+import NotificationScreen from '@/screens/app/NotificationScreen';
 
 const Stack = createNativeStackNavigator<UserStackParamList>();
 
@@ -38,6 +39,7 @@ const UserStack = () => {
         name="PrivacyPolicyScreen"
         component={PrivacyPolicyScreen}
       />
+      <Stack.Screen name="NotificationScreen" component={NotificationScreen} />
     </Stack.Navigator>
   );
 };

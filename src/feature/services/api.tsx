@@ -28,7 +28,7 @@ export const requests = {
     instance.post(url, body, createConfig(body)).then(responseBody),
   patch: (url: string, body: any) =>
     instance.patch(url, body, createConfig(body)).then(responseBody),
-  put: (url: string, body: any) =>
+  put: (url: string, body?: any) =>
     instance.put(url, body, createConfig(body)).then(responseBody),
   delete: (url: string) => instance.delete(url).then(responseBody),
 };

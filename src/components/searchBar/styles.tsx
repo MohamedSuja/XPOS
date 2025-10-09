@@ -10,7 +10,6 @@ export const createStyles = (colors: ColorsType) =>
     container: {
       width: '100%',
       height: hp('6%'),
-      backgroundColor: colors.background,
       borderRadius: 10,
       alignItems: 'center',
       paddingHorizontal: wp('5%'),

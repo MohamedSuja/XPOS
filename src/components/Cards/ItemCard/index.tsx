@@ -7,6 +7,7 @@ import { globalStyles } from '@/utils/globalStyles';
 import { ErrorFlash } from '@/utils/FlashMessage';
 import { requests } from '@/feature/services/api';
 import Food from '@/assets/images/Food.png';
+import LinearGradient from 'react-native-linear-gradient';
 
 interface ItemCardProps {
   id: string;
@@ -25,9 +26,8 @@ const ItemCard = (props: ItemCardProps) => {
 
   const handleSwitchChange = useCallback(
     (value: boolean) => {
-      setIsSwitching(value);
       onSwitchChange?.(value);
-      updateAvailability();
+      updateAvailability(value);
     },
     [available],
   );
@@ -36,43 +36,48 @@ const ItemCard = (props: ItemCardProps) => {
     setIsSwitching(available);
   }, [available]);
 
-  const updateAvailability = () => {
+  const updateAvailability = (value: boolean) => {
     try {
       setUpdateLoading(true);
       requests
         .put(`/api/pos/menu-items/${props.id}/availability`, {
-          is_available: !isSwitching,
+          is_available: value,
         })
         .then(res => {
           console.log(res.data);
-          setIsSwitching(!isSwitching);
+          setIsSwitching(value);
           setUpdateLoading(false);
         })
         .catch(error => {
           ErrorFlash(error?.message || 'Something went wrong!');
-          setIsSwitching(isSwitching);
+          setIsSwitching(!value);
         })
         .finally(() => {
           setUpdateLoading(false);
         });
     } catch (error) {
       setUpdateLoading(false);
-      setIsSwitching(isSwitching);
+      setIsSwitching(!value);
       ErrorFlash('Something went wrong!');
     }
   };
 
   return (
-    <View
+    <LinearGradient
+      colors={
+        isSwitching
+          ? [colors.orange, colors.background]
+          : [colors.itemCardInactive, colors.itemCardInactive]
+      }
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
       style={[
         styles.container,
         {
-          backgroundColor: isSwitching
-            ? colors.itemCard
-            : colors.itemCardInactive,
           borderColor: isSwitching
             ? colors.itemCardBorder
             : colors.itemCardInactiveBorder,
+          opacity: isSwitching ? 1 : 0.6,
         },
       ]}
     >
@@ -83,7 +88,7 @@ const ItemCard = (props: ItemCardProps) => {
       />
 
       <View style={styles.infoContainer}>
-        <Text style={[globalStyles.h8, styles.title]}>{title}</Text>
+        <Text style={[globalStyles.h5, styles.title]}>{title}</Text>
         <Text
           style={[
             globalStyles.h9,
@@ -106,7 +111,7 @@ const ItemCard = (props: ItemCardProps) => {
           onChange={handleSwitchChange}
         />
       )}
-    </View>
+    </LinearGradient>
   );
 };
 

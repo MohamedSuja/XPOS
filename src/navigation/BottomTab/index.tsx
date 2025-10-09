@@ -29,35 +29,37 @@ const BottomTab = () => {
   const insets = useSafeAreaInsets();
   return (
     <SafeAreaView
-      edges={['bottom']}
-      style={{ flex: 1, backgroundColor: colors.inputField }}
+      style={{
+        flex: 1,
+      }}
+      edges={Platform.OS === 'ios' ? [] : ['bottom']}
     >
       <Tab.Navigator
         screenOptions={() => ({
           swipeEnabled: true,
           headerShown: false,
           tabBarStyle: {
-            // backgroundColor: colors.background,
-            // height: hp('12%'),
-            // borderTopLeftRadius: 20,
-            // borderTopRightRadius: 20,
-            // justifyContent: 'center',
-            // alignItems: 'center',
-            // flexDirection: 'row',
-            // paddingHorizontal: wp('6%'),
-
             backgroundColor: colors.background,
-            // Remove fixed height, let it adapt
-            minHeight: hp('10%'), // Use minHeight instead
-            maxHeight: hp('12%'),
+            height: Platform.OS === 'ios' ? hp('12%') : hp('10%'),
             borderTopLeftRadius: 20,
             borderTopRightRadius: 20,
             justifyContent: 'center',
             alignItems: 'center',
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            bottom: 0,
             flexDirection: 'row',
             paddingHorizontal: wp('6%'),
-            // Add bottom padding based on safe area
-            // paddingBottom: insets.bottom,
+            paddingBottom: Platform.OS === 'ios' ? insets.bottom : 0,
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: -4,
+            },
+            shadowOpacity: 0.1,
+            shadowRadius: 4,
+            elevation: 5,
 
             ...Platform.select({
               ios: {
@@ -65,7 +67,7 @@ const BottomTab = () => {
                 shadowOffset: { width: 0, height: 3 },
                 shadowOpacity: 0.2,
                 shadowRadius: 4,
-                paddingTop: hp('2%'),
+                paddingTop: hp('3%'),
               },
               android: {
                 elevation: 5,

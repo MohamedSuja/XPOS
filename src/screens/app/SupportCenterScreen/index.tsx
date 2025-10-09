@@ -10,7 +10,6 @@ import {
 import React from 'react';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import { createStyles } from './styles';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { globalStyles } from '@/utils/globalStyles';
 import {
