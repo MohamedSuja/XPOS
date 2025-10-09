@@ -23,7 +23,7 @@ const CloseRequestModal = (props: CloseRequestModalProps) => {
   const { colors }: ThemeContextType = useTheme();
   const styles = createStyles(colors);
 
-  const snapPoints = useMemo(() => ['50%'], []);
+  const snapPoints = useMemo(() => ['40%'], []);
 
   const handleRedirectCall = () => {
     try {
@@ -84,46 +84,48 @@ const CloseRequestModal = (props: CloseRequestModalProps) => {
             Please contact admin.
           </Text>
         </View>
-        <View style={styles.box}>
-          <View>
-            <Text style={[globalStyles.h9, { color: colors.inputTxt }]}>
-              Contact Us
-            </Text>
-            <Text
-              style={[
-                globalStyles.h5,
-                { color: colors.inputTxt, marginTop: hp('0.5%') },
-              ]}
-            >
-              024 222 1484
-            </Text>
+        <View>
+          <View style={styles.box}>
+            <View>
+              <Text style={[globalStyles.h9, { color: colors.inputTxt }]}>
+                Contact Us
+              </Text>
+              <Text
+                style={[
+                  globalStyles.h5,
+                  { color: colors.inputTxt, marginTop: hp('0.5%') },
+                ]}
+              >
+                024 222 1484
+              </Text>
+            </View>
+            <Pressable style={styles.iconBG} onPress={handleRedirectCall}>
+              <MaterialIcons
+                name="local-phone"
+                size={RFValue(18)}
+                color={colors.primary}
+              />
+            </Pressable>
           </View>
-          <Pressable style={styles.iconBG} onPress={handleRedirectCall}>
-            <MaterialIcons
-              name="local-phone"
-              size={RFValue(18)}
-              color={colors.primary}
-            />
-          </Pressable>
-        </View>
 
-        <View style={styles.box}>
-          <View>
-            <Text style={[globalStyles.h9, { color: colors.inputTxt }]}>
-              Email Address
-            </Text>
-            <Text
-              style={[
-                globalStyles.h5,
-                { color: colors.inputTxt, marginTop: hp('0.5%') },
-              ]}
-            >
-              xeatadmin@gmail.com
-            </Text>
+          <View style={styles.box}>
+            <View>
+              <Text style={[globalStyles.h9, { color: colors.inputTxt }]}>
+                Email Address
+              </Text>
+              <Text
+                style={[
+                  globalStyles.h5,
+                  { color: colors.inputTxt, marginTop: hp('0.5%') },
+                ]}
+              >
+                xeatadmin@gmail.com
+              </Text>
+            </View>
+            <Pressable style={styles.iconBG} onPress={handleSendEmail}>
+              <Entypo name="mail" size={RFValue(16)} color={colors.primary} />
+            </Pressable>
           </View>
-          <Pressable style={styles.iconBG} onPress={handleSendEmail}>
-            <Entypo name="mail" size={RFValue(16)} color={colors.primary} />
-          </Pressable>
         </View>
       </View>
     </BottomSheetModal>

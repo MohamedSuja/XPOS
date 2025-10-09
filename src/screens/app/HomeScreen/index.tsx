@@ -9,7 +9,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import { createStyles } from './styles';
@@ -33,6 +33,8 @@ import { useFocusEffect } from '@react-navigation/native';
 import OrderOngoingCard from '@/components/Cards/OrderOngoingCard';
 import { requestOrderDetailsData } from '@/feature/thunks/orders_thunks';
 import EmptyValue from '@/assets/icons/EmptyValue.svg';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import CommingSoonModal from '@/components/CommingSoonModal';
 
 const HomeScreen = ({ navigation }: any) => {
   const { colors }: ThemeContextType = useTheme();
@@ -48,6 +50,16 @@ const HomeScreen = ({ navigation }: any) => {
   const { setNavigator } = useNotification();
 
   const userData = useAppSelector(state => state.auth);
+
+  const commingSoonModalRef: any = useRef<BottomSheetModal>(null);
+
+  const handleOpenCommingSoonModalModal = useCallback(() => {
+    commingSoonModalRef.current?.present();
+  }, []);
+
+  const handleCloseCommingSoonModalModal = useCallback(() => {
+    commingSoonModalRef.current?.dismiss();
+  }, []);
 
   // handle admin call
   const handleAdminCall = () => {
@@ -363,7 +375,10 @@ const HomeScreen = ({ navigation }: any) => {
             <Text style={[globalStyles.h12, { color: colors.inputTxt }]}>
               Send a quick request and we'll assign a driver for your order.
             </Text>
-            <TouchableOpacity style={styles.sendRequestButton}>
+            <TouchableOpacity
+              style={styles.sendRequestButton}
+              onPress={handleOpenCommingSoonModalModal}
+            >
               <Text style={[globalStyles.h7, { color: colors.background }]}>
                 Send Request
               </Text>
@@ -391,6 +406,11 @@ const HomeScreen = ({ navigation }: any) => {
           </Pressable>
         </View>
       </ScrollView>
+
+      <CommingSoonModal
+        bottomSheetModalRef={commingSoonModalRef}
+        onCancel={handleCloseCommingSoonModalModal}
+      />
     </SafeAreaView>
   );
 };

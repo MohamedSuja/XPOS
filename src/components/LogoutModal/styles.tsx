@@ -18,7 +18,7 @@ export const createStyles = (colors: ColorsType) =>
     },
     contentWrapper: {
       flex: 1,
-      // justifyContent: 'space-between',
+      justifyContent: 'space-between',
       alignItems: 'center',
       marginHorizontal: wp('4%'),
       marginVertical: hp('3%'),
@@ -27,26 +27,11 @@ export const createStyles = (colors: ColorsType) =>
       marginHorizontal: wp(4),
       marginVertical: hp(0.8),
       width: '100%',
-    },
-    box: {
-      borderWidth: 1,
-      borderColor: colors.stroke,
-      borderRadius: 12,
       flexDirection: 'row',
-      alignItems: 'center',
-      marginHorizontal: wp('4%'),
-      width: wp('92%'),
-      paddingHorizontal: wp('4%'),
       justifyContent: 'space-between',
-      height: hp('9%'),
-      marginTop: hp('2%'),
+      gap: wp('4%'),
     },
-    iconBG: {
-      backgroundColor: colors.tabBG,
-      width: wp('10%'),
-      height: wp('10%'),
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderRadius: 100,
+    btn: {
+      flex: 1,
     },
   });

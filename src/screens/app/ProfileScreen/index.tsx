@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import { createStyles } from './styles';
 import BackButton from '@/components/Buttons/BackButton';
@@ -31,6 +31,10 @@ import DeviceInfo from 'react-native-device-info';
 import { formatTimeto12 } from '@/utils/formatTime';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CustomStatusBar } from '@/components/customStatusBar';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import CloseRequestModal from '@/components/CloseRequestModal';
+import LogoutModal from '@/components/LogoutModal';
+import CommingSoonModal from '@/components/CommingSoonModal';
 
 const ProfileScreen = ({ navigation }: any) => {
   const { colors }: ThemeContextType = useTheme();
@@ -44,6 +48,34 @@ const ProfileScreen = ({ navigation }: any) => {
   const [version, setVersion] = useState<any>(null);
   const [versionName, setVersionName] = useState<any>(null);
   const [profileData, setProfileData] = useState<any>(null);
+
+  const closeResturantModalRef: any = useRef<BottomSheetModal>(null);
+  const logoutModalRef: any = useRef<BottomSheetModal>(null);
+  const commingSoonModalRef: any = useRef<BottomSheetModal>(null);
+
+  const handleOpenCloseResturantModalModal = useCallback(() => {
+    closeResturantModalRef.current?.present();
+  }, []);
+
+  const handleOpenLogoutModalModal = useCallback(() => {
+    logoutModalRef.current?.present();
+  }, []);
+
+  const handleOpenCommingSoonModalModal = useCallback(() => {
+    commingSoonModalRef.current?.present();
+  }, []);
+
+  const handleCloseCloseResturantModalModal = useCallback(() => {
+    closeResturantModalRef.current?.dismiss();
+  }, []);
+
+  const handleCloseLogoutModalModal = useCallback(() => {
+    logoutModalRef.current?.dismiss();
+  }, []);
+
+  const handleCloseCommingSoonModalModal = useCallback(() => {
+    commingSoonModalRef.current?.dismiss();
+  }, []);
 
   const getVersion = async () => {
     setVersion(DeviceInfo.getVersion());
@@ -164,7 +196,10 @@ const ProfileScreen = ({ navigation }: any) => {
           </View>
 
           <View style={styles.profileButtonContainer}>
-            <TouchableOpacity style={styles.profileButton}>
+            <TouchableOpacity
+              style={styles.profileButton}
+              onPress={handleOpenCommingSoonModalModal}
+            >
               <View style={styles.profileButtonContent}>
                 <DriverIcon width={hp(3)} height={hp(3)} />
                 <Text style={[globalStyles.h8, styles.profileButtonText]}>
@@ -206,7 +241,10 @@ const ProfileScreen = ({ navigation }: any) => {
             </TouchableOpacity>
             <View style={styles.profileButtonSeparator} />
 
-            <TouchableOpacity style={styles.profileButton}>
+            <TouchableOpacity
+              style={styles.profileButton}
+              onPress={handleOpenCloseResturantModalModal}
+            >
               <View style={styles.profileButtonContent}>
                 <StoreLockIcon width={hp(3)} height={hp(3)} />
                 <Text style={[globalStyles.h8, styles.profileButtonText]}>
@@ -250,13 +288,30 @@ const ProfileScreen = ({ navigation }: any) => {
         <PrimaryButton
           style={styles.logoutButton}
           title="Log Out"
-          onPress={handleLogout}
+          onPress={handleOpenLogoutModalModal}
         />
 
         <Text style={[globalStyles.h12, styles.versionTxt]}>
           Version {version} ({versionName})
         </Text>
       </ScrollView>
+
+      <CloseRequestModal
+        bottomSheetModalRef={closeResturantModalRef}
+        onCancel={handleCloseCloseResturantModalModal}
+      />
+
+      <LogoutModal
+        bottomSheetModalRef={logoutModalRef}
+        onCancel={handleCloseLogoutModalModal}
+        onPress={handleLogout}
+        loading={logoutStatus === STATUS.LOADING}
+      />
+
+      <CommingSoonModal
+        bottomSheetModalRef={commingSoonModalRef}
+        onCancel={handleCloseCommingSoonModalModal}
+      />
     </SafeAreaView>
   );
 };
