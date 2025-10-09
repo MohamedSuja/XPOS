@@ -22,6 +22,7 @@ export type UserStackParamList = {
   SupportCenterScreen: undefined;
   BankDetailsScreen: undefined;
   PrivacyPolicyScreen: undefined;
+  NotificationScreen: undefined;
 };
 
 export type UserStackScreenProps<Screen extends keyof UserStackParamList> =

@@ -44,6 +44,7 @@ const HomeScreen = ({ navigation }: any) => {
   const [earningData, setEarningData] = useState<any>(null);
   const [lastOrder, setLastOrder] = useState<any>(null);
   const [onlineStatus, setOnlineStatus] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(0);
 
   const dispatch = useAppDispatch();
 
@@ -140,6 +141,25 @@ const HomeScreen = ({ navigation }: any) => {
       ErrorFlash('Something went wrong!');
     }
   };
+
+  // get notificatiomn count
+  const getNotificationCount = () => {
+    try {
+      requests
+        .get('api/pos/notifications/unread-count')
+        .then(res => {
+          setNotificationCount(res.data?.data?.unread_count);
+        })
+        .catch(error => {
+          console.log(error);
+          ErrorFlash(error?.message || 'Something went wrong!');
+        });
+    } catch (error) {
+      console.log(error);
+      ErrorFlash('Something went wrong!');
+    }
+  };
+
   useEffect(() => {
     if (navigation) {
       setNavigator(navigation);
@@ -151,6 +171,7 @@ const HomeScreen = ({ navigation }: any) => {
       getEarnings();
       getLatestOrder();
       getOnlineStatus();
+      getNotificationCount();
     }, []),
   );
 
@@ -219,7 +240,7 @@ const HomeScreen = ({ navigation }: any) => {
         <Pressable
           style={styles.notificationBG}
           onPress={() => {
-            // navigation.navigate('NotificationScreen');
+            navigation.navigate('NotificationScreen');
           }}
         >
           <Octicons
@@ -227,16 +248,18 @@ const HomeScreen = ({ navigation }: any) => {
             size={RFValue(18)}
             color={colors.primary}
           />
-          <View style={styles.notificationCount}>
-            <Text
-              style={[
-                globalStyles.h12,
-                { color: colors.primary, fontSize: RFValue(8) },
-              ]}
-            >
-              10
-            </Text>
-          </View>
+          {notificationCount > 0 && (
+            <View style={styles.notificationCount}>
+              <Text
+                style={[
+                  globalStyles.h12,
+                  { color: colors.primary, fontSize: RFValue(8) },
+                ]}
+              >
+                {notificationCount}
+              </Text>
+            </View>
+          )}
         </Pressable>
       </View>
 
