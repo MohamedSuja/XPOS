@@ -29,8 +29,9 @@ import { requestAuthenticateLoginData } from '@/feature/thunks/auth_thunks';
 import CustomInput from '@/components/Inputs/customInput';
 import PrimaryButton from '@/components/Buttons/PrimaryButton';
 import DeviceInfo from 'react-native-device-info';
+import CheckBox from '@/components/checkBox';
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }: any) => {
   const { colors }: ThemeContextType = useTheme();
   const styles = createStyles(colors);
   const insets = useSafeAreaInsets();
@@ -43,6 +44,7 @@ const LoginScreen = () => {
 
   const [version, setVersion] = useState<any>(null);
   const [versionName, setVersionName] = useState<any>(null);
+  const [isTermsAccepted, setIsTermsAccepted] = useState(false);
 
   const validationSchema = yup.object({
     userName: yup.string().required('User name is required'),
@@ -199,9 +201,34 @@ const LoginScreen = () => {
                       </TouchableOpacity>
                     }
                   />
-
+                  <View style={styles.termsContainer}>
+                    <CheckBox
+                      isCheck={isTermsAccepted}
+                      width={wp('5%')}
+                      fontSize={RFValue(10)}
+                      onPress={() => setIsTermsAccepted(!isTermsAccepted)}
+                    />
+                    <Text
+                      style={[globalStyles.h9, { color: colors.headerTxt }]}
+                    >
+                      I agree to the
+                    </Text>
+                    <Pressable
+                      onPress={() => navigation.navigate('PrivacyPolicyScreen')}
+                    >
+                      <Text
+                        style={[globalStyles.h9, { color: colors.primary }]}
+                      >
+                        Terms and Conditions
+                      </Text>
+                    </Pressable>
+                  </View>
                   <View style={{ marginTop: hp('2%') }}>
-                    <PrimaryButton title="Login" onPress={handleSubmit} />
+                    <PrimaryButton
+                      title="Login"
+                      disabled={!isTermsAccepted}
+                      onPress={handleSubmit}
+                    />
                   </View>
                 </View>
                 <View>

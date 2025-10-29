@@ -18,6 +18,7 @@ export const createButtonStyles = (colors: ColorsType) =>
       resizeMode: 'cover',
     },
     name: {
+      width: '80%',
       alignSelf: 'center',
       marginVertical: hp('1%'),
       textAlign: 'center',
