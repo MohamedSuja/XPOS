@@ -44,4 +44,10 @@ export const createStyles = (colors: ColorsType) =>
       alignSelf: 'center',
       marginTop: hp('1%'),
     },
+    termsContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: wp('3%'),
+      marginVertical: hp('1%'),
+    },
   });

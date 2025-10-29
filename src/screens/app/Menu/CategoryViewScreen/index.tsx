@@ -43,9 +43,18 @@ const CategoryViewScreen = ({
   const menu = MenuItemsData?.data?.menu_items || [];
   const pagination = MenuItemsData?.data?.pagination;
   const [subcategoryId, setSubcategoryId] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    loadMenu();
+    setLoading(true);
+    loadMenu()
+      .then(() => {
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error loading menu:', error);
+        setLoading(false);
+      });
   }, []);
 
   const loadSubcategories = () => {
@@ -140,6 +149,21 @@ const CategoryViewScreen = ({
       </View>
     );
   }, [MenuItemsStatus, colors.dropDownIcon]);
+
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: colors.background,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
+  }
 
   return MenuItemsStatus === STATUS.LOADING &&
     !pagination &&

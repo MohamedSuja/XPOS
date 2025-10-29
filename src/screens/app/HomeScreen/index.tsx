@@ -263,7 +263,7 @@ const HomeScreen = ({ navigation }: any) => {
         </Pressable>
       </View>
 
-      <ScrollView>
+      <ScrollView contentContainerStyle={{ paddingBottom: hp('10%') }}>
         {/* Current earnings */}
         <ImageBackground
           style={styles.currentBox}

@@ -37,10 +37,8 @@ const CategoryItem = ({ item, onPress }: CategoryItemProps) => {
         defaultSource={Food as number}
       />
 
-      <Text style={[globalStyles.h8, styles.name]}>
-        {item.name?.length > 10
-          ? item.name.substring(0, 10) + '...'
-          : item.name}
+      <Text numberOfLines={2} style={[globalStyles.h8, styles.name]}>
+        {item.name}
       </Text>
     </TouchableOpacity>
   );

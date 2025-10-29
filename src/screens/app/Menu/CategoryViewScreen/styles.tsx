@@ -20,7 +20,7 @@ export const createStyles = (colors: ColorsType) =>
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-      paddingVertical: hp(0.5),
+      paddingBottom: hp(0.5),
     },
     backBtn: {
       position: 'absolute',
@@ -29,6 +29,7 @@ export const createStyles = (colors: ColorsType) =>
     headerTxt: {
       color: colors.headerTxt,
       textAlign: 'center',
+      width: '80%',
     },
     categoryList: {
       paddingVertical: hp(1),
