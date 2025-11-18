@@ -1,6 +1,5 @@
-import { Platform, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { ColorsType } from '@/utils/ThemeContext';
-import { RFValue } from 'react-native-responsive-fontsize';
 import { hp, wp } from '@/utils/Scaling';
 
 export const createStyles = (colors: ColorsType) =>
@@ -24,7 +23,7 @@ export const createStyles = (colors: ColorsType) =>
       justifyContent: 'space-between',
     },
     listContainer: {
-      paddingBottom: hp('2%'),
+      paddingBottom: hp('8%'),
       paddingTop: hp('1%'),
     },
   });

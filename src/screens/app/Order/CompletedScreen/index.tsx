@@ -243,6 +243,7 @@ const CompletedScreen = () => {
         onEndReachedThreshold={0.1}
         ListFooterComponent={renderFooter}
         ListEmptyComponent={renderEmpty}
+        contentContainerStyle={{ paddingBottom: hp('8%') }}
         refreshing={ordersListStatus === STATUS.LOADING && !pagination}
         onRefresh={onRefresh}
       />
