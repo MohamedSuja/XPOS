@@ -35,8 +35,9 @@ const ReportScreen = () => {
   const [lastPage, setLastPage] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [functionLoading, setFunctionLoading] = useState(false);
 
+  const dateToApiFormat = (date: Date | null) =>
+    date ? date.toISOString().split('T')[0] : '';
   // get report details
   const getReportDetails = (
     refreshState: boolean,
@@ -115,6 +116,7 @@ const ReportScreen = () => {
           });
         }}
         value={dateRange}
+        maxDate={dateToApiFormat(new Date())}
         onClear={() => {
           setDateRange({ startDate: '', endDate: '' });
           getReportDetails(true, 1, null);

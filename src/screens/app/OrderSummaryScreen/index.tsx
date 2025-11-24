@@ -222,25 +222,29 @@ const OrderSummaryScreen = ({
         )}
       </ScrollView>
 
-      {data?.status === 'delivered' && (
-        <PrimaryButton
-          style={styles.footerButton}
-          title="Invoice"
-          onPress={() => {
-            pdfOrderChit(data);
-          }}
-        />
-      )}
-
-      {data?.delivery_type !== 'delivery' && (
+      {(data?.status === 'delivered' ||
+        data?.status === 'out_for_delivery') && (
         <View style={styles.footer}>
           <PrimaryButton
             style={styles.footerButton}
-            title="Picked"
-            onPress={onPressPicked}
+            title="Invoice"
+            onPress={() => {
+              pdfOrderChit(data);
+            }}
           />
         </View>
       )}
+
+      {data?.delivery_type !== 'delivery' &&
+        data?.status !== 'ready_for_pickup' && (
+          <View style={styles.footer}>
+            <PrimaryButton
+              style={styles.footerButton}
+              title="Picked"
+              onPress={onPressPicked}
+            />
+          </View>
+        )}
     </SafeAreaView>
   );
 };

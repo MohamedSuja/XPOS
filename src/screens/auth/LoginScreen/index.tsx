@@ -124,7 +124,7 @@ const LoginScreen = ({ navigation }: any) => {
               Welcome Back
             </Text>
             <Text style={[globalStyles.h9, { color: colors.background }]}>
-              Please login to continue your ride with us
+              Please login to continue your order process with us
             </Text>
           </View>
         </ImageBackground>

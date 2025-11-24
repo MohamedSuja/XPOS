@@ -196,7 +196,7 @@ export const createStyles = (colors: ColorsType) =>
     },
     footer: {
       backgroundColor: colors.background,
-      borderColor: colors.uploaderBorder,
+      borderColor: colors.stroke,
       borderTopWidth: hp(0.1),
       paddingVertical: hp(1),
     },

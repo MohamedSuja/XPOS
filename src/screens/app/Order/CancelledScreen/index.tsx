@@ -41,6 +41,9 @@ const CancelledScreen = () => {
   const orders = ordersListData?.data?.orders || [];
   const pagination = ordersListData?.data?.pagination_by_status?.cancelled;
 
+  const dateToApiFormat = (date: Date | null) =>
+    date ? date.toISOString().split('T')[0] : '';
+
   useEffect(() => {
     loadOrders(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -226,6 +229,7 @@ const CancelledScreen = () => {
         onChange={setDateRange}
         value={dateRange}
         style={styles.datePicker}
+        maxDate={dateToApiFormat(new Date())}
         onClear={() => {
           setDateRange({ startDate: '', endDate: '' });
         }}

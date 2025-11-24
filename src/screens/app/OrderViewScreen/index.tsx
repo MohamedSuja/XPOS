@@ -1,12 +1,5 @@
-import {
-  View,
-  Text,
-  FlatList,
-  ScrollView,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { View, Text, ScrollView } from 'react-native';
+import React, { useState, useCallback } from 'react';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import { createStyles } from './styles';
 import BackButton from '@/components/Buttons/BackButton';
@@ -34,6 +27,8 @@ import { STATUS } from '@/feature/services/status_constants';
 import SecondaryButton from '@/components/Buttons/SecondaryButton';
 import InstructionCard from '@/components/Cards/InstructionCard';
 import { pdfOrderChit } from '@/utils/pdfOrderChit';
+import { CustomStatusBar } from '@/components/customStatusBar';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const OrderViewScreen = ({
   route,
@@ -94,16 +89,24 @@ const OrderViewScreen = ({
   useUpdateEffect(() => {
     if (OrderMarkReadyStatus == STATUS.SUCCEEDED) {
       setStatus(getOrderType(data?.status));
+      if (data?.id) {
+        dispatch(requestOrderDetailsData(data?.id.toString()));
+      }
       navigation.replace('OrderSummaryScreen', { orderId: data?.id });
     }
   }, [OrderMarkReadyStatus]);
 
   return (
-    <View style={[styles.root]}>
+    <SafeAreaView style={[styles.root]}>
+      <CustomStatusBar
+        backgroundColor={colors.background}
+        barStyle="dark-content"
+        translucent={false}
+      />
       <View style={[styles.headerContainer, { paddingTop: hp(2.5) }]}>
         <View style={styles.headerContent}>
           <BackButton style={[styles.backBtn]} />
-          <Text style={[globalStyles.h4, styles.headerTxt]}>
+          <Text style={[globalStyles.h5, styles.headerTxt]}>
             Order #{data?.unique_id}
           </Text>
         </View>
@@ -181,7 +184,7 @@ const OrderViewScreen = ({
           </>
         ) : null}
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
