@@ -41,6 +41,22 @@ export const NotificationProvider = ({ children }: any) => {
     } else {
       displayForegroundPushNotification(remoteMessage?.notification);
     }
+    if (remoteMessage?.data?.type == 'order-picked-up') {
+      await dispatch(
+        requestOrdersListData({
+          request: 'ongoing',
+          per_page: 10,
+          page: 1,
+        }),
+      ).unwrap();
+      await dispatch(
+        requestOrdersListData({
+          request: 'completed',
+          per_page: 10,
+          page: 1,
+        }),
+      ).unwrap();
+    }
   });
   //background handler
   setBackgroundMessageHandler(messaging, async remoteMessage => {
