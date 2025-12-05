@@ -28,7 +28,9 @@ const OrderViewCard = (props: OrderItemProps) => {
     <View style={[styles.container]}>
       <View style={styles.titleContainer}>
         <View style={styles.titleTextContainer}>
-          <Text style={[globalStyles.h5, styles.title]}>{props.item_name}</Text>
+          <Text style={[globalStyles.h5, styles.title]}>
+            {props?.item_name}
+          </Text>
           <View style={styles.titleSubContainer}>
             {props.variants?.length > 0 &&
               props.variants.map((variant, index) => (
@@ -37,12 +39,12 @@ const OrderViewCard = (props: OrderItemProps) => {
                   style={{ flexDirection: 'row', alignItems: 'center' }}
                 >
                   <Text style={[globalStyles.h9, styles.subtitle]}>
-                    {variant.variant_name}:{' '}
+                    {variant?.variant_name}:{' '}
                   </Text>
                   <Text style={[globalStyles.h5, styles.subtitleNumber]}>
-                    {variant.quantity}
+                    {variant?.quantity}
                   </Text>
-                  {index < props.variants.length - 1 && (
+                  {index < props?.variants.length - 1 && (
                     <Text style={[globalStyles.h9, styles.subtitle]}> | </Text>
                   )}
                 </View>
@@ -52,7 +54,7 @@ const OrderViewCard = (props: OrderItemProps) => {
         <View style={styles.totalContainer}>
           <CrossIcon width={wp(3)} height={wp(3)} />
           <Text style={[globalStyles.h2, styles.totalText]}>
-            {props.quantity || 0}
+            {props?.quantity || 0}
           </Text>
         </View>
       </View>
@@ -64,7 +66,7 @@ const OrderViewCard = (props: OrderItemProps) => {
             <View key={index} style={styles.addOnsItemContainer}>
               <PlusIcon width={wp(3)} height={wp(3)} />
               <Text style={[globalStyles.h9, styles.addOnsItem]}>
-                {addon.name || addon}
+                {addon?.addon_name}
               </Text>
             </View>
           ))}
@@ -77,7 +79,7 @@ const OrderViewCard = (props: OrderItemProps) => {
           <View style={styles.instructionContainer}>
             <DangerIcon width={wp(3)} height={wp(3)} />
             <Text style={[globalStyles.h9, styles.instructionItemText]}>
-              {props.special_instructions}
+              {props?.special_instructions}
             </Text>
           </View>
         </>

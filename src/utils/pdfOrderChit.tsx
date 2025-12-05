@@ -117,11 +117,7 @@ export const pdfOrderChit = async (data: any) => {
         <div style="margin-bottom: 40px;">
             <span style="font-size: 24px; font-weight: bold; display: inline-block; width: 48%;">Total</span>
             <span style="font-size: 24px; font-weight: bold; display: inline-block; width: 48%; text-align: right;">Rs. ${
-              data?.total
-                ? parseFloat(
-                    data?.fee_breakdown?.subtotal || data?.total,
-                  ).toLocaleString()
-                : '0'
+              data?.total ? parseFloat(data?.total).toLocaleString() : '0'
             }</span>
         </div>
 

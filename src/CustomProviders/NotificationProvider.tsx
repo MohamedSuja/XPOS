@@ -114,7 +114,16 @@ export const NotificationProvider = ({ children }: any) => {
       await notifee.onBackgroundEvent(async (event: Event) => {
         console.log('BG trigger', event?.detail?.pressAction?.id);
         if (event?.detail?.pressAction?.id == 'ViewOrder') {
-          navigationRef.current.navigate('OrderStack');
+          navigationRef.current.navigate('OrderStack', { screen: 'Request' });
+          if (event?.detail?.notification?.id) {
+            notifee.cancelDisplayedNotification(event?.detail.notification.id);
+          }
+        }
+      });
+
+      await notifee.onForegroundEvent(async (event: Event) => {
+        if (event?.detail?.pressAction?.id == 'ViewOrder') {
+          navigationRef.current.navigate('OrderStack', { screen: 'Request' });
           if (event?.detail?.notification?.id) {
             notifee.cancelDisplayedNotification(event?.detail.notification.id);
           }
