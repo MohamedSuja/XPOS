@@ -219,6 +219,7 @@ const OngoingScreen = () => {
         renderItem={renderOrderItem}
         keyExtractor={item => item.id.toString()}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: hp('8%') }}
         onEndReached={loadMoreOrders}
         onEndReachedThreshold={0.1}
         ListFooterComponent={renderFooter}

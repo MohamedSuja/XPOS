@@ -1,12 +1,5 @@
-import {
-  View,
-  Text,
-  FlatList,
-  ScrollView,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { View, Text, ScrollView } from 'react-native';
+import React from 'react';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import { createStyles } from './styles';
 import BackButton from '@/components/Buttons/BackButton';
@@ -14,29 +7,11 @@ import { globalStyles } from '@/utils/globalStyles';
 import { hp, wp } from '@/utils/Scaling';
 import PrimaryButton from '@/components/Buttons/PrimaryButton';
 import { useAppDispatch, useAppSelector } from '@/feature/stateHooks';
-import {
-  resetAuth,
-  selectAuthenticationLogoutDataStatus,
-} from '@/feature/slices/auth_slice';
-import Tag from '@/components/Tag';
-import RoomServiceIcon from '@/assets/icons/RoomService.svg';
-import OrderViewCard from '@/components/Cards/OrderViewCard';
-import {
-  requestOrderDetailsData,
-  requestOrderMarkDeliveredData,
-  requestOrderMarkReadyData,
-} from '@/feature/thunks/orders_thunks';
+
+import { requestOrderMarkDeliveredData } from '@/feature/thunks/orders_thunks';
 import { UserStackScreenProps } from '@/navigation/NavigationModels/UserStack';
-import {
-  selectOrderDetailsData,
-  selectOrderDetailsStatus,
-  selectOrderMarkReadyData,
-  selectOrderMarkReadyStatus,
-} from '@/feature/slices/orders_slice';
-import { useUpdateEffect } from '@/utils/useUpdateEffect';
-import { STATUS } from '@/feature/services/status_constants';
-import SecondaryButton from '@/components/Buttons/SecondaryButton';
-import { SuccessFlash } from '@/utils/FlashMessage';
+import { selectOrderDetailsData } from '@/feature/slices/orders_slice';
+
 import CashIcon from '@/assets/icons/Cash.svg';
 import InstructionCard from '@/components/Cards/InstructionCard';
 import { pdfOrderChit } from '@/utils/pdfOrderChit';
@@ -77,8 +52,7 @@ const OrderSummaryScreen = ({
       </View>
 
       {data?.delivery_type === 'delivery' &&
-        data?.status !== 'delivered' &&
-        data?.status !== 'cancelled' && (
+        data?.status === 'ready_for_pickup' && (
           <View style={styles.deliveryMessageContainer}>
             <Text style={[globalStyles.h9, styles.deliveryMessage]}>
               A driver will collect it shortly for delivery
@@ -248,25 +222,29 @@ const OrderSummaryScreen = ({
         )}
       </ScrollView>
 
-      {data?.status === 'delivered' && (
-        <PrimaryButton
-          style={styles.footerButton}
-          title="Invoice"
-          onPress={() => {
-            pdfOrderChit(data);
-          }}
-        />
-      )}
-
-      {data?.delivery_type !== 'delivery' && (
+      {(data?.status === 'delivered' ||
+        data?.status === 'out_for_delivery') && (
         <View style={styles.footer}>
           <PrimaryButton
             style={styles.footerButton}
-            title="Picked"
-            onPress={onPressPicked}
+            title="Invoice"
+            onPress={() => {
+              pdfOrderChit(data);
+            }}
           />
         </View>
       )}
+
+      {data?.delivery_type !== 'delivery' &&
+        data?.status !== 'ready_for_pickup' && (
+          <View style={styles.footer}>
+            <PrimaryButton
+              style={styles.footerButton}
+              title="Picked"
+              onPress={onPressPicked}
+            />
+          </View>
+        )}
     </SafeAreaView>
   );
 };

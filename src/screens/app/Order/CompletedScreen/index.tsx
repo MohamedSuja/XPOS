@@ -41,6 +41,9 @@ const CompletedScreen = () => {
   const orders = ordersListData?.data?.orders || [];
   const pagination = ordersListData?.data?.pagination_by_status?.completed;
 
+  const dateToApiFormat = (date: Date | null) =>
+    date ? date.toISOString().split('T')[0] : '';
+
   useEffect(() => {
     loadOrders(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -228,6 +231,7 @@ const CompletedScreen = () => {
           onChange={setDateRange}
           value={dateRange}
           style={styles.datePicker}
+          maxDate={dateToApiFormat(new Date())}
           onClear={() => {
             setDateRange({ startDate: '', endDate: '' });
           }}
@@ -243,6 +247,7 @@ const CompletedScreen = () => {
         onEndReachedThreshold={0.1}
         ListFooterComponent={renderFooter}
         ListEmptyComponent={renderEmpty}
+        contentContainerStyle={{ paddingBottom: hp('8%') }}
         refreshing={ordersListStatus === STATUS.LOADING && !pagination}
         onRefresh={onRefresh}
       />

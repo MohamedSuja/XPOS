@@ -41,6 +41,22 @@ export const NotificationProvider = ({ children }: any) => {
     } else {
       displayForegroundPushNotification(remoteMessage?.notification);
     }
+    if (remoteMessage?.data?.type == 'order-picked-up') {
+      await dispatch(
+        requestOrdersListData({
+          request: 'ongoing',
+          per_page: 10,
+          page: 1,
+        }),
+      ).unwrap();
+      await dispatch(
+        requestOrdersListData({
+          request: 'completed',
+          per_page: 10,
+          page: 1,
+        }),
+      ).unwrap();
+    }
   });
   //background handler
   setBackgroundMessageHandler(messaging, async remoteMessage => {
@@ -98,7 +114,16 @@ export const NotificationProvider = ({ children }: any) => {
       await notifee.onBackgroundEvent(async (event: Event) => {
         console.log('BG trigger', event?.detail?.pressAction?.id);
         if (event?.detail?.pressAction?.id == 'ViewOrder') {
-          navigationRef.current.navigate('OrderStack');
+          navigationRef.current.navigate('OrderStack', { screen: 'Request' });
+          if (event?.detail?.notification?.id) {
+            notifee.cancelDisplayedNotification(event?.detail.notification.id);
+          }
+        }
+      });
+
+      await notifee.onForegroundEvent(async (event: Event) => {
+        if (event?.detail?.pressAction?.id == 'ViewOrder') {
+          navigationRef.current.navigate('OrderStack', { screen: 'Request' });
           if (event?.detail?.notification?.id) {
             notifee.cancelDisplayedNotification(event?.detail.notification.id);
           }

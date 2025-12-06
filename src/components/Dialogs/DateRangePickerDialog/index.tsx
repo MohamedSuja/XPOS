@@ -9,13 +9,16 @@ import {
 } from 'react-native';
 import { Calendar, DateData } from 'react-native-calendars';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
+import { createStyles } from './styles';
+import { globalStyles } from '@/utils/globalStyles';
+import { hp } from '@/utils/Scaling';
 
 type Props = {
   visible: boolean;
   onClose: () => void;
   onConfirm: (range: {
-    startDate: string | undefined;
-    endDate: string | undefined;
+    startDate: string | null;
+    endDate: string | null;
   }) => void;
   initialStartDate?: string | null; // 'YYYY-MM-DD'
   initialEndDate?: string | null; // 'YYYY-MM-DD'
@@ -64,6 +67,7 @@ const DateRangePickerDialog: React.FC<Props> = ({
   title = 'Select date range',
 }) => {
   const { colors }: ThemeContextType = useTheme();
+  const styles = createStyles(colors);
 
   const [startDate, setStartDate] = useState<string | null>(initialStartDate);
   const [endDate, setEndDate] = useState<string | null>(initialEndDate);
@@ -141,7 +145,10 @@ const DateRangePickerDialog: React.FC<Props> = ({
   }, [startDate, endDate, colors.primary]);
 
   const handleApply = () => {
-    onConfirm({ startDate, endDate });
+    onConfirm({
+      startDate,
+      endDate: endDate ? endDate : startDate,
+    });
     onClose();
   };
 
@@ -156,16 +163,21 @@ const DateRangePickerDialog: React.FC<Props> = ({
         <Pressable
           style={[
             StyleSheet.absoluteFill,
-            { backgroundColor: colors.loadingBackground },
+            { backgroundColor: colors.disableHeader + '80' },
           ]}
           onPress={onClose}
         />
-        <View style={[styles.sheet, { backgroundColor: colors.background }]}>
+        <View style={[styles.sheet]}>
           <View style={styles.header}>
-            <Text style={[styles.title, { color: colors.headerTxt }]}>
+            <Text style={[globalStyles.h5, { color: colors.headerTxt }]}>
               {title}
             </Text>
-            <Text style={[styles.sub, { color: colors.subTitle }]}>
+            <Text
+              style={[
+                globalStyles.h12,
+                { color: colors.subTitle, marginTop: hp('0.5%') },
+              ]}
+            >
               {formatDMY(startDate) || 'DD/MM/YYYY'} -{' '}
               {formatDMY(endDate) || 'DD/MM/YYYY'}
             </Text>
@@ -197,7 +209,7 @@ const DateRangePickerDialog: React.FC<Props> = ({
               ]}
               onPress={onClose}
             >
-              <Text style={[styles.btnGhostTxt, { color: colors.primary }]}>
+              <Text style={[globalStyles.h10, { color: colors.primary }]}>
                 Cancel
               </Text>
             </TouchableOpacity>
@@ -212,7 +224,9 @@ const DateRangePickerDialog: React.FC<Props> = ({
               onPress={handleApply}
               disabled={!startDate}
             >
-              <Text style={styles.btnTxt}>Apply</Text>
+              <Text style={[globalStyles.h10, { color: colors.background }]}>
+                Apply
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -220,53 +234,5 @@ const DateRangePickerDialog: React.FC<Props> = ({
     </Modal>
   );
 };
-
-const styles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    justifyContent: 'flex-end',
-  },
-  sheet: {
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 8,
-  },
-  header: {
-    marginBottom: 8,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  sub: {
-    marginTop: 4,
-    fontSize: 13,
-  },
-  footer: {
-    flexDirection: 'row',
-    gap: 12,
-    justifyContent: 'flex-end',
-    paddingTop: 8,
-    paddingBottom: 6,
-  },
-  btn: {
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 10,
-  },
-  btnTxt: {
-    color: '#FFFFFF',
-    fontWeight: '600',
-  },
-  btnGhost: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-  },
-  btnGhostTxt: {
-    fontWeight: '600',
-  },
-});
 
 export default DateRangePickerDialog;

@@ -1,4 +1,11 @@
-import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import { createStyles } from './styles';
@@ -48,6 +55,7 @@ const ProfileScreen = ({ navigation }: any) => {
   const [version, setVersion] = useState<any>(null);
   const [versionName, setVersionName] = useState<any>(null);
   const [profileData, setProfileData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const closeResturantModalRef: any = useRef<BottomSheetModal>(null);
   const logoutModalRef: any = useRef<BottomSheetModal>(null);
@@ -98,14 +106,17 @@ const ProfileScreen = ({ navigation }: any) => {
         .get(`/api/pos/profile`)
         .then(res => {
           setProfileData(res?.data?.data);
+          setIsLoading(false);
         })
         .catch(err => {
           console.log(err);
           ErrorFlash(err?.message || 'Something went wrong!');
+          setIsLoading(false);
         });
     } catch (error) {
       console.log(error);
       ErrorFlash('Something went wrong!');
+      setIsLoading(false);
     }
   };
 
@@ -142,57 +153,71 @@ const ProfileScreen = ({ navigation }: any) => {
             <Text style={[globalStyles.h5, styles.profileName]}>
               {userData.userName}
             </Text>
-            <View style={styles.ratingBG}>
-              <Text style={[globalStyles.h8, { color: colors.background }]}>
-                {profileData?.branch?.details?.hygiene_ratings}
-              </Text>
-              <Octicons
-                name="star-fill"
-                size={RFValue(15)}
-                color={colors.gold}
-              />
-            </View>
-            <View style={styles.locationContainer}>
-              {/* <ClockIcon width={hp(3)} height={hp(3)} /> */}
-              <Text style={[globalStyles.h12, styles.locationText]}>
-                Today{' '}
-                {formatTimeto12(
-                  profileData?.branch?.opening_hours?.today?.open_time,
-                )}{' '}
-                to{' '}
-                {formatTimeto12(
-                  profileData?.branch?.opening_hours?.today?.close_time,
-                )}
-              </Text>
-            </View>
-            <View
-              style={[
-                styles.statusContainer,
-                {
-                  backgroundColor: profileData?.branch?.opening_hours
-                    ?.current_status?.is_available_for_orders
-                    ? colors.readyBG
-                    : colors.closeBG,
-                },
-              ]}
-            >
-              <Text
-                style={[
-                  globalStyles.h12,
-                  {
-                    color: profileData?.branch?.opening_hours?.current_status
-                      ?.is_available_for_orders
-                      ? colors.readyTxt
-                      : colors.currentStatus,
-                  },
-                ]}
+            {isLoading ? (
+              <View
+                style={{
+                  height: hp(10),
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
               >
-                {profileData?.branch?.opening_hours?.current_status
-                  ?.is_available_for_orders
-                  ? 'Opened'
-                  : 'Closed'}
-              </Text>
-            </View>
+                <ActivityIndicator size="small" color={colors.primary} />
+              </View>
+            ) : (
+              <>
+                <View style={styles.ratingBG}>
+                  <Text style={[globalStyles.h8, { color: colors.background }]}>
+                    {profileData?.branch?.details?.hygiene_ratings}
+                  </Text>
+                  <Octicons
+                    name="star-fill"
+                    size={RFValue(15)}
+                    color={colors.gold}
+                  />
+                </View>
+                <View style={styles.locationContainer}>
+                  {/* <ClockIcon width={hp(3)} height={hp(3)} /> */}
+                  <Text style={[globalStyles.h12, styles.locationText]}>
+                    Today{' '}
+                    {formatTimeto12(
+                      profileData?.branch?.opening_hours?.today?.open_time,
+                    )}{' '}
+                    to{' '}
+                    {formatTimeto12(
+                      profileData?.branch?.opening_hours?.today?.close_time,
+                    )}
+                  </Text>
+                </View>
+                <View
+                  style={[
+                    styles.statusContainer,
+                    {
+                      backgroundColor: profileData?.branch?.opening_hours
+                        ?.current_status?.is_available_for_orders
+                        ? colors.readyBG
+                        : colors.closeBG,
+                    },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      globalStyles.h12,
+                      {
+                        color: profileData?.branch?.opening_hours
+                          ?.current_status?.is_available_for_orders
+                          ? colors.readyTxt
+                          : colors.currentStatus,
+                      },
+                    ]}
+                  >
+                    {profileData?.branch?.opening_hours?.current_status
+                      ?.is_available_for_orders
+                      ? 'Opened'
+                      : 'Closed'}
+                  </Text>
+                </View>
+              </>
+            )}
           </View>
 
           <View style={styles.profileButtonContainer}>

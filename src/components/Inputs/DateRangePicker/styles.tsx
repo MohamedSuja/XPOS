@@ -1,7 +1,6 @@
-import { hp, wp } from '@/utils/Scaling';
 import { ColorsType } from '@/utils/ThemeContext';
-import { Platform, StyleSheet } from 'react-native';
-import { RFValue } from 'react-native-responsive-fontsize';
+import { hp, wp } from '@/utils/Scaling';
+import { StyleSheet } from 'react-native';
 
 export const createInputStyles = (colors: ColorsType) =>
   StyleSheet.create({
@@ -13,19 +12,20 @@ export const createInputStyles = (colors: ColorsType) =>
       paddingHorizontal: wp(3),
       height: hp('6%'),
       borderRadius: 10,
+      marginVertical: hp('1%'),
     },
     inputContainer: {
       flexDirection: 'row',
       alignItems: 'center',
     },
     inputText: {
-      color: colors.dateText,
+      color: colors.disableHeader,
     },
     divider: {
       width: 7,
       height: 1,
       borderRadius: 100,
-      backgroundColor: colors.inputTxt,
+      backgroundColor: colors.disableHeader,
       marginHorizontal: wp(7),
     },
   });

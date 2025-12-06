@@ -333,7 +333,7 @@ const HomeScreen = ({ navigation }: any) => {
               gap: wp('1%'),
             }}
             onPress={() => {
-              // navigation.navigate('TopTab');
+              navigation.navigate('OrderStack');
             }}
           >
             <Text style={[globalStyles.h8, { color: colors.primary }]}>

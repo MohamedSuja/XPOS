@@ -6,14 +6,14 @@ import {
   ViewStyle,
 } from 'react-native';
 import React, { useState } from 'react';
-import CalendarIcon from '@/assets/icons/Calendar.svg';
 import { ThemeContextType, useTheme } from '@/utils/ThemeContext';
 import { createInputStyles } from './styles';
 import { globalStyles } from '@/utils/globalStyles';
 import DateRangePickerDialog from '@/components/Dialogs/DateRangePickerDialog';
 import moment from 'moment';
-import { RFValue } from 'react-native-responsive-fontsize';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 interface DateRangePickerProps {
   style?: StyleProp<ViewStyle>;
@@ -45,8 +45,8 @@ const DateRangePicker = (props: DateRangePickerProps) => {
   const onClose = () => setVisible(false);
 
   const handleConfirm = (range: {
-    startDate: string | undefined;
-    endDate: string | undefined;
+    startDate: string | null;
+    endDate: string | null;
   }) => {
     if (onChange) {
       onChange(range);
@@ -60,15 +60,23 @@ const DateRangePicker = (props: DateRangePickerProps) => {
       <View style={[styles.container, style]}>
         <View style={styles.inputContainer}>
           <Text style={[globalStyles.h9, styles.inputText]}>
-            {startDate
-              ? moment(startDate, 'YYYY-MM-DD').format('DD/MM/YYYY')
-              : 'DD/MM/YYYY'}
+            {startDate ? (
+              <Text style={{ color: colors.inputTxt }}>
+                {moment(startDate, 'YYYY-MM-DD').format('DD/MM/YYYY')}
+              </Text>
+            ) : (
+              'DD/MM/YYYY'
+            )}
           </Text>
           <View style={styles.divider} />
           <Text style={[globalStyles.h9, styles.inputText]}>
-            {endDate
-              ? moment(endDate, 'YYYY-MM-DD').format('DD/MM/YYYY')
-              : 'DD/MM/YYYY'}
+            {endDate ? (
+              <Text style={{ color: colors.inputTxt }}>
+                {moment(endDate, 'YYYY-MM-DD').format('DD/MM/YYYY')}
+              </Text>
+            ) : (
+              'DD/MM/YYYY'
+            )}
           </Text>
         </View>
 
@@ -81,11 +89,15 @@ const DateRangePicker = (props: DateRangePickerProps) => {
             <EvilIcons
               name="close"
               size={RFValue(18)}
-              color={colors.itemCardTxt}
+              color={colors.subTitle}
             />
           </TouchableOpacity>
         ) : (
-          <CalendarIcon height={25} width={25} />
+          <Entypo
+            name="calendar"
+            size={RFValue(16)}
+            color={colors.disableHeader}
+          />
         )}
         <DateRangePickerDialog
           visible={visible}

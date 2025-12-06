@@ -27,6 +27,7 @@ export const createStyles = (colors: ColorsType) =>
       left: 0,
     },
     headerTxt: {
+      fontSize: RFValue(16),
       color: colors.headerTxt,
       textAlign: 'center',
     },
@@ -61,7 +62,7 @@ export const createStyles = (colors: ColorsType) =>
 
     footer: {
       backgroundColor: colors.background,
-      borderColor: colors.uploaderBorder,
+      borderColor: colors.stroke,
       borderTopWidth: hp(0.1),
       paddingVertical: hp(1),
     },

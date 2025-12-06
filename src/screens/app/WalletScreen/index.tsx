@@ -156,10 +156,10 @@ const WalletScreen = ({ navigation }: any) => {
         })
         .catch(error => {
           let errorMessage = '';
-          console.log(error);
+          console.log(error.status);
           if (error.status == 422) {
             let alertDescription = '';
-            const errors = error.data?.errors;
+            const errors = error?.errors;
 
             if (errors) {
               for (const key in errors) {
@@ -171,7 +171,7 @@ const WalletScreen = ({ navigation }: any) => {
             }
             errorMessage = alertDescription.trim();
           } else {
-            errorMessage = error.data?.message;
+            errorMessage = error?.message;
           }
 
           ErrorFlash(errorMessage || 'Something went wrong!');
