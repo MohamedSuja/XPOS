@@ -66,7 +66,11 @@ const OrderViewCard = (props: OrderItemProps) => {
             <View key={index} style={styles.addOnsItemContainer}>
               <PlusIcon width={wp(3)} height={wp(3)} />
               <Text style={[globalStyles.h9, styles.addOnsItem]}>
-                {addon?.addon_name}
+                {addon?.addon_category_name} (
+                {addon?.options
+                  ?.map((option: any) => option?.option_name)
+                  .join(', ')}
+                )
               </Text>
             </View>
           ))}

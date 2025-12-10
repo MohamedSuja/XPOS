@@ -106,6 +106,7 @@ const ProfileScreen = ({ navigation }: any) => {
         .get(`/api/pos/profile`)
         .then(res => {
           setProfileData(res?.data?.data);
+          console.log(res?.data?.data);
           setIsLoading(false);
         })
         .catch(err => {

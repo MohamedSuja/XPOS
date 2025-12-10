@@ -71,13 +71,14 @@ const OrderSummaryScreen = ({
               # {data?.unique_id}
             </Text>
           </View>
-          {data?.delivery_type !== 'delivery' && (
-            <View style={styles.orderTypeContainer}>
-              <Text style={[globalStyles.h8, styles.orderTypeText]}>
-                {data?.delivery_type ?? ''}
-              </Text>
-            </View>
-          )}
+          {data?.delivery_type !== 'delivery' &&
+            data?.status != 'cancelled' && (
+              <View style={styles.orderTypeContainer}>
+                <Text style={[globalStyles.h8, styles.orderTypeText]}>
+                  {data?.delivery_type ?? ''}
+                </Text>
+              </View>
+            )}
 
           {data?.status === 'cancelled' && (
             <View style={styles.orderCancelledContainer}>
@@ -194,6 +195,33 @@ const OrderSummaryScreen = ({
                   <Text style={[globalStyles.h6, styles.quantityText]}>
                     Qty : {item?.quantity}
                   </Text>
+                </View>
+              )}
+
+              {item?.add_ons.length > 0 && (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginVertical: hp(0.3),
+                  }}
+                >
+                  <Text style={[globalStyles.h11, { color: colors.subTitle }]}>
+                    Add-ons :
+                  </Text>
+                  {item?.add_ons?.map(addon => (
+                    <>
+                      <Text
+                        style={[globalStyles.h12, { color: colors.greenBG }]}
+                      >
+                        {addon?.addon_category_name} ({' '}
+                        {addon?.options
+                          ?.map((option: any) => option?.option_name)
+                          .join(', ')}{' '}
+                        )
+                      </Text>
+                    </>
+                  ))}
                 </View>
               )}
 

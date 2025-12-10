@@ -7,7 +7,7 @@ import {
   Pressable,
   RefreshControl,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { createStyles } from './styles';
 import { globalStyles } from '../../../utils/globalStyles';
 import {
@@ -24,6 +24,8 @@ import { requests } from '@/feature/services/api';
 import { ErrorFlash } from '@/utils/FlashMessage';
 import EmptyValue from '@/assets/icons/EmptyValue.svg';
 import { CustomStatusBar } from '@/components/customStatusBar';
+import { requestOrderDetailsData } from '@/feature/thunks/orders_thunks';
+import { useAppDispatch } from '@/feature/stateHooks';
 
 const NotificationScreen = ({ navigation }: any) => {
   const { colors }: ThemeContextType = useTheme();
@@ -34,6 +36,7 @@ const NotificationScreen = ({ navigation }: any) => {
   const [lastPage, setLastPage] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const dispatch = useAppDispatch();
 
   const formatUTCToLocal = (utcDateString: string) => {
     const localDate = moment.utc(utcDateString).local(); // Convert to local time
@@ -70,6 +73,7 @@ const NotificationScreen = ({ navigation }: any) => {
           } else {
             setIsRefreshing(false);
             setNotificationList(res.data?.data?.notifications);
+            console.log(res.data?.data?.notifications);
             setCurrentPage(2);
           }
           setLastPage(res.data.data?.pagination?.last_page);
@@ -125,6 +129,51 @@ const NotificationScreen = ({ navigation }: any) => {
     }
   };
 
+  const navigateOrderScreen = useCallback(
+    (status: string | undefined, orderId: string) => {
+      switch (status) {
+        case 'pending':
+          navigation.navigate('OrderStack', { screen: 'Request' });
+          break;
+        case 'accepted':
+          dispatch(requestOrderDetailsData(orderId));
+          navigation.navigate('OrderViewScreen', { orderId: orderId });
+          break;
+        case 'preparing':
+          dispatch(requestOrderDetailsData(orderId));
+          navigation.navigate('OrderViewScreen', { orderId: orderId });
+          break;
+        case 'ready_for_pickup':
+          dispatch(requestOrderDetailsData(orderId));
+          navigation.navigate('OrderSummaryScreen', {
+            orderId: orderId,
+          });
+          break;
+        case 'out_for_delivery':
+          dispatch(requestOrderDetailsData(orderId));
+          navigation.navigate('OrderSummaryScreen', {
+            orderId: orderId,
+          });
+          break;
+        case 'delivered':
+          dispatch(requestOrderDetailsData(orderId));
+          navigation.navigate('OrderSummaryScreen', {
+            orderId: orderId,
+          });
+          break;
+        case 'cancelled':
+          dispatch(requestOrderDetailsData(orderId));
+          navigation.navigate('OrderSummaryScreen', {
+            orderId: orderId,
+          });
+          break;
+        default:
+          navigation.navigate('OrderStack', { screen: 'Request' });
+          break;
+      }
+    },
+    [],
+  );
   useEffect(() => {
     getNotification(true, 1);
   }, []);
@@ -201,6 +250,12 @@ const NotificationScreen = ({ navigation }: any) => {
                   onPress={() => {
                     if (!item?.is_read) {
                       handleRead(item.id);
+                    }
+                    if (item?.order) {
+                      navigateOrderScreen(
+                        item?.order?.status,
+                        item?.order?.order_id,
+                      );
                     }
                   }}
                 >

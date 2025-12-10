@@ -102,6 +102,28 @@ export const pdfOrderChit = async (data: any) => {
                     </div>
                 `
                 }
+                ${
+                  item?.add_ons && item?.add_ons.length > 0
+                    ? item?.add_ons
+                        .map(
+                          (addon: any) => `
+                    <div style="color: #666; font-size: 14px; margin-top: 5px;">
+                        <span style="display: inline-block; width: 60%;"> + ${
+                          addon?.addon_category_name
+                        }
+                       
+                       (
+                ${addon?.options
+                  ?.map((option: any) => option?.option_name)
+                  .join(', ')}
+                )
+                   </span>
+                    </div>
+                `,
+                        )
+                        .join('')
+                    : ''
+                } 
             </div>
         `,
                 )

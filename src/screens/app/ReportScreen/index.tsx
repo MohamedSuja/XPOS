@@ -164,7 +164,11 @@ const ReportScreen = () => {
           <TouchableOpacity
             style={styles.invoiceButton}
             onPress={() => {
-              pdfInvoice(summaryDetails);
+              if (orderList.length > 0) {
+                pdfInvoice(summaryDetails);
+              } else {
+                ErrorFlash('No any orders !');
+              }
             }}
           >
             {loading ? (
@@ -238,36 +242,8 @@ const ReportScreen = () => {
           </Text>
         </View>
       )}
-
-      {/* <View style={styles.totalAmountContainer}>
-        <Text style={[styles.totalAmountText, globalStyles.h5]}>
-          Total Amount
-        </Text>
-        <Text style={[styles.totalAmount, globalStyles.h5]}>Rs. </Text>
-      </View> */}
     </SafeAreaView>
   );
 };
-
-const data = [
-  {
-    id: '1',
-    title: 'Dum Chicken Biriyani',
-    quantity: 10,
-    price: 850,
-  },
-  {
-    id: '2',
-    title: 'Paneer Butter Masala',
-    quantity: 5,
-    price: 600,
-  },
-  {
-    id: '3',
-    title: 'Garlic Naan',
-    quantity: 20,
-    price: 50,
-  },
-];
 
 export default ReportScreen;
