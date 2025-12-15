@@ -62,7 +62,7 @@ const pdfInvoice = async (data: any) => {
           <td style="font-size: 28px; padding: 20px 0; text-align: right; color: #000;">Rs. ${item?.total?.amount}</td>
         </tr>
       
-      `,
+      `
         )
       }
      

@@ -3,6 +3,8 @@ import {
   getMessaging,
   onMessage,
   setBackgroundMessageHandler,
+  getInitialNotification,
+  onNotificationOpenedApp
 } from '@react-native-firebase/messaging';
 import notifee, {
   AndroidCategory,
@@ -61,16 +63,7 @@ export const NotificationProvider = ({ children }: any) => {
   //background handler
   setBackgroundMessageHandler(messaging, async remoteMessage => {
     console.log('background message', remoteMessage);
-    if (typeof remoteMessage?.data?.notifee === 'string') {
-      displayOrderAlertNotification(JSON.parse(remoteMessage?.data?.notifee));
-      await dispatch(
-        requestOrdersListData({
-          request: 'request',
-          per_page: 10,
-          page: 1,
-        }),
-      ).unwrap();
-    }
+   
   });
 
   const createChannel = async () => {
@@ -227,6 +220,46 @@ export const NotificationProvider = ({ children }: any) => {
 
   useEffect(() => {
     createChannel();
+  }, []);
+
+
+  useEffect(() => {
+    // App opened from a quit/killed state
+   getInitialNotification(messaging)
+      .then(async remoteMessage => {
+        if (remoteMessage) {
+          console.log('Opened from quit state:', remoteMessage.data);
+         if (typeof remoteMessage?.data?.notifee === 'string') {
+      await dispatch(
+        requestOrdersListData({
+          request: 'request',
+          per_page: 10,
+          page: 1,
+        }),
+      ).unwrap();
+       await navigationRef.current.navigate('OrderStack', { screen: 'Request' });
+    }
+        }
+      });
+
+    // App opened from background
+    const unsub = onNotificationOpenedApp(messaging,async remoteMessage => {
+      console.log('Opened from background:', remoteMessage.data);
+       if (typeof remoteMessage?.data?.notifee === 'string') {
+      await dispatch(
+        requestOrdersListData({
+          request: 'request',
+          per_page: 10,
+          page: 1,
+        }),
+      ).unwrap();
+
+       await navigationRef.current.navigate('OrderStack', { screen: 'Request' });
+    }
+
+    });
+
+    return unsub;
   }, []);
 
   return (

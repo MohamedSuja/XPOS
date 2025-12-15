@@ -62,6 +62,7 @@ const ReportScreen = () => {
         .then(res => {
           if (!refreshState) {
             if (currentPage <= lastPage) {
+              console.log(res?.data?.data)
               setOrderList(prev => [...prev, ...res.data?.data?.menu_items]);
               setCurrentPage(currentPage + 1);
             }
@@ -186,8 +187,9 @@ const ReportScreen = () => {
       </View>
 
       {orderList.length > 0 ? (
+        <View style={styles.listContent}>
         <FlatList
-          contentContainerStyle={styles.listContent}
+          
           data={orderList}
           refreshControl={
             <RefreshControl
@@ -228,6 +230,7 @@ const ReportScreen = () => {
           )}
           keyExtractor={item => item.id}
         />
+        </View>
       ) : (
         <View
           style={{

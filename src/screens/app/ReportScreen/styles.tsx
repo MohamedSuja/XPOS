@@ -112,6 +112,7 @@ export const createStyles = (colors: ColorsType) =>
       backgroundColor: colors.background,
       borderRadius: 10,
       marginTop: hp(2),
+      marginBottom: hp(46)
     },
     itemContainer: {
       flexDirection: 'row',

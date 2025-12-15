@@ -133,7 +133,12 @@ const NotificationScreen = ({ navigation }: any) => {
     (status: string | undefined, orderId: string) => {
       switch (status) {
         case 'pending':
-          navigation.navigate('OrderStack', { screen: 'Request' });
+navigation.navigate('BottomTab', {
+  screen: 'OrderStack',
+  params: {
+    screen: 'Request',
+  },
+});
           break;
         case 'accepted':
           dispatch(requestOrderDetailsData(orderId));
@@ -168,7 +173,12 @@ const NotificationScreen = ({ navigation }: any) => {
           });
           break;
         default:
-          navigation.navigate('OrderStack', { screen: 'Request' });
+       navigation.navigate('BottomTab', {
+  screen: 'OrderStack',
+  params: {
+    screen: 'Request',
+  },
+});
           break;
       }
     },
@@ -221,6 +231,7 @@ const NotificationScreen = ({ navigation }: any) => {
               contentContainerStyle={{
                 marginHorizontal: wp('4%'),
                 marginVertical: hp('2%'),
+                paddingBottom: hp(8)
               }}
               refreshControl={
                 <RefreshControl

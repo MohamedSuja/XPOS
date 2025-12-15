@@ -215,7 +215,7 @@ const RequestScreen = ({ navigation }: any) => {
         keyExtractor={item => item.id.toString()}
         showsVerticalScrollIndicator={false}
         onEndReached={loadMoreOrders}
-        contentContainerStyle={{ paddingBottom: hp('8%') }}
+        contentContainerStyle={{ paddingBottom: hp('10%') }}
         onEndReachedThreshold={0.1}
         ListFooterComponent={renderFooter}
         ListEmptyComponent={renderEmpty}

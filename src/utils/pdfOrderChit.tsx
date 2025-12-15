@@ -125,7 +125,7 @@ export const pdfOrderChit = async (data: any) => {
                     : ''
                 } 
             </div>
-        `,
+        `
                 )
                 .join('')
             : '<div>No items</div>'

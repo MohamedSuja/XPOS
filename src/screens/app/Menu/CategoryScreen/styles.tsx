@@ -23,7 +23,7 @@ export const createStyles = (colors: ColorsType) =>
       justifyContent: 'space-between',
     },
     listContainer: {
-      paddingBottom: hp('8%'),
+      paddingBottom: hp('13%'),
       paddingTop: hp('1%'),
     },
   });
