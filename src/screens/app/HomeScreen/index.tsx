@@ -263,7 +263,10 @@ const HomeScreen = ({ navigation }: any) => {
         </Pressable>
       </View>
 
-      <ScrollView contentContainerStyle={{ paddingBottom: hp('10%') }}>
+      <ScrollView
+        contentContainerStyle={{ paddingBottom: hp('10%') }}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Current earnings */}
         <ImageBackground
           style={styles.currentBox}
@@ -310,7 +313,7 @@ const HomeScreen = ({ navigation }: any) => {
                     { color: colors.background, fontSize: RFValue(22) },
                   ]}
                 >
-                  {earningData?.currency} {earningData?.today_earnings}
+                  {userData?.currency} {earningData?.today_earnings}
                 </Text>
                 <Text style={[globalStyles.h9, { color: colors.background }]}>
                   Earnings Today

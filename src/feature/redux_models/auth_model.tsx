@@ -16,6 +16,7 @@ export default interface IAuthState {
   image: string | undefined;
   contactNo: string | undefined;
   token: string | undefined;
+  currency: string | undefined;
 }
 
 // Auth Data Error

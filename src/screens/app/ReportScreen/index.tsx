@@ -20,6 +20,7 @@ import { ErrorFlash } from '@/utils/FlashMessage';
 import { hp, wp } from '@/utils/Scaling';
 import EmptyValue from '@/assets/icons/EmptyValue.svg';
 import pdfInvoice from '@/utils/pdfInvoice';
+import { useAppSelector } from '@/feature/stateHooks';
 
 const ReportScreen = () => {
   const { colors }: ThemeContextType = useTheme();
@@ -35,6 +36,8 @@ const ReportScreen = () => {
   const [lastPage, setLastPage] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const userData = useAppSelector(state => state.auth);
 
   const dateToApiFormat = (date: Date | null) =>
     date ? date.toISOString().split('T')[0] : '';
@@ -62,7 +65,7 @@ const ReportScreen = () => {
         .then(res => {
           if (!refreshState) {
             if (currentPage <= lastPage) {
-              console.log(res?.data?.data)
+              console.log(res?.data?.data);
               setOrderList(prev => [...prev, ...res.data?.data?.menu_items]);
               setCurrentPage(currentPage + 1);
             }
@@ -153,7 +156,8 @@ const ReportScreen = () => {
           </View>
           <View style={styles.totalContainer}>
             <Text style={[styles.totalText, globalStyles.h4]}>
-              Rs. {summaryDetails?.summary?.total_revenue?.amount}
+              {userData?.currency}{' '}
+              {summaryDetails?.summary?.total_revenue?.amount}
             </Text>
             <Text style={[styles.totalText, globalStyles.h12]}>
               Total Earning
@@ -188,48 +192,48 @@ const ReportScreen = () => {
 
       {orderList.length > 0 ? (
         <View style={styles.listContent}>
-        <FlatList
-          
-          data={orderList}
-          refreshControl={
-            <RefreshControl
-              refreshing={isRefreshing}
-              onRefresh={() => {
-                getReportDetails(true, 1, null);
-                setDateRange({ startDate: '', endDate: '' });
-              }}
-            />
-          }
-          onEndReached={() => {
-            getReportDetails(false, currentPage, {
-              start: dateRange?.startDate,
-              end: dateRange?.endDate,
-            });
-          }}
-          onEndReachedThreshold={1}
-          renderItem={({ item, index }) => (
-            <View
-              key={index}
-              style={[
-                styles.itemContainer,
-                index === orderList.length - 1 && { borderBottomWidth: 0 },
-              ]}
-            >
-              <View>
-                <Text style={[styles.itemTitle, globalStyles.h8]}>
-                  {item?.menu_item_name}
-                </Text>
-                <Text style={[styles.itemQuantity, globalStyles.h12]}>
-                  Qty: {item?.quantity} X Rs.{item?.unit_price?.amount}
+          <FlatList
+            data={orderList}
+            refreshControl={
+              <RefreshControl
+                refreshing={isRefreshing}
+                onRefresh={() => {
+                  getReportDetails(true, 1, null);
+                  setDateRange({ startDate: '', endDate: '' });
+                }}
+              />
+            }
+            onEndReached={() => {
+              getReportDetails(false, currentPage, {
+                start: dateRange?.startDate,
+                end: dateRange?.endDate,
+              });
+            }}
+            onEndReachedThreshold={1}
+            renderItem={({ item, index }) => (
+              <View
+                key={index}
+                style={[
+                  styles.itemContainer,
+                  index === orderList.length - 1 && { borderBottomWidth: 0 },
+                ]}
+              >
+                <View>
+                  <Text style={[styles.itemTitle, globalStyles.h8]}>
+                    {item?.menu_item_name}
+                  </Text>
+                  <Text style={[styles.itemQuantity, globalStyles.h12]}>
+                    Qty: {item?.quantity} X {userData?.currency}{' '}
+                    {item?.unit_price?.amount}
+                  </Text>
+                </View>
+                <Text style={[styles.itemPrice, globalStyles.h5]}>
+                  {userData?.currency} {item?.total?.amount}
                 </Text>
               </View>
-              <Text style={[styles.itemPrice, globalStyles.h5]}>
-                Rs. {item?.total?.amount}
-              </Text>
-            </View>
-          )}
-          keyExtractor={item => item.id}
-        />
+            )}
+            keyExtractor={item => item.id}
+          />
         </View>
       ) : (
         <View

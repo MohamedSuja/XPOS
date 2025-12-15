@@ -27,6 +27,7 @@ const DEFAULT_STATE: IAuthState = {
   image: undefined,
   contactNo: undefined,
   token: undefined,
+  currency: undefined,
 };
 
 const INITIAL_STATE: IAuthState = {
@@ -66,6 +67,7 @@ const auth_slice = createSlice({
         state.image = action.payload.data?.user?.image;
         state.token = action.payload.data?.token;
         state.contactNo = action.payload.data?.user?.contact;
+        state.currency = action.payload.data?.branch?.currency?.code;
         requestRegisterDevice();
       },
     );

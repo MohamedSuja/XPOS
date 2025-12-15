@@ -27,6 +27,7 @@ import { toTwoDigit } from '@/utils/formatCurrency';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import GetAmountModal from '@/components/getAmountModal';
 import WithdrawRequestModal from '@/components/withdrawRequestModal';
+import { useAppSelector } from '@/feature/stateHooks';
 
 const WalletScreen = ({ navigation }: any) => {
   const { colors }: ThemeContextType = useTheme();
@@ -44,6 +45,8 @@ const WalletScreen = ({ navigation }: any) => {
     startDate: string | undefined;
     endDate: string | undefined;
   }>({ startDate: '', endDate: '' });
+
+  const userData = useAppSelector(state => state.auth);
 
   const withdrawModalRef: any = useRef<BottomSheetModal>(null);
   const withdrawSuccessModalRef: any = useRef<BottomSheetModal>(null);
@@ -239,7 +242,7 @@ const WalletScreen = ({ navigation }: any) => {
                   },
                 ]}
               >
-                Rs. {walletDetails?.current_balance}
+                {userData?.currency} {walletDetails?.current_balance}
               </Text>
               <Text
                 style={[
@@ -351,7 +354,7 @@ const WalletScreen = ({ navigation }: any) => {
                   }}
                 >
                   <Text style={[globalStyles.h4, { color: colors.greenBG }]}>
-                    Rs. {toTwoDigit(item?.amount)}
+                    {userData?.currency} {toTwoDigit(item?.amount)}
                   </Text>
                   <Text style={[globalStyles.h12, { color: colors.inputTxt }]}>
                     {item?.status}

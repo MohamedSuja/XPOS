@@ -58,20 +58,20 @@ const pdfInvoice = async (data: any) => {
             `
       <tr >
           <td style="font-size: 28px; padding: 20px 0; color: #000;">${item?.menu_item_name}</td>
-          <td style="font-size: 28px; padding: 20px 0; color: #000;">${item?.quantity} X Rs.${item?.unit_price?.amount}</td>
-          <td style="font-size: 28px; padding: 20px 0; text-align: right; color: #000;">Rs. ${item?.total?.amount}</td>
+          <td style="font-size: 28px; padding: 20px 0; color: #000;">${item?.quantity} X ${userData?.currency} ${item?.unit_price?.amount}</td>
+          <td style="font-size: 28px; padding: 20px 0; text-align: right; color: #000;">${userData?.currency} ${item?.total?.amount}</td>
         </tr>
       
-      `
+      `,
         )
       }
      
       <tr style="border-top: 2px solid #ddd; padding-top: 30px; ">
       <td style="font-size: 52px; padding: 20px 0; font-weight: 400; color: #000; letter-spacing: -1px;">Total</td>
           <td style="font-size: 28px; padding: 20px 0; color: #000;"></td>
-                    <td style="font-size: 52px; font-weight: 400; padding: 20px 0; text-align: right; color: #000;">Rs. ${
-                      data?.summary?.total_revenue?.amount
-                    }</td>
+                    <td style="font-size: 52px; font-weight: 400; padding: 20px 0; text-align: right; color: #000;">${
+                      userData?.currency
+                    } ${data?.summary?.total_revenue?.amount}</td>
       </tr>
       </tbody>
     </table>

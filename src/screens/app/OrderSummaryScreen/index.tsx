@@ -28,6 +28,7 @@ const OrderSummaryScreen = ({
 
   const OrderDetailsData = useAppSelector(selectOrderDetailsData);
   const data = OrderDetailsData?.data.order;
+  const userData = useAppSelector(state => state.auth);
 
   const onPressPicked = () => {
     if (route.params?.orderId) {
@@ -172,7 +173,7 @@ const OrderSummaryScreen = ({
                   {item?.item_name ?? ''}
                 </Text>
                 <Text style={[globalStyles.h5, styles.itemPrice]}>
-                  Rs. {item.total_price?.toLocaleString()}
+                  {userData?.currency} {item.total_price?.toLocaleString()}
                 </Text>
               </View>
 
@@ -244,7 +245,8 @@ const OrderSummaryScreen = ({
               Total Amount
             </Text>
             <Text style={[globalStyles.h5, styles.totalAmount]}>
-              Rs. {data?.total ? parseFloat(data.total).toLocaleString() : '0'}
+              {userData?.currency}{' '}
+              {data?.total ? parseFloat(data.total).toLocaleString() : '0'}
             </Text>
           </View>
         )}

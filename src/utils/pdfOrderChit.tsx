@@ -73,9 +73,9 @@ export const pdfOrderChit = async (data: any) => {
                     <span style="font-size: 16px; font-weight: bold; display: inline-block; width: 60%; vertical-align: top;">${
                       item?.item_name || ''
                     }</span>
-                    <span style="font-size: 16px; font-weight: bold; display: inline-block; width: 38%; text-align: right; vertical-align: top;">Rs. ${
-                      item?.total_price?.toLocaleString() || '0'
-                    }</span>
+                    <span style="font-size: 16px; font-weight: bold; display: inline-block; width: 38%; text-align: right; vertical-align: top;">${
+                      userData?.currency
+                    } ${item?.total_price?.toLocaleString() || '0'}</span>
                 </div>
                 ${
                   item?.variants && item?.variants.length > 0
@@ -125,7 +125,7 @@ export const pdfOrderChit = async (data: any) => {
                     : ''
                 } 
             </div>
-        `
+        `,
                 )
                 .join('')
             : '<div>No items</div>'
@@ -138,9 +138,11 @@ export const pdfOrderChit = async (data: any) => {
         <!-- Total -->
         <div style="margin-bottom: 40px;">
             <span style="font-size: 24px; font-weight: bold; display: inline-block; width: 48%;">Total</span>
-            <span style="font-size: 24px; font-weight: bold; display: inline-block; width: 48%; text-align: right;">Rs. ${
-              data?.total ? parseFloat(data?.total).toLocaleString() : '0'
-            }</span>
+            <span style="font-size: 24px; font-weight: bold; display: inline-block; width: 48%; text-align: right;">${
+              userData?.currency
+            } ${
+    data?.total ? parseFloat(data?.total).toLocaleString() : '0'
+  }</span>
         </div>
 
         <!-- Dotted Divider -->
@@ -156,10 +158,6 @@ export const pdfOrderChit = async (data: any) => {
         <div style="text-align: center; margin-bottom: 30px;">
             <img src="${logoImg}" alt="Logo" style="width: 100px; height: 100px;">
         </div>
-<div style="text-align: center; margin-bottom: 30px;">
-            <img src="${footerImg}" alt="Logo" style="width: 260px; height: 100px;">
-        </div>
-
         <!-- Bottom Dotted Divider -->
         <div style="border-bottom: 2px dotted #ccc; margin: 30px 0 0 0;"></div>
     </div>
