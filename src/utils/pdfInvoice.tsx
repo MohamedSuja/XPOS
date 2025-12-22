@@ -6,6 +6,32 @@ const pdfInvoice = async (data: any) => {
   const userData = store.getState().auth;
 
   const htmlContent = `
+  <style>
+  /* Prevent thead from repeating on subsequent pages */
+  thead {
+           display: table-header-group;
+         }
+           thead tr {
+           page-break-inside: avoid;
+           page-break-after: auto;
+         }
+         table {
+           page-break-inside: auto;
+         }
+           tbody {
+           display: table-row-group;
+         }
+         tbody tr {
+           page-break-inside: avoid;
+           page-break-after: auto;
+         }
+         /* Use CSS to prevent thead repetition on new pages */
+         @media print {
+           thead {
+             display: table-header-group;
+           }
+         }
+           </style>
        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 40px 20px;">
   
   <!-- Header Section -->
@@ -43,28 +69,33 @@ const pdfInvoice = async (data: any) => {
   <!-- Table Section -->
   <div style="margin-bottom: 10px;">
     <table style="width: 100%; border-collapse: collapse;">
-      <thead>
-        <tr style="border-bottom: 2px solid #000;">
+      <tbody>
+       <tr style="border-bottom: 2px solid #000;">
           <th style="text-align: left; font-size: 32px; font-weight: 400; padding: 20px 0; color: #000;">Item</th>
           <th style="text-align: left; font-size: 32px; font-weight: 400; padding: 20px 0; color: #000;">Qty</th>
           <th style="text-align: right; font-size: 32px; font-weight: 400; padding: 20px 0; color: #000;">Total</th>
         </tr>
-      </thead>
-      <tbody>
-      ${
-        data?.menu_items.length > 0 &&
-        data?.menu_items.map(
-          (item: any) =>
-            `
-      <tr >
-          <td style="font-size: 28px; padding: 20px 0; color: #000;">${item?.menu_item_name}</td>
-          <td style="font-size: 28px; padding: 20px 0; color: #000;">${item?.quantity} X ${userData?.currency} ${item?.unit_price?.amount}</td>
-          <td style="font-size: 28px; padding: 20px 0; text-align: right; color: #000;">${userData?.currency} ${item?.total?.amount}</td>
-        </tr>
-      
-      `,
+     ${
+  data?.menu_items?.length > 0
+    ? data.menu_items
+        .map(
+          (item: any) => `
+      <tr>
+        <td style="font-size: 28px; padding: 20px 0; color: #000;">
+          ${item?.menu_item_name}
+        </td>
+        <td style="font-size: 28px; padding: 20px 0; color: #000;">
+          ${item?.quantity} X ${userData?.currency} ${item?.unit_price?.amount}
+        </td>
+        <td style="font-size: 28px; padding: 20px 0; text-align: right; color: #000;">
+          ${userData?.currency} ${item?.total?.amount}
+        </td>
+      </tr>
+    `
         )
-      }
+        .join('')
+    : ''
+}
      
       <tr style="border-top: 2px solid #ddd; padding-top: 30px; ">
       <td style="font-size: 52px; padding: 20px 0; font-weight: 400; color: #000; letter-spacing: -1px;">Total</td>

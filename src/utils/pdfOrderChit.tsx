@@ -90,7 +90,7 @@ export const pdfOrderChit = async (data: any) => {
                           variant?.quantity || 0
                         }</span>
                     </div>
-                `,
+                `
                         )
                         .join('')
                     : `
@@ -119,13 +119,13 @@ export const pdfOrderChit = async (data: any) => {
                 )
                    </span>
                     </div>
-                `,
+                `
                         )
                         .join('')
                     : ''
                 } 
             </div>
-        `,
+        `
                 )
                 .join('')
             : '<div>No items</div>'
